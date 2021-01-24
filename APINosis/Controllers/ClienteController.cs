@@ -21,7 +21,7 @@ namespace APINosis.Controllers
         }
 
         [HttpPost]
-        public ActionResult<APIResponse> Post ([FromBody] Cliente cliente)
+        public ActionResult<APIResponse> Post ([FromBody] ClienteDTO cliente)
         {
             APIResponse response = new APIResponse();
                 

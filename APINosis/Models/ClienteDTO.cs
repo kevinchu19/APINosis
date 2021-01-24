@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace APINosis.Models
 {
-    public class Cliente
+    public class ClienteDTO
     {
         public string NumeroCliente { get; set; }
         public string RazonSocial { get; set; }
@@ -13,7 +13,6 @@ namespace APINosis.Models
         public string DireccionFiscal { get; set; }
         public string Pais { get; set; }
         public string CodigoPostal { get; set; }
-        public string Municipio { get; set; }
         public string SituacionFrenteAlIVA { get; set; }
         public string TipoDocumento { get; set; }
         public string NumeroDocumento { get; set; }
@@ -25,19 +24,16 @@ namespace APINosis.Models
         public string Categoria { get; set; }
         public string CondicionDePago { get; set; }
         public string ListaPrecios { get; set; }
-        public string LimiteCredito { get; set; }
         public string DireccionEntrega { get; set; }
         public string PaisEntrega { get; set; }
         public string CodigoPostalEntrega { get; set; }
         public string ProvinciaEntrega { get; set; }
-        public string ZonaEntrega { get; set; }
         public string TipoDocumento1 { get; set; }
         public string TipoDocumento2 { get; set; }
         public string TipoDocumento3 { get; set; }
         public string NumeroDocumento1 { get; set; }
         public string NumeroDocumento2 { get; set; }
         public string NumeroDocumento3 { get; set; }
-        public string TipoExportacion { get; set; }
         public string TipodePersona { get; set; }
         public string ApellidoPaterno { get; set; }
         public string ApellidoMaterno { get; set; }

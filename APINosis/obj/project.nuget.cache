@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "28VbasEIIiso9aVLpwRyzXDXoudKf8QGeONBJRD6t9rcqGptNK5nErZJyobha4qsvQ4ey4AIg7yL1DdphsKzpQ==",
+  "dgSpecHash": "mYiyZqw7Lr90Aus+rc3DSbc+R0xHFwZZ2CBzJ356MzU04wBLE6AY3fXVjMQ+rolCUKrflfZOEieOQQD7kMWEuw==",
   "success": true,
   "projectFilePath": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APINosis.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\dattaguest\\.nuget\\packages\\automapper\\10.1.0\\automapper.10.1.0.nupkg.sha512",
+    "C:\\Users\\dattaguest\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.0\\automapper.extensions.microsoft.dependencyinjection.8.1.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\microsoft.aspnetcore.razor\\2.2.0\\microsoft.aspnetcore.razor.2.2.0.nupkg.sha512",
@@ -136,7 +138,7 @@
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.private.datacontractserialization\\4.3.0\\system.private.datacontractserialization.4.3.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.private.uri\\4.3.2\\system.private.uri.4.3.2.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
-    "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection.emit\\4.3.0\\system.reflection.emit.4.3.0.nupkg.sha512",
+    "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.3.0\\system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection.emit.lightweight\\4.3.0\\system.reflection.emit.lightweight.4.3.0.nupkg.sha512",
     "C:\\Users\\dattaguest\\.nuget\\packages\\system.reflection.extensions\\4.3.0\\system.reflection.extensions.4.3.0.nupkg.sha512",

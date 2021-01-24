@@ -1,5 +1,8 @@
 ﻿using APINosis.Entities;
+using APINosis.Helpers;
 using APINosis.Models;
+using APINosis.OE;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
@@ -12,15 +15,48 @@ namespace APINosis.Repositories
 {
     public class ClienteRepository : Repository
     {
-  
-        public ClienteRepository(ApiNosisContext context, IConfiguration configuration, Serilog.ILogger logger) :
+        public VT_TT_VTMCLH oVTMCLH  { get; set; }
+        public IMapper Mapper { get; }
+
+        public ClienteRepository(ApiNosisContext context, IConfiguration configuration, Serilog.ILogger logger, IMapper mapper) :
             base(context, configuration, logger)
         {
-           
+            oVTMCLH = new VT_TT_VTMCLH("admin", "", "APINOSIS");
+            Mapper = mapper;
+        }
+        
+
+        public APIResponse GraboCliente(ClienteDTO cliente)
+        {
+            VtmclhDTO dto = Mapper.Map<ClienteDTO, VtmclhDTO>(cliente);
+            Type type = dto.GetType();
+            
+            System.Reflection.PropertyInfo[] listaPropiedades = type.GetProperties();
+            
+            foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+            {
+                oVTMCLH.asignoValor("VTMCLH", propiedad.Name, (string)propiedad.GetValue(dto,null), 1);
+            }
+            
+            
+            string mensajeError = oVTMCLH.save();
+
+            if (mensajeError != null)
+            {
+                throw new BadRequestException(mensajeError);
+            }
+            
+            return new APIResponse
+            {
+                estado = 200,
+                titulo = "Grabado",
+                mensaje = "Cliente generado ok"
+            };
         }
 
+   
 
-        public APIResponse GraboCliente(Cliente cliente)
+        public APIResponse GraboClienteold(ClienteDTO cliente)
         {
             Type OEType = Type.GetTypeFromProgID("cwlwoe.global");
             dynamic OEInst = Activator.CreateInstance(OEType);
@@ -29,18 +65,18 @@ namespace APINosis.Repositories
             object[] objetoSoftland = new object[] { "VTMCLH",4,"NEW" };
 
             dynamic oApplication = OEType.InvokeMember("GetApplication", BindingFlags.InvokeMethod, null, OEInst, userPassword);
-            //dynamic oApplication = OEInst.GetApplication("Admin", "");
-          
-            //dynamic oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, , objetoSoftland);
+            
             dynamic oCompany = OEType.InvokeMember("Companies", BindingFlags.GetProperty, null, oApplication, company);
 
             dynamic oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, oCompany, objetoSoftland);
 
             dynamic oTable = OEType.InvokeMember("Table", BindingFlags.GetProperty, null, oInstance, null);
             dynamic oRow = OEType.InvokeMember("Rows", BindingFlags.GetProperty, null, oTable, new object[] { 1 });
+            
             dynamic oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { "VTMCLH_NROCTA" });
             OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { cliente.NumeroCliente });
 
+            /***
             oInstance.Tables.Rows(1).fields["VTMCLH_NROCTA"].values = cliente.NumeroCliente;
             oInstance.Tables.Rows(1).fields["VTMCLH_NOMBRE"].values = cliente.RazonSocial;
             oInstance.Tables.Rows(1).fields["VTMCLH_NROSUB"].values = cliente.NumeroSubcuenta;
@@ -88,7 +124,7 @@ namespace APINosis.Repositories
 
             
             oInstance.Save(errormessage);
-
+            *****/
             return new APIResponse
             {
                 estado = 200,
