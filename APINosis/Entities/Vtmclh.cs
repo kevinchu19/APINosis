@@ -170,5 +170,6 @@ namespace APINosis.Entities
         public string VtmclhLotori { get; set; }
         public string VtmclhSysver { get; set; }
         public string VtmclhCmpver { get; set; }
+        public List<Vtmclc> Contactos { get; set; }
     }
 }

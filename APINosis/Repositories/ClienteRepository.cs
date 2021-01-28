@@ -1,8 +1,10 @@
 ﻿using APINosis.Entities;
 using APINosis.Helpers;
+using APINosis.Interfaces;
 using APINosis.Models;
 using APINosis.OE;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
@@ -15,33 +17,79 @@ namespace APINosis.Repositories
 {
     public class ClienteRepository : Repository
     {
-        public VT_TT_VTMCLH oVTMCLH  { get; set; }
+        public ILogger Logger { get; }
         public IMapper Mapper { get; }
+        public IOEObject oVTMCLH { get; set; }
+        public Translate Translate { get; }
 
-        public ClienteRepository(ApiNosisContext context, IConfiguration configuration, Serilog.ILogger logger, IMapper mapper) :
+        public ClienteRepository(ApiNosisContext context, IConfiguration configuration, Serilog.ILogger logger, IMapper mapper, IOEObject oInstanceVTMCLH, Translate translate) :
             base(context, configuration, logger)
         {
-            oVTMCLH = new VT_TT_VTMCLH("admin", "", "APINOSIS");
+            Logger = logger;
             Mapper = mapper;
+            oVTMCLH = oInstanceVTMCLH;
+            Translate = translate;
         }
         
+        public async Task<List<ClienteDTO>> Get(string numeroCliente)
+        {
+
+            Logger.Information($"Se recibio consulta de cliente{numeroCliente}");
+            
+            List<Vtmclh> clientes = await Context.Vtmclh
+                .Where(c => c.VtmclhNrocta == numeroCliente || numeroCliente == null)
+                .Include(c=>c.Contactos)
+                .ToListAsync();
+
+            Logger.Information($"Se recuperaron datos correctamente");
+            List<ClienteDTO> clientesDTO = Mapper.Map<List<ClienteDTO>>(clientes);
+
+            return clientesDTO;
+        }
+
+
 
         public APIResponse GraboCliente(ClienteDTO cliente)
         {
-            VtmclhDTO dto = Mapper.Map<ClienteDTO, VtmclhDTO>(cliente);
-            Type type = dto.GetType();
-            
-            System.Reflection.PropertyInfo[] listaPropiedades = type.GetProperties();
-            
+            Logger.Information($"Se recibio posteo de nuevo cliente{cliente.NumeroCliente} - {cliente.RazonSocial}");
+            VtmclhDTO clientedto = Mapper.Map<ClienteDTO, VtmclhDTO>(cliente);
+            Type typeCliente = clientedto.GetType();
+
+            System.Reflection.PropertyInfo[] listaPropiedades = typeCliente.GetProperties();
+
             foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
             {
-                oVTMCLH.asignoValor("VTMCLH", propiedad.Name, (string)propiedad.GetValue(dto,null), 1);
+                oVTMCLH.asignoValor("VTMCLH", propiedad.Name, (string)propiedad.GetValue(clientedto, null), 1);
             }
-            
-            
-            string mensajeError = oVTMCLH.save();
 
-            if (mensajeError != null)
+            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_CODCRD", "NA", 1);
+            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_ZONENT", "NA", 1);
+            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_CODEXP", "2", 1);
+
+            /**
+            foreach (ContactosDTO contacto in cliente.Contactos)
+            {
+
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_CODCON", contacto.Nombre, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_PUESTO", contacto.Puesto, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_OBSERV", contacto.Observacion, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_TIPSEX", contacto.Sexo, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_DIREML", contacto.Email, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_TELINT", contacto.Telefono, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_CELULA", contacto.Celular, 2);
+                oVTMCLH.asignoValor("VTMCLC", "VTMCLC_RECFAC", contacto.ReclamoFacturas, 2);
+
+            }
+            ***/
+            Save PerformedOperation = oVTMCLH.save();
+
+            bool result = PerformedOperation.Result;
+            string mensajeError = PerformedOperation.errorMessage;
+
+
+            oVTMCLH.closeObjectInstance();
+
+            if (result == false)
             {
                 throw new BadRequestException(mensajeError);
             }
@@ -49,87 +97,8 @@ namespace APINosis.Repositories
             return new APIResponse
             {
                 estado = 200,
-                titulo = "Grabado",
-                mensaje = "Cliente generado ok"
-            };
-        }
-
-   
-
-        public APIResponse GraboClienteold(ClienteDTO cliente)
-        {
-            Type OEType = Type.GetTypeFromProgID("cwlwoe.global");
-            dynamic OEInst = Activator.CreateInstance(OEType);
-            string[] userPassword = new string[] { "admin","" };
-            object[] company = new string[] { "APINOSIS" };
-            object[] objetoSoftland = new object[] { "VTMCLH",4,"NEW" };
-
-            dynamic oApplication = OEType.InvokeMember("GetApplication", BindingFlags.InvokeMethod, null, OEInst, userPassword);
-            
-            dynamic oCompany = OEType.InvokeMember("Companies", BindingFlags.GetProperty, null, oApplication, company);
-
-            dynamic oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, oCompany, objetoSoftland);
-
-            dynamic oTable = OEType.InvokeMember("Table", BindingFlags.GetProperty, null, oInstance, null);
-            dynamic oRow = OEType.InvokeMember("Rows", BindingFlags.GetProperty, null, oTable, new object[] { 1 });
-            
-            dynamic oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { "VTMCLH_NROCTA" });
-            OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { cliente.NumeroCliente });
-
-            /***
-            oInstance.Tables.Rows(1).fields["VTMCLH_NROCTA"].values = cliente.NumeroCliente;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NOMBRE"].values = cliente.RazonSocial;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NROSUB"].values = cliente.NumeroSubcuenta;
-            oInstance.Tables.Rows(1).fields["VTMCLH_DIRECC"].values = cliente.DireccionFiscal;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODPAI"].values = cliente.Pais;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODPOS"].values = cliente.CodigoPostal;
-            oInstance.Tables.Rows(1).fields["VTMCLH_MUNICP"].values = cliente.Municipio;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CNDIVA"].values = cliente.SituacionFrenteAlIVA;
-            oInstance.Tables.Rows(1).fields["VTMCLH_TIPDOC"].values = cliente.TipoDocumento;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NRODOC"].values = cliente.NumeroDocumento;
-            oInstance.Tables.Rows(1).fields["VTMCLH_VNDDOR"].values = cliente.Vendedor;
-            oInstance.Tables.Rows(1).fields["VTMCLH_COBRAD"].values = cliente.Cobrador;
-            oInstance.Tables.Rows(1).fields["VTMCLH_JURISD"].values = cliente.Provincia;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODZON"].values = cliente.Zona;
-            oInstance.Tables.Rows(1).fields["VTMCLH_ACTIVD"].values = cliente.Actividad;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CATEGO"].values = cliente.Categoria;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CNDPAG"].values = cliente.CondicionDePago;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CNDPRE"].values = cliente.ListaPrecios;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODCRD"].values = cliente.LimiteCredito;
-            oInstance.Tables.Rows(1).fields["VTMCLH_DIRENT"].values = cliente.DireccionEntrega;
-            oInstance.Tables.Rows(1).fields["VTMCLH_PAIENT"].values = cliente.PaisEntrega;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODENT"].values = cliente.CodigoPostalEntrega;
-            oInstance.Tables.Rows(1).fields["VTMCLH_JURENT"].values = cliente.ProvinciaEntrega;
-            oInstance.Tables.Rows(1).fields["VTMCLH_ZONENT"].values = cliente.ZonaEntrega;
-            oInstance.Tables.Rows(1).fields["VTMCLH_TIPDO1"].values = cliente.TipoDocumento1;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NRODO1"].values = cliente.TipoDocumento2;
-            oInstance.Tables.Rows(1).fields["VTMCLH_TIPDO2"].values = cliente.TipoDocumento3;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NRODO2"].values = cliente.NumeroDocumento1;
-            oInstance.Tables.Rows(1).fields["VTMCLH_TIPDO3"].values = cliente.NumeroDocumento2;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NRODO3"].values = cliente.NumeroDocumento3;
-            oInstance.Tables.Rows(1).fields["VTMCLH_CODEXP"].values = cliente.TipoExportacion;
-            oInstance.Tables.Rows(1).fields["VTMCLH_FISJUR"].values = cliente.TipodePersona;
-            oInstance.Tables.Rows(1).fields["VTMCLH_APELL1"].values = cliente.ApellidoPaterno;
-            oInstance.Tables.Rows(1).fields["VTMCLH_APELL2"].values = cliente.ApellidoMaterno;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NOMB01"].values = cliente.PrimerNombre;
-            oInstance.Tables.Rows(1).fields["VTMCLH_NOMB02"].values = cliente.SegundoNombre;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_CODACT"].values = cliente.Activadora;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_MPAGO"].values = cliente.ModalidadPago;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_MAILFC"].values = cliente.EmailFacturas;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_MAILRC"].values = cliente.EmailRecibos;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_ENMAIL"].values = cliente.EnviaMail;
-            oInstance.Tables.Rows(1).fields["USR_VTMCLH_FECANT"].values = cliente.FechaCambioRazonSocial;
-
-            string errormessage = "";
-
-            
-            oInstance.Save(errormessage);
-            *****/
-            return new APIResponse
-            {
-                estado = 200,
-                titulo = "Grabado",
-                mensaje = "Cliente generado ok"
+                titulo = "OK",
+                mensaje = $"Cliente {cliente.NumeroCliente} generado con éxito"
             };
         }
 

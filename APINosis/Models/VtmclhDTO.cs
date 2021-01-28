@@ -19,6 +19,7 @@ namespace APINosis.Models
         public string VTMCLH_VNDDOR { get; set; }
         public string VTMCLH_COBRAD { get; set; }
         public string VTMCLH_JURISD { get; set; }
+        public string VTMCLH_CODZON{ get; set; }
         public string VTMCLH_ACTIVD { get; set; }
         public string VTMCLH_CATEGO { get; set; }
         public string VTMCLH_CNDPAG { get; set; }

@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using APINosis.Helpers;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
+using APINosis.Interfaces;
 
 namespace APINosis
 {
@@ -34,6 +35,11 @@ namespace APINosis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddSingleton<Translate>();
+            services.AddTransient<IOEObject, VT_TT_VTMCLH>(provider => 
+                new VT_TT_VTMCLH( "admin",Configuration["PasswordAdmin"],Configuration["CompanyName"]));
+            
 
             services.AddAutoMapper(configuration =>
             {
@@ -50,6 +56,7 @@ namespace APINosis
                 .ForMember(dest => dest.VTMCLH_VNDDOR, opt => opt.MapFrom(src => src.Vendedor))
                 .ForMember(dest => dest.VTMCLH_COBRAD, opt => opt.MapFrom(src => src.Cobrador))
                 .ForMember(dest => dest.VTMCLH_JURISD, opt => opt.MapFrom(src => src.Provincia))
+                .ForMember(dest => dest.VTMCLH_CODZON, opt => opt.MapFrom(src => src.Zona))
                 .ForMember(dest => dest.VTMCLH_ACTIVD, opt => opt.MapFrom(src => src.Actividad))
                 .ForMember(dest => dest.VTMCLH_CATEGO, opt => opt.MapFrom(src => src.Categoria))
                 .ForMember(dest => dest.VTMCLH_CNDPAG, opt => opt.MapFrom(src => src.CondicionDePago))
@@ -74,7 +81,60 @@ namespace APINosis
                 .ForMember(dest => dest.USR_VTMCLH_MAILFC, opt => opt.MapFrom(src => src.EmailFacturas))
                 .ForMember(dest => dest.USR_VTMCLH_MAILRC, opt => opt.MapFrom(src => src.EmailRecibos))
                 .ForMember(dest => dest.USR_VTMCLH_ENMAIL, opt => opt.MapFrom(src => src.EnviaMail))
-                .ForMember(dest => dest.USR_VTMCLH_FECANT, opt => opt.MapFrom(src => src.FechaCambioRazonSocial));
+                .ForMember(dest => dest.USR_VTMCLH_FECANT, opt => opt.MapFrom(src => src.FechaCambioRazonSocial))
+                .ReverseMap();
+
+                configuration.CreateMap<Vtmclh, ClienteDTO>()
+                    .ForMember(dest => dest.NumeroCliente, opt => opt.MapFrom(src => src.VtmclhNrocta))
+                    .ForMember(dest => dest.RazonSocial, opt => opt.MapFrom(src => src.VtmclhNombre))
+                    .ForMember(dest => dest.NumeroSubcuenta, opt => opt.MapFrom(src => src.VtmclhNrosub))
+                    .ForMember(dest => dest.DireccionFiscal, opt => opt.MapFrom(src => src.VtmclhDirecc))
+                    .ForMember(dest => dest.Pais, opt => opt.MapFrom(src => src.VtmclhCodpai))
+                    .ForMember(dest => dest.CodigoPostal, opt => opt.MapFrom(src => src.VtmclhCodpos))
+                    .ForMember(dest => dest.SituacionFrenteAlIVA, opt => opt.MapFrom(src => src.VtmclhCndiva))
+                    .ForMember(dest => dest.TipoDocumento, opt => opt.MapFrom(src => src.VtmclhTipdoc))
+                    .ForMember(dest => dest.NumeroDocumento, opt => opt.MapFrom(src => src.VtmclhNrodoc))
+                    .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.VtmclhVnddor))
+                    .ForMember(dest => dest.Cobrador, opt => opt.MapFrom(src => src.VtmclhCobrad))
+                    .ForMember(dest => dest.Provincia, opt => opt.MapFrom(src => src.VtmclhJurisd))
+                    .ForMember(dest => dest.Zona, opt => opt.MapFrom(src => src.VtmclhCodzon))
+                    .ForMember(dest => dest.Actividad, opt => opt.MapFrom(src => src.VtmclhActivd))
+                    .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.VtmclhCatego))
+                    .ForMember(dest => dest.CondicionDePago, opt => opt.MapFrom(src => src.VtmclhCndpag))
+                    .ForMember(dest => dest.ListaPrecios, opt => opt.MapFrom(src => src.VtmclhCndpre))
+                    .ForMember(dest => dest.DireccionEntrega, opt => opt.MapFrom(src => src.VtmclhDirent))
+                    .ForMember(dest => dest.PaisEntrega, opt => opt.MapFrom(src => src.VtmclhPaient))
+                    .ForMember(dest => dest.CodigoPostalEntrega, opt => opt.MapFrom(src => src.VtmclhCodent))
+                    .ForMember(dest => dest.ProvinciaEntrega, opt => opt.MapFrom(src => src.VtmclhJurent))
+                    .ForMember(dest => dest.TipoDocumento1, opt => opt.MapFrom(src => src.VtmclhTipdo1))
+                    .ForMember(dest => dest.TipoDocumento2, opt => opt.MapFrom(src => src.VtmclhNrodo1))
+                    .ForMember(dest => dest.TipoDocumento3, opt => opt.MapFrom(src => src.VtmclhTipdo2))
+                    .ForMember(dest => dest.NumeroDocumento1, opt => opt.MapFrom(src => src.VtmclhNrodo2))
+                    .ForMember(dest => dest.NumeroDocumento2, opt => opt.MapFrom(src => src.VtmclhTipdo3))
+                    .ForMember(dest => dest.NumeroDocumento3, opt => opt.MapFrom(src => src.VtmclhNrodo3))
+                    .ForMember(dest => dest.TipodePersona, opt => opt.MapFrom(src => src.VtmclhFisjur))
+                    .ForMember(dest => dest.ApellidoPaterno, opt => opt.MapFrom(src => src.VtmclhApell1))
+                    .ForMember(dest => dest.ApellidoMaterno, opt => opt.MapFrom(src => src.VtmclhApell2))
+                    .ForMember(dest => dest.PrimerNombre, opt => opt.MapFrom(src => src.VtmclhNomb01))
+                    .ForMember(dest => dest.SegundoNombre, opt => opt.MapFrom(src => src.VtmclhNomb02))
+                    .ForMember(dest => dest.Activadora, opt => opt.MapFrom(src => src.UsrVtmclhCodact))
+                    .ForMember(dest => dest.ModalidadPago, opt => opt.MapFrom(src => src.UsrVtmclhMpago))
+                    .ForMember(dest => dest.EmailFacturas, opt => opt.MapFrom(src => src.UsrVtmclhMailfc))
+                    .ForMember(dest => dest.EmailRecibos, opt => opt.MapFrom(src => src.UsrVtmclhMailrc))
+                    .ForMember(dest => dest.EnviaMail, opt => opt.MapFrom(src => src.UsrVtmclhEnmail))
+                    .ForMember(dest => dest.FechaCambioRazonSocial, opt => opt.MapFrom(src => src.UsrVtmclhFecant))
+                .ReverseMap();
+
+                configuration.CreateMap<Vtmclc, ContactosDTO>()
+                .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.VtmclcCodcon))
+                .ForMember(dest => dest.Puesto, opt => opt.MapFrom(src => src.VtmclcPuesto))
+                .ForMember(dest => dest.Observacion, opt => opt.MapFrom(src => src.VtmclcObserv))
+                .ForMember(dest => dest.Sexo, opt => opt.MapFrom(src => src.VtmclcTipsex))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.VtmclcDireml))
+                .ForMember(dest => dest.Telefono, opt => opt.MapFrom(src => src.VtmclcTelint))
+                .ForMember(dest => dest.Celular, opt => opt.MapFrom(src => src.VtmclcCelula))
+                .ForMember(dest => dest.ReclamoFacturas, opt => opt.MapFrom(src => src.VtmclcRecfac))
+                .ReverseMap();
             }
                 , typeof(Startup));
 

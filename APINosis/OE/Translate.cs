@@ -1,4 +1,6 @@
-﻿using System;
+﻿using APINosis.Helpers;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,11 +12,13 @@ namespace APINosis.OE
     {
         private object oTranslate { get; set; }
         private Type TRType{ get; set; }
-        public Translate()
+        
+
+        public Translate(IConfiguration configuration)
         {
             TRType = Type.GetTypeFromProgID("GRWTranslate.GRWTraducciones");
             oTranslate = Activator.CreateInstance(TRType);
-            TRType.InvokeMember("DatabasePath", BindingFlags.SetProperty, null, oTranslate, new object[] { "C:\\Program Files (x86)\\Softland\\Cliente\\Language\\Languaje.mdb" });
+            TRType.InvokeMember("DatabasePath", BindingFlags.SetProperty, null, oTranslate, new object[] { configuration["PathLanguage"]});
         }
 
         public string traducir(string error)

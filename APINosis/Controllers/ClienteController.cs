@@ -30,5 +30,12 @@ namespace APINosis.Controllers
             return Ok(response);
 
         }
+        
+        [HttpGet]
+        public async Task<ActionResult<List<ClienteDTO>>> Get(string? numeroCliente)
+        {
+            return await Repository.Get(numeroCliente);
+        }
+        
     }
 }

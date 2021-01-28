@@ -45,6 +45,7 @@ namespace APINosis.Models
         public string EmailRecibos { get; set; }
         public string EnviaMail { get; set; }
         public string FechaCambioRazonSocial { get; set; }
+        public List<ContactosDTO> Contactos { get; set; }
 
     }
 }

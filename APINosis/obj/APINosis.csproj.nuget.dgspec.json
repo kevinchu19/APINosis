@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APINosis.csproj": {}
+    "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APiNosis.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APINosis.csproj": {
+    "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APiNosis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APINosis.csproj",
+        "projectUniqueName": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APiNosis.csproj",
         "projectName": "OE",
-        "projectPath": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APINosis.csproj",
+        "projectPath": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\APiNosis.csproj",
         "packagesPath": "C:\\Users\\dattaguest\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\dattaguest\\source\\repos\\APINosis\\APINosis\\obj\\",
         "projectStyle": "PackageReference",

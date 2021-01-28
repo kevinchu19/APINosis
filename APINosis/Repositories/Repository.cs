@@ -1,4 +1,5 @@
-﻿using APINosis.Entities;
+﻿
+using APINosis.Entities;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;

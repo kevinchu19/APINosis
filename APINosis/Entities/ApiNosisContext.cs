@@ -17,15 +17,162 @@ namespace APINosis.Entities
         {
         }
 
-        public virtual DbSet<Vtmclh> Vtmclhs { get; set; }
+        public virtual DbSet<Vtmclc> Vtmclc { get; set; }
+        public virtual DbSet<Vtmclh> Vtmclh { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            modelBuilder.Entity<Vtmclc>(entity =>
+            {
+                entity.HasKey(e => new { e.VtmclcNrocta, e.VtmclcCodcon });
+
+                entity.ToTable("VTMCLC");
+
+                entity.HasOne(e => e.cliente)
+                      .WithMany(c => c.Contactos)
+                      .HasForeignKey(c => c.VtmclcNrocta);
+
+                entity.Property(e => e.VtmclcNrocta)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_NROCTA");
+
+                entity.Property(e => e.VtmclcCodcon)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_CODCON");
+
+                entity.Property(e => e.UsrVtmclcArchiv)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_VTMCLC_ARCHIV");
+
+                entity.Property(e => e.UsrVtmclcClavec).HasColumnName("USR_VTMCLC_CLAVEC");
+
+                entity.Property(e => e.UsrVtmclcFchimp)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_VTMCLC_FCHIMP");
+
+                entity.Property(e => e.UsrVtmclcIdcust)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_VTMCLC_IDCUST");
+
+                entity.Property(e => e.UsrVtmclcNroreg).HasColumnName("USR_VTMCLC_NROREG");
+
+                entity.Property(e => e.VtmclcCelula)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_CELULA");
+
+                entity.Property(e => e.VtmclcCmpver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_CMPVER");
+
+                entity.Property(e => e.VtmclcDebaja)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_DEBAJA")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmclcDireml)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_DIREML");
+
+                entity.Property(e => e.VtmclcFecalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLC_FECALT");
+
+                entity.Property(e => e.VtmclcFecmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLC_FECMOD");
+
+                entity.Property(e => e.VtmclcHormov)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_HORMOV");
+
+                entity.Property(e => e.VtmclcLotori)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_LOTORI");
+
+                entity.Property(e => e.VtmclcLotrec)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_LOTREC");
+
+                entity.Property(e => e.VtmclcLottra)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_LOTTRA");
+
+                entity.Property(e => e.VtmclcModule)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_MODULE");
+
+                entity.Property(e => e.VtmclcOalias)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_OALIAS");
+
+                entity.Property(e => e.VtmclcObserv)
+                    .HasColumnType("text")
+                    .HasColumnName("VTMCLC_OBSERV");
+
+                entity.Property(e => e.VtmclcPuesto)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_PUESTO");
+
+                entity.Property(e => e.VtmclcRecfac)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_RECFAC")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmclcSysver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_SYSVER");
+
+                entity.Property(e => e.VtmclcTelint)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_TELINT");
+
+                entity.Property(e => e.VtmclcTipsex)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_TIPSEX");
+
+                entity.Property(e => e.VtmclcTstamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("VTMCLC_TSTAMP");
+
+                entity.Property(e => e.VtmclcUltopr)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_ULTOPR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmclcUserid)
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLC_USERID");
+            });
+
             modelBuilder.Entity<Vtmclh>(entity =>
             {
+                
                 entity.HasKey(e => e.VtmclhNrocta);
 
                 entity.ToTable("VTMCLH");
@@ -33,6 +180,9 @@ namespace APINosis.Entities
                 entity.HasIndex(e => new { e.VtmclhNrocta, e.VtmclhNombre }, "VTMCLH_SuperFind");
 
                 entity.HasIndex(e => e.VtmclhCobrad, "W_CV_CVRMVHWIZ");
+
+                entity.HasMany(e => e.Contactos)
+                      .WithOne(c => c.cliente);
 
                 entity.Property(e => e.VtmclhNrocta)
                     .HasMaxLength(20)
