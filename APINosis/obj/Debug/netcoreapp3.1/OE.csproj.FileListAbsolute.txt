@@ -129,13 +129,9 @@ C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\zh-Ha
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\alpine-x64\native\libe_sqlite3.so
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\linux-arm\native\libe_sqlite3.so
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\runtimes\linux-arm64\native\libe_sqlite3.so
@@ -164,3 +160,6 @@ C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\Micro
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\dattaguest\source\repos\APINosis\APINosis\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Debug\netcoreapp3.1\OE.csproj.CoreCompileInputs.cache
+C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Debug\netcoreapp3.1\OE.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Debug\netcoreapp3.1\OE.MvcApplicationPartsAssemblyInfo.cache

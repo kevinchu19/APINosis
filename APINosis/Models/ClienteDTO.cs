@@ -7,6 +7,7 @@ namespace APINosis.Models
 {
     public class ClienteDTO
     {
+        public int IdOperacion { get; set; }
         public string NumeroCliente { get; set; }
         public string RazonSocial { get; set; }
         public string NumeroSubcuenta { get; set; }
