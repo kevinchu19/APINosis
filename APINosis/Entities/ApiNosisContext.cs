@@ -967,10 +967,10 @@ namespace APINosis.Entities
                     .HasColumnName("VTMCLH_TRAFCR")
                     .IsFixedLength(true);
 
-                entity.Property(e => e.VtmclhTstamp)
-                    .IsRowVersion()
-                    .IsConcurrencyToken()
-                    .HasColumnName("VTMCLH_TSTAMP");
+                //entity.Property(e => e.VtmclhTstamp)
+                //    .IsRowVersion()
+                //    .IsConcurrencyToken()
+                //    .HasColumnName("VTMCLH_TSTAMP");
 
                 entity.Property(e => e.VtmclhUltopr)
                     .HasMaxLength(1)

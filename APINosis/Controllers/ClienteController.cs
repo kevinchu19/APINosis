@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using APINosis.Entities;
 using APINosis.Helpers;
 using APINosis.Models;
 using APINosis.Repositories;
@@ -29,7 +30,7 @@ namespace APINosis.Controllers
         }
 
         [HttpPut]
-        public ActionResult<List<ClienteResponse>> Put ([FromBody] List<ClienteDTO> clientes)
+        public async Task<ActionResult<List<ClienteResponse>>> Put ([FromBody] List<ClienteDTO> clientes)
         {
             bool hayError = false;
             
@@ -44,16 +45,19 @@ namespace APINosis.Controllers
             foreach (ClienteDTO cliente in clientes)
             {
                 Logger.Information($"Se recibio actualizacion de datos del cliente{cliente.NumeroCliente} - {cliente.RazonSocial} - Id de operacion: {cliente.IdOperacion}");
+                
+                int idOperacion = cliente.IdOperacion;
 
                 if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente)); };
 
                 if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta)); }
 
-                VtmclhDTO clienteFormat = Mapper.Map<ClienteDTO, VtmclhDTO>(cliente);
+                Vtmclh clienteFormat = Mapper.Map<ClienteDTO, Vtmclh>(cliente);
 
-                ClienteResponse response = Repository.GraboCliente(clienteFormat, "OPEN");
+                //ClienteResponse response = Repository.GraboCliente(clienteFormat, "OPEN");
+                ClienteResponse response = await Repository.ActualizoCliente(clienteFormat);
 
-                response.IdOperacion = cliente.IdOperacion;
+                response.IdOperacion = idOperacion;
                 if (response.Estado != 200)
                 {
                     hayError = true;
@@ -79,6 +83,8 @@ namespace APINosis.Controllers
         {
             Logger.Information($"Se recibio posteo de nuevo cliente{cliente.NumeroCliente} - {cliente.RazonSocial} - Id de operacion: {cliente.IdOperacion}");
 
+            int idOperacion = cliente.IdOperacion;
+            
             if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente));};
                 
             if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta));}
@@ -92,7 +98,7 @@ namespace APINosis.Controllers
 
             ClienteResponse response = Repository.GraboCliente(clienteFormat, "NEW");
 
-            response.IdOperacion = cliente.IdOperacion;
+            response.IdOperacion = idOperacion;
 
             if (response.Estado != 200)
             {

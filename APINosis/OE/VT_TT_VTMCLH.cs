@@ -39,6 +39,7 @@ namespace APINosis.OE
         {
             object[] objetoSoftland = new object[] { "VTMCLH", 4, tipoOperacion};
             oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, oCompany, objetoSoftland);
+                
         }
 
         public void asignoaTM<T>(string table, string field, T valor, int deepnessLevel)

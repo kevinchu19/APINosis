@@ -164,7 +164,7 @@ namespace APINosis.Entities
         public string VtmclhHormov { get; set; }
         public string VtmclhModule { get; set; }
         public string VtmclhOalias { get; set; }
-        public byte[] VtmclhTstamp { get; set; }
+        //public byte[] VtmclhTstamp { get; set; }
         public string VtmclhLottra { get; set; }
         public string VtmclhLotrec { get; set; }
         public string VtmclhLotori { get; set; }

@@ -97,6 +97,126 @@ namespace APINosis.Repositories
             return new ClienteResponse("OK", 0, cliente);
         }
 
+        public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
+        {
+            Vtmclh clienteAActualizar = await Context.Vtmclh
+                                        .Where(c => c.VtmclhNrocta == cliente.VtmclhNrocta)
+                                        .FirstOrDefaultAsync();
+            if (clienteAActualizar == null)
+            {
+                return new ClienteResponse("Bad Request", 0, $"El cliente {cliente.VtmclhNrocta} no existe");
+            }
+
+
+            clienteAActualizar.VtmclhNrocta = cliente.VtmclhNrocta;
+            clienteAActualizar.VtmclhNombre = cliente.VtmclhNombre;
+            clienteAActualizar.VtmclhNrosub = cliente.VtmclhNrosub;
+            clienteAActualizar.VtmclhDirecc = cliente.VtmclhDirecc;
+            clienteAActualizar.VtmclhCodpai = cliente.VtmclhCodpai;
+            clienteAActualizar.VtmclhCodpos = cliente.VtmclhCodpos;
+            clienteAActualizar.VtmclhMunicp = cliente.VtmclhMunicp;
+            clienteAActualizar.VtmclhCndiva = cliente.VtmclhCndiva;
+            clienteAActualizar.VtmclhTipdoc = cliente.VtmclhTipdoc;
+            clienteAActualizar.VtmclhNrodoc = cliente.VtmclhNrodoc;
+            clienteAActualizar.VtmclhVnddor = cliente.VtmclhVnddor;
+            clienteAActualizar.VtmclhCobrad = cliente.VtmclhCobrad;
+            clienteAActualizar.VtmclhJurisd = cliente.VtmclhJurisd;
+            clienteAActualizar.VtmclhCodzon = cliente.VtmclhCodzon;
+            clienteAActualizar.VtmclhCatego = cliente.VtmclhCatego;
+            clienteAActualizar.VtmclhCndpag = cliente.VtmclhCndpag;
+            clienteAActualizar.VtmclhCndpre = cliente.VtmclhCndpre;
+            clienteAActualizar.VtmclhDirent = cliente.VtmclhDirent;
+            clienteAActualizar.VtmclhPaient = cliente.VtmclhPaient;
+            clienteAActualizar.VtmclhCodent = cliente.VtmclhCodent;
+            clienteAActualizar.VtmclhJurent = cliente.VtmclhJurent;
+            clienteAActualizar.VtmclhFisjur = cliente.VtmclhFisjur;
+            clienteAActualizar.UsrVtmclhCodact = cliente.UsrVtmclhCodact;
+            clienteAActualizar.UsrVtmclhMpago = cliente.UsrVtmclhMpago;
+            clienteAActualizar.VtmclhFecmod = cliente.VtmclhFecmod;
+            clienteAActualizar.VtmclhUserid = cliente.VtmclhUserid;
+            clienteAActualizar.VtmclhUltopr = cliente.VtmclhUltopr;
+            clienteAActualizar.VtmclhFecmod = DateTime.Now;
+            clienteAActualizar.VtmclhUltopr= "M";
+            clienteAActualizar.VtmclhUserid = "API";
+
+            try
+            {
+                await Context.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+                return new ClienteResponse("Bad Request", 0, e.Message);
+            }
+
+            foreach (Vtmclc contacto in cliente.Contactos)
+            {
+                Vtmclc contactoAActualizar = await Context.Vtmclc
+                                        .Where(c => c.VtmclcNrocta == cliente.VtmclhNrocta && c.VtmclcCodcon == contacto.VtmclcCodcon)
+                                        .FirstOrDefaultAsync();
+                if (contactoAActualizar == null)
+                {
+                    Vtmclc nuevoContacto = new Vtmclc
+                    {
+                        VtmclcNrocta = cliente.VtmclhNrocta,
+                        VtmclcCodcon = contacto.VtmclcCodcon,
+                        VtmclcPuesto = contacto.VtmclcPuesto,
+                        VtmclcObserv = contacto.VtmclcObserv,
+                        VtmclcTipsex = contacto.VtmclcTipsex,
+                        VtmclcDireml = contacto.VtmclcDireml,
+                        VtmclcTelint = contacto.VtmclcTelint,
+                        VtmclcCelula = contacto.VtmclcCelula,
+                        VtmclcRecfac = contacto.VtmclcRecfac,
+                        VtmclcFecalt = DateTime.Now,
+                        VtmclcFecmod = DateTime.Now,
+                        VtmclcDebaja = "N",
+                        VtmclcOalias = "VTMCLC",
+                        VtmclcUltopr = "M",
+                        VtmclcUserid = "API"
+                    };
+
+                    Context.Vtmclc.Add(nuevoContacto);
+                    
+                    try
+                    {
+                        await Context.SaveChangesAsync();
+
+                    }
+                    catch (Exception e)
+                    {
+                        return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
+                    }
+                }
+                else
+                {
+                    contactoAActualizar.VtmclcPuesto = contacto.VtmclcPuesto;
+                    contactoAActualizar.VtmclcObserv = contacto.VtmclcObserv;
+                    contactoAActualizar.VtmclcTipsex = contacto.VtmclcTipsex;
+                    contactoAActualizar.VtmclcDireml = contacto.VtmclcDireml;
+                    contactoAActualizar.VtmclcTelint = contacto.VtmclcTelint;
+                    contactoAActualizar.VtmclcCelula = contacto.VtmclcCelula;
+                    contactoAActualizar.VtmclcRecfac = contacto.VtmclcRecfac;
+                    contactoAActualizar.VtmclcFecmod = DateTime.Now;
+                    contactoAActualizar.VtmclcUltopr = "M";
+                    contactoAActualizar.VtmclcUserid = "API";
+
+                    try
+                    {
+                        await Context.SaveChangesAsync();
+
+                    }
+                    catch (Exception e)
+                    {
+                        return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
+                    }
+                }
+            }
+            
+            
+            return new ClienteResponse("OK", 0);
+
+        }
+
         private async void GeneroCodigoPostal(VtmclhDTO cliente)
         {
             Grtpac codigoPostal = await Context.Grtpac

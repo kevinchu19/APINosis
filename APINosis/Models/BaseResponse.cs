@@ -12,7 +12,15 @@ namespace OE.Models
         public int Estado { get; set; }
         public string Titulo { get; set; }
         public string Mensaje{ get; set; }
-        
+
+        protected BaseResponse(string titulo, int idOperacion)
+        {
+            Estado = 200;
+            Mensaje = "Cliente actualizado con éxito";
+            Titulo = titulo;
+            IdOperacion = idOperacion;
+        }
+
         protected BaseResponse(string titulo, int idOperacion, T resource)
         {
             Estado  = 200;

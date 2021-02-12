@@ -8,8 +8,11 @@ namespace APINosis.Models
 {
     public class ClienteResponse : BaseResponse<VtmclhDTO>
     {
+
+        public ClienteResponse(string titulo, int idOperacion) : base(titulo, idOperacion) { }
         public ClienteResponse(string titulo, int idOperacion, VtmclhDTO resource) : base(titulo,idOperacion,resource) {}
         public ClienteResponse(string titulo, int idOperacion, string message) : base(titulo, idOperacion, message) { }
+
         
     }
 }
