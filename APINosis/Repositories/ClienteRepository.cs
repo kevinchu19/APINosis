@@ -108,33 +108,34 @@ namespace APINosis.Repositories
             }
 
 
-            clienteAActualizar.VtmclhNrocta = cliente.VtmclhNrocta;
-            clienteAActualizar.VtmclhNombre = cliente.VtmclhNombre;
-            clienteAActualizar.VtmclhNrosub = cliente.VtmclhNrosub;
-            clienteAActualizar.VtmclhDirecc = cliente.VtmclhDirecc;
-            clienteAActualizar.VtmclhCodpai = cliente.VtmclhCodpai;
-            clienteAActualizar.VtmclhCodpos = cliente.VtmclhCodpos;
-            clienteAActualizar.VtmclhMunicp = cliente.VtmclhMunicp;
-            clienteAActualizar.VtmclhCndiva = cliente.VtmclhCndiva;
-            clienteAActualizar.VtmclhTipdoc = cliente.VtmclhTipdoc;
-            clienteAActualizar.VtmclhNrodoc = cliente.VtmclhNrodoc;
-            clienteAActualizar.VtmclhVnddor = cliente.VtmclhVnddor;
-            clienteAActualizar.VtmclhCobrad = cliente.VtmclhCobrad;
-            clienteAActualizar.VtmclhJurisd = cliente.VtmclhJurisd;
-            clienteAActualizar.VtmclhCodzon = cliente.VtmclhCodzon;
-            clienteAActualizar.VtmclhCatego = cliente.VtmclhCatego;
-            clienteAActualizar.VtmclhCndpag = cliente.VtmclhCndpag;
-            clienteAActualizar.VtmclhCndpre = cliente.VtmclhCndpre;
-            clienteAActualizar.VtmclhDirent = cliente.VtmclhDirent;
-            clienteAActualizar.VtmclhPaient = cliente.VtmclhPaient;
-            clienteAActualizar.VtmclhCodent = cliente.VtmclhCodent;
-            clienteAActualizar.VtmclhJurent = cliente.VtmclhJurent;
-            clienteAActualizar.VtmclhFisjur = cliente.VtmclhFisjur;
-            clienteAActualizar.UsrVtmclhCodact = cliente.UsrVtmclhCodact;
-            clienteAActualizar.UsrVtmclhMpago = cliente.UsrVtmclhMpago;
-            clienteAActualizar.VtmclhFecmod = cliente.VtmclhFecmod;
-            clienteAActualizar.VtmclhUserid = cliente.VtmclhUserid;
-            clienteAActualizar.VtmclhUltopr = cliente.VtmclhUltopr;
+            Type typeCliente = cliente.GetType();
+
+            System.Reflection.PropertyInfo[] listaPropiedades = typeCliente.GetProperties();
+
+            foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+            {
+                var value = propiedad.GetValue(cliente, null);
+
+                if (propiedad.PropertyType == typeof(string))
+                {
+                    if ((string)value != "null" && (string)value != "NULL" &&
+                            value != null && propiedad.Name != "VtmclhNrocta" &&
+                            propiedad.Name != "Contactos")
+                    {
+                        if (propiedad.Name == "VtmclhFisjur")
+                        {
+                            if ((string)value != "J" && (string)value != "F")
+                            {
+                                return new ClienteResponse("Bad Request", 0, $"El campo Tipo de Persona tiene un valor inválido");
+                            }
+                        }
+
+                        typeCliente.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, clienteAActualizar, new object[] { value });
+                    }
+                }
+
+            }
+
             clienteAActualizar.VtmclhFecmod = DateTime.Now;
             clienteAActualizar.VtmclhUltopr= "M";
             clienteAActualizar.VtmclhUserid = "API";
@@ -146,73 +147,113 @@ namespace APINosis.Repositories
             }
             catch (Exception e)
             {
-                return new ClienteResponse("Bad Request", 0, e.Message);
+                return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
             }
 
             foreach (Vtmclc contacto in cliente.Contactos)
             {
-                Vtmclc contactoAActualizar = await Context.Vtmclc
-                                        .Where(c => c.VtmclcNrocta == cliente.VtmclhNrocta && c.VtmclcCodcon == contacto.VtmclcCodcon)
-                                        .FirstOrDefaultAsync();
-                if (contactoAActualizar == null)
+                contacto.VtmclcNrocta = cliente.VtmclhNrocta;
+                ClienteResponse response = await this.actualizoContacto(contacto);
+                if (response.Estado != 200)
                 {
-                    Vtmclc nuevoContacto = new Vtmclc
-                    {
-                        VtmclcNrocta = cliente.VtmclhNrocta,
-                        VtmclcCodcon = contacto.VtmclcCodcon,
-                        VtmclcPuesto = contacto.VtmclcPuesto,
-                        VtmclcObserv = contacto.VtmclcObserv,
-                        VtmclcTipsex = contacto.VtmclcTipsex,
-                        VtmclcDireml = contacto.VtmclcDireml,
-                        VtmclcTelint = contacto.VtmclcTelint,
-                        VtmclcCelula = contacto.VtmclcCelula,
-                        VtmclcRecfac = contacto.VtmclcRecfac,
-                        VtmclcFecalt = DateTime.Now,
-                        VtmclcFecmod = DateTime.Now,
-                        VtmclcDebaja = "N",
-                        VtmclcOalias = "VTMCLC",
-                        VtmclcUltopr = "M",
-                        VtmclcUserid = "API"
-                    };
-
-                    Context.Vtmclc.Add(nuevoContacto);
-                    
-                    try
-                    {
-                        await Context.SaveChangesAsync();
-
-                    }
-                    catch (Exception e)
-                    {
-                        return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
-                    }
-                }
-                else
-                {
-                    contactoAActualizar.VtmclcPuesto = contacto.VtmclcPuesto;
-                    contactoAActualizar.VtmclcObserv = contacto.VtmclcObserv;
-                    contactoAActualizar.VtmclcTipsex = contacto.VtmclcTipsex;
-                    contactoAActualizar.VtmclcDireml = contacto.VtmclcDireml;
-                    contactoAActualizar.VtmclcTelint = contacto.VtmclcTelint;
-                    contactoAActualizar.VtmclcCelula = contacto.VtmclcCelula;
-                    contactoAActualizar.VtmclcRecfac = contacto.VtmclcRecfac;
-                    contactoAActualizar.VtmclcFecmod = DateTime.Now;
-                    contactoAActualizar.VtmclcUltopr = "M";
-                    contactoAActualizar.VtmclcUserid = "API";
-
-                    try
-                    {
-                        await Context.SaveChangesAsync();
-
-                    }
-                    catch (Exception e)
-                    {
-                        return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
-                    }
+                    return response;
                 }
             }
             
             
+            return new ClienteResponse("OK", 0);
+
+        }
+
+        private async Task<ClienteResponse> actualizoContacto(Vtmclc contacto)
+        {
+            Vtmclc contactoAActualizar = await Context.Vtmclc
+                                        .Where(c => c.VtmclcNrocta == contacto.VtmclcNrocta && c.VtmclcCodcon == contacto.VtmclcCodcon)
+                                        .FirstOrDefaultAsync();
+            if (contactoAActualizar == null)
+            {
+                Vtmclc nuevoContacto = new Vtmclc{};
+
+                Type typeContacto = contacto.GetType();
+
+                System.Reflection.PropertyInfo[] listaPropiedades = typeContacto.GetProperties();
+
+                foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+                {
+                    string value = (string)propiedad.GetValue(contacto, null);
+                    if (value != "null" && value != "NULL" && value != null && propiedad.Name != "VtmclcNrocta" && propiedad.Name != "VtmclcCodcon")
+                    {
+                        typeContacto.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoContacto, new object[] { value });
+                    }
+
+                }
+
+                nuevoContacto.VtmclcFecalt = DateTime.Now;
+                nuevoContacto.VtmclcFecmod = DateTime.Now;
+                nuevoContacto.VtmclcDebaja = "N";
+                nuevoContacto.VtmclcOalias = "VTMCLC";
+                nuevoContacto.VtmclcUltopr = "M";
+                nuevoContacto.VtmclcUserid = "API";
+                
+                Context.Vtmclc.Add(nuevoContacto);
+
+                try
+                {
+                    await Context.SaveChangesAsync();
+
+                }
+                catch (Exception e)
+                {
+                    return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
+                }
+            }
+            else
+            {
+                Type typeContacto = contacto.GetType();
+
+                System.Reflection.PropertyInfo[] listaPropiedades = typeContacto.GetProperties();
+
+                foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+                {
+                    string value = (string)propiedad.GetValue(contacto, null);
+                    if (value != "null" && value != "NULL" && value != null && propiedad.Name != "VtmclcNrocta" && propiedad.Name != "VtmclcCodcon")
+                    {
+
+                        if (propiedad.Name == "VtmclcTipsex") { 
+                        
+                            if ((string)value != "M" && (string)value != "F")
+                            {
+                                return new ClienteResponse("Bad Request", 0, $"Contacto {contacto.VtmclcCodcon}: El campo Sexo tiene un valor inválido");
+                            }
+                        }
+
+                        if (propiedad.Name == "VtmclhRecfac") { 
+
+                            if ((string)value != "S" && (string)value != "N")
+                            {
+                                return new ClienteResponse("Bad Request", 0, $"Contacto {contacto.VtmclcCodcon}: El campo ReclamoFacturas tiene un valor inválido");
+                            }
+                        }
+                        
+                        typeContacto.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contactoAActualizar, new object[] { value });
+                    }
+
+                }
+
+                contactoAActualizar.VtmclcFecmod = DateTime.Now;
+                contactoAActualizar.VtmclcUltopr = "M";
+                contactoAActualizar.VtmclcUserid = "API";
+
+                try
+                {
+                    await Context.SaveChangesAsync();
+
+                }
+                catch (Exception e)
+                {
+                    return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
+                }
+            }
             return new ClienteResponse("OK", 0);
 
         }

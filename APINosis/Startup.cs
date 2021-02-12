@@ -156,7 +156,8 @@ namespace APINosis
                 SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddDbContext<ApiNosisContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")).EnableSensitiveDataLogging());
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")).EnableSensitiveDataLogging());
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
 
             services.AddControllers();
             services.AddCors();
