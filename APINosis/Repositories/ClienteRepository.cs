@@ -44,20 +44,42 @@ namespace APINosis.Repositories
 
 
 
-        public ClienteResponse GraboCliente(VtmclhDTO cliente)
+        public ClienteResponse GraboCliente(VtmclhDTO cliente, string tipoOperacion)
         {
+
+
+            GeneroCodigoPostal(cliente);
+
+            oVTMCLH.instancioObjeto(tipoOperacion);
+
             Type typeCliente = cliente.GetType();
 
             System.Reflection.PropertyInfo[] listaPropiedades = typeCliente.GetProperties();
 
             foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
             {
-                oVTMCLH.asignoValor("VTMCLH", propiedad.Name, (string)propiedad.GetValue(cliente, null), 1);
+                if (propiedad.PropertyType == typeof(string))
+                {
+                    oVTMCLH.asignoaTM("VTMCLH", propiedad.Name, (string)propiedad.GetValue(cliente, null), 1);
+                }
+
+                if (propiedad.PropertyType == typeof(List<VtmclcDTO>))
+                {
+                    oVTMCLH.limpioGrilla("VTMCLC");
+                    foreach (VtmclcDTO contacto in cliente.Contactos)
+                    {
+                        oVTMCLH.asignoaTM("VTMCLC", "", (VtmclcDTO)contacto, 2);
+                    }
+                }
+
+                
             }
 
-            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_CODCRD", "NA", 1);
-            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_ZONENT", "NA", 1);
-            oVTMCLH.asignoValor("VTMCLH", "VTMCLH_CODEXP", "2", 1);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODCRD", "NA", 1);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_ZONENT", "NA", 1);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODEXP", "2", 1);
+
+            
 
             Save PerformedOperation = oVTMCLH.save();
 
@@ -75,6 +97,32 @@ namespace APINosis.Repositories
             return new ClienteResponse("OK", 0, cliente);
         }
 
+        private async void GeneroCodigoPostal(VtmclhDTO cliente)
+        {
+            Grtpac codigoPostal = await Context.Grtpac
+                                        .Where(c => c.GrtpacCodpai == cliente.VTMCLH_CODPAI && c.GrtpacCodpos == cliente.VTMCLH_CODPOS)
+                                        .FirstOrDefaultAsync();
+            if (codigoPostal == null)
+            {
+                Grtpac newCodigoPostal = new Grtpac
+                {
+                    GrtpacCodpai = cliente.VTMCLH_CODPAI,
+                    GrtpacCodpos = cliente.VTMCLH_CODPOS,
+                    GrtpacDescrp = "Generado Automáticamente",
+                    GrtpacPaipro = cliente.VTMCLH_CODPAI,
+                    GrtpacCodpro = cliente.VTMCLH_JURISD,
+                    GrtpacFecalt = DateTime.Now,
+                    GrtpacFecmod = DateTime.Now,
+                    GrtpacUltopr = "A",
+                    GrtpacOalias = "GRTPAC",
+                    GrtpacDebaja = "N",
+                    GrtpacUserid = "API-CRM"
+                };
+                await Context.Grtpac.AddAsync(newCodigoPostal);
+
+                await Context.SaveChangesAsync();
+            }
+        }
     }
 }
 

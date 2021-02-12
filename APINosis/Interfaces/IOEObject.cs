@@ -18,7 +18,13 @@ namespace APINosis.Interfaces
             };
         }
 
-        public void asignoValor(string table, string field, string value, int deepnessLevel)
+        public void asignoaTM<T>(string table, string field, T value, int deepnessLevel)
+        {
+
+        }
+
+
+        public void instancioObjeto(string tipoOperacion)
         {
 
         }
@@ -27,5 +33,15 @@ namespace APINosis.Interfaces
         {
 
         }
+
+        public void limpioGrilla(string table)
+        {
+
+        }
+        private void resuelvoValor(dynamic oField, object value)
+        {
+
+        }
+
     }
 }

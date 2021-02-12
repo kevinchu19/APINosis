@@ -135,6 +135,17 @@ namespace APINosis
                 .ForMember(dest => dest.Celular, opt => opt.MapFrom(src => src.VtmclcCelula))
                 .ForMember(dest => dest.ReclamoFacturas, opt => opt.MapFrom(src => src.VtmclcRecfac))
                 .ReverseMap();
+
+                configuration.CreateMap<ContactosDTO, VtmclcDTO>()
+                .ForMember(dest => dest.VTMCLC_CODCON, opt => opt.MapFrom(src => src.Nombre))
+                .ForMember(dest => dest.VTMCLC_PUESTO, opt => opt.MapFrom(src => src.Puesto))
+                .ForMember(dest => dest.VTMCLC_OBSERV, opt => opt.MapFrom(src => src.Observacion))
+                .ForMember(dest => dest.VTMCLC_TIPSEX, opt => opt.MapFrom(src => src.Sexo))
+                .ForMember(dest => dest.VTMCLC_DIREML, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.VTMCLC_TELINT, opt => opt.MapFrom(src => src.Telefono))
+                .ForMember(dest => dest.VTMCLC_CELULA, opt => opt.MapFrom(src => src.Celular))
+                .ForMember(dest => dest.VTMCLC_RECFAC, opt => opt.MapFrom(src => src.ReclamoFacturas))
+                .ReverseMap();
             }
                 , typeof(Startup));
 

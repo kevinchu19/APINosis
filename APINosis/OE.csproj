@@ -5,6 +5,7 @@
     <AssemblyName>OE</AssemblyName>
     <RootNamespace>OE</RootNamespace>
     <UserSecretsId>21ea159e-a19f-413b-a8e0-89b8bbde803a</UserSecretsId>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +28,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewEntities\" />
   </ItemGroup>
 
 

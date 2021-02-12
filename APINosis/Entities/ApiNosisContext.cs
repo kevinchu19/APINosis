@@ -19,7 +19,7 @@ namespace APINosis.Entities
 
         public virtual DbSet<Vtmclc> Vtmclc { get; set; }
         public virtual DbSet<Vtmclh> Vtmclh { get; set; }
-
+        public virtual DbSet<Grtpac> Grtpac { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -994,6 +994,116 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("VTMCLH_ZONENT");
             });
+
+
+            modelBuilder.Entity<Grtpac>(entity =>
+            {
+                entity.HasKey(e => new { e.GrtpacCodpai, e.GrtpacCodpos });
+
+                entity.ToTable("GRTPAC");
+
+                entity.Property(e => e.GrtpacCodpai)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_CODPAI");
+
+                entity.Property(e => e.GrtpacCodpos)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_CODPOS");
+
+                entity.Property(e => e.GrtpacCmpver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_CMPVER");
+
+                entity.Property(e => e.GrtpacCodpro)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_CODPRO");
+
+                entity.Property(e => e.GrtpacDebaja)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_DEBAJA")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.GrtpacDescrp)
+                    .IsRequired()
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_DESCRP");
+
+                entity.Property(e => e.GrtpacFecalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("GRTPAC_FECALT");
+
+                entity.Property(e => e.GrtpacFecmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("GRTPAC_FECMOD");
+
+                entity.Property(e => e.GrtpacHormov)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_HORMOV");
+
+                entity.Property(e => e.GrtpacJurisd)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_JURISD");
+
+                entity.Property(e => e.GrtpacLotori)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_LOTORI");
+
+                entity.Property(e => e.GrtpacLotrec)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_LOTREC");
+
+                entity.Property(e => e.GrtpacLottra)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_LOTTRA");
+
+                entity.Property(e => e.GrtpacModule)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_MODULE");
+
+                entity.Property(e => e.GrtpacOalias)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_OALIAS");
+
+                entity.Property(e => e.GrtpacPaipro)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_PAIPRO");
+
+                entity.Property(e => e.GrtpacSysver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_SYSVER");
+
+                entity.Property(e => e.GrtpacTstamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("GRTPAC_TSTAMP");
+
+                entity.Property(e => e.GrtpacUltopr)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_ULTOPR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.GrtpacUserid)
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
+                    .HasColumnName("GRTPAC_USERID");
+            });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

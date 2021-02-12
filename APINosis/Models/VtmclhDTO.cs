@@ -46,6 +46,6 @@ namespace APINosis.Models
         public string USR_VTMCLH_MAILRC { get; set; }
         public string USR_VTMCLH_ENMAIL { get; set; }
         public string USR_VTMCLH_FECANT { get; set; }
-
+        public List<VtmclcDTO> Contactos { get; set; }
     }
 }

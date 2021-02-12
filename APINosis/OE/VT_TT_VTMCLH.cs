@@ -32,18 +32,19 @@ namespace APINosis.OE
 
             oApplication = OEType.InvokeMember("GetApplication", BindingFlags.InvokeMethod, null, OEInst, userPassword);
             oCompany = OEType.InvokeMember("Companies", BindingFlags.GetProperty, null, oApplication, company);
-            object[] objetoSoftland = new object[] { "VTMCLH", 4, "NEW" };
+         
+        }
+
+        public void instancioObjeto(string tipoOperacion)
+        {
+            object[] objetoSoftland = new object[] { "VTMCLH", 4, tipoOperacion};
             oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, oCompany, objetoSoftland);
         }
 
-        public void instancioObjeto(string user, string password, string companyName)
+        public void asignoaTM<T>(string table, string field, T valor, int deepnessLevel)
         {
-            
-        }
+            object value = new object();
 
-        public void asignoValor(string table, string field, string value, int deepnessLevel)
-        {
-            
             oRow = null;
 
             oTable = OEType.InvokeMember("Table", BindingFlags.GetProperty, null, oInstance, null);
@@ -57,35 +58,49 @@ namespace APINosis.OE
                 dynamic oTableGrid = OEType.InvokeMember("Tables", BindingFlags.GetProperty, null, oTableHeader, new object[] { table });
                 dynamic oRows = OEType.InvokeMember("Rows", BindingFlags.GetProperty, null, oTableGrid, null);
                 dynamic count = OEType.InvokeMember("Count", BindingFlags.GetProperty, null, oRows, null);
+                
                 oRow = OEType.InvokeMember("Add", BindingFlags.InvokeMethod, null, oRows, new object[] { (int)count + 1 });
             }
 
-            oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
 
-            if (value != "null" && value != "NULL" && value != null)
+            switch (valor)
             {
-                try
-                {
-                    if ((bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null) == false)
+                case string:
+                    value = (string)(object)valor;
+                    oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
+                    resuelvoValor(oField, value);
+
+                    break;
+
+                case VtmclcDTO:
+                    VtmclcDTO contacto = (VtmclcDTO)(object) valor;
+                    Type typeContacto = contacto.GetType();
+
+                    System.Reflection.PropertyInfo[] listaPropiedades = typeContacto.GetProperties();
+
+                    foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
                     {
-                        if ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null) == 8)
-                        {
-                            DateTime dateValue = DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                            value = dateValue.ToString("yyyyMMdd");
-                        }
+                        oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { propiedad.Name });
+                        value = (string)propiedad.GetValue(contacto, null);
+                        resuelvoValor(oField, value);
+                    }
 
-                        OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                    break;
 
-                    };
-
-                }
-                catch (Exception e)
-                {
-                    throw new BadRequestException($"Error al completar el campo {field} con el valor {value}: {e.InnerException.Message}");
-                }
+                default:
+                    break;
             }
-            
 
+
+        }
+
+        public void limpioGrilla(string table)
+        {
+            dynamic oTableHeader = OEType.InvokeMember("Rows", BindingFlags.GetProperty, null, oTable, new object[] { 1 });
+            dynamic oTableGrid = OEType.InvokeMember("Tables", BindingFlags.GetProperty, null, oTableHeader, new object[] { table });
+            dynamic oRows = OEType.InvokeMember("Rows", BindingFlags.GetProperty, null, oTableGrid, null);
+            //Limpio grilla
+            OEType.InvokeMember("Clear", BindingFlags.InvokeMethod, null, oRows, null);
         }
 
         public void closeObjectInstance()
@@ -131,5 +146,32 @@ namespace APINosis.OE
                     
 
         }
+
+        private void resuelvoValor(dynamic oField, object value)
+        {
+            if ((string)value != "null" && (string)value != "NULL" && value != null)
+            {
+                try
+                {
+                    if ((bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null) == false)
+                    {
+                        if ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null) == 8)
+                        {
+                            DateTime dateValue = DateTime.ParseExact((string)value, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                            value = dateValue.ToString("yyyyMMdd");
+                        }
+
+                        OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+
+                    };
+
+                }
+                catch (Exception e)
+                {
+                    throw new BadRequestException($"Error al completar el campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} con el valor {value}: {e.InnerException.Message}");
+                }
+            }
+        }
+
     }
 }
