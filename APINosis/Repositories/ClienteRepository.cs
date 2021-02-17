@@ -181,13 +181,14 @@ namespace APINosis.Repositories
                 foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
                 {
                     string value = (string)propiedad.GetValue(contacto, null);
-                    if (value != "null" && value != "NULL" && value != null && propiedad.Name != "VtmclcNrocta" && propiedad.Name != "VtmclcCodcon")
+                    if (value != "null" && value != "NULL" && value != null )
                     {
                         typeContacto.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoContacto, new object[] { value });
                     }
 
                 }
 
+                
                 nuevoContacto.VtmclcFecalt = DateTime.Now;
                 nuevoContacto.VtmclcFecmod = DateTime.Now;
                 nuevoContacto.VtmclcDebaja = "N";
