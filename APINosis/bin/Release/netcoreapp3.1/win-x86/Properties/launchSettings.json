@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:51026",
+      "applicationUrl": "http://localhost:51001",
       "sslPort": 44386
     }
   },
@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "ancmHostingModel": "OutOfProcess",
-      "use64Bit": true
+      "use64Bit": false
     },
     "APINosis": {
       "commandName": "Project",

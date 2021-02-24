@@ -144,3 +144,4 @@ C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Release\netcoreapp3.1\win
 C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Release\netcoreapp3.1\win-x86\OE.dll
 C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Release\netcoreapp3.1\win-x86\OE.pdb
 C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Release\netcoreapp3.1\win-x86\OE.genruntimeconfig.cache
+C:\Users\dattaguest\source\repos\APINosis\APINosis\obj\Release\netcoreapp3.1\win-x86\OE.csprojAssemblyReference.cache

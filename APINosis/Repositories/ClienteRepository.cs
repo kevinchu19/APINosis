@@ -44,11 +44,24 @@ namespace APINosis.Repositories
 
 
 
-        public ClienteResponse GraboCliente(VtmclhDTO cliente, string tipoOperacion)
+        public async Task<ClienteResponse> GraboCliente(VtmclhDTO cliente, string tipoOperacion)
         {
 
+            string errorAltaCodigoPostal = "";
+            
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.VTMCLH_CODPAI, cliente.VTMCLH_CODPOS, cliente.VTMCLH_JURISD);
 
-            GeneroCodigoPostal(cliente);
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
+            
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.VTMCLH_PAIENT, cliente.VTMCLH_CODENT, cliente.VTMCLH_JURENT);
+            
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
 
             oVTMCLH.instancioObjeto(tipoOperacion);
 
@@ -99,6 +112,23 @@ namespace APINosis.Repositories
 
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
         {
+            string errorAltaCodigoPostal = "";
+
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.VtmclhCodpai, cliente.VtmclhCodpos, cliente.VtmclhJurisd);
+
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
+
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.VtmclhPaient, cliente.VtmclhCodent, cliente.VtmclhJurent);
+
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
+
+
             Vtmclh clienteAActualizar = await Context.Vtmclh
                                         .Where(c => c.VtmclhNrocta == cliente.VtmclhNrocta)
                                         .FirstOrDefaultAsync();
@@ -106,7 +136,6 @@ namespace APINosis.Repositories
             {
                 return new ClienteResponse("Bad Request", 0, $"El cliente {cliente.VtmclhNrocta} no existe");
             }
-
 
             Type typeCliente = cliente.GetType();
 
@@ -259,20 +288,20 @@ namespace APINosis.Repositories
 
         }
 
-        private async void GeneroCodigoPostal(VtmclhDTO cliente)
+        private async Task<string> GeneroCodigoPostal(string pais, string codpos, string jurisdiccion)
         {
             Grtpac codigoPostal = await Context.Grtpac
-                                        .Where(c => c.GrtpacCodpai == cliente.VTMCLH_CODPAI && c.GrtpacCodpos == cliente.VTMCLH_CODPOS)
+                                        .Where(c => c.GrtpacCodpai == pais && c.GrtpacCodpos == codpos)
                                         .FirstOrDefaultAsync();
             if (codigoPostal == null)
             {
                 Grtpac newCodigoPostal = new Grtpac
                 {
-                    GrtpacCodpai = cliente.VTMCLH_CODPAI,
-                    GrtpacCodpos = cliente.VTMCLH_CODPOS,
+                    GrtpacCodpai = pais,
+                    GrtpacCodpos = codpos,
                     GrtpacDescrp = "Generado Automáticamente",
-                    GrtpacPaipro = cliente.VTMCLH_CODPAI,
-                    GrtpacCodpro = cliente.VTMCLH_JURISD,
+                    GrtpacPaipro = pais,
+                    GrtpacCodpro = jurisdiccion,
                     GrtpacFecalt = DateTime.Now,
                     GrtpacFecmod = DateTime.Now,
                     GrtpacUltopr = "A",
@@ -281,9 +310,17 @@ namespace APINosis.Repositories
                     GrtpacUserid = "API-CRM"
                 };
                 await Context.Grtpac.AddAsync(newCodigoPostal);
-
-                await Context.SaveChangesAsync();
+                try
+                {
+                    await Context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return $"Error al generar codigo postal {newCodigoPostal.GrtpacCodpos}: {e.InnerException.Message}";
+                }
             }
+
+            return "";
         }
     }
 }

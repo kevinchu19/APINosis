@@ -7,8 +7,10 @@ using APINosis.Helpers;
 using APINosis.Models;
 using APINosis.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace APINosis.Controllers
@@ -21,12 +23,14 @@ namespace APINosis.Controllers
         public ClienteRepository Repository { get; }
         public ILogger Logger { get; }
         public IMapper Mapper { get; }
+        public IWebHostEnvironment Env { get; }
 
-        public ClienteController(ClienteRepository repository,Serilog.ILogger logger, IMapper mapper)
+        public ClienteController(ClienteRepository repository,Serilog.ILogger logger, IMapper mapper, IWebHostEnvironment env)
         {
             Repository = repository;
             Logger = logger;
             Mapper = mapper;
+            Env = env;
         }
 
         [HttpPut]
@@ -48,9 +52,11 @@ namespace APINosis.Controllers
                 
                 int idOperacion = cliente.IdOperacion;
 
-                if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente)); };
-
-                if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta)); }
+                if (Env.IsProduction())
+                {
+                    if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente)); };
+                    if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta)); }
+                }
 
                 Vtmclh clienteFormat = Mapper.Map<ClienteDTO, Vtmclh>(cliente);
 
@@ -79,16 +85,19 @@ namespace APINosis.Controllers
 
 
         [HttpPost]
-        public ActionResult<ClienteResponse> Post ([FromBody] ClienteDTO cliente)
+        public async Task<ActionResult<ClienteResponse>> Post ([FromBody] ClienteDTO cliente)
         {
             Logger.Information($"Se recibio posteo de nuevo cliente{cliente.NumeroCliente} - {cliente.RazonSocial} - Id de operacion: {cliente.IdOperacion}");
 
             int idOperacion = cliente.IdOperacion;
-            
-            if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente));};
-                
-            if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta));}
-            
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente)); };
+                if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta)); }
+            }
+
+
             VtmclhDTO clienteFormat = Mapper.Map<ClienteDTO, VtmclhDTO>(cliente);
 
             if (!ModelState.IsValid)
@@ -96,7 +105,7 @@ namespace APINosis.Controllers
                 ModelState.AddModelError("Error", "Error de formato");
             }
 
-            ClienteResponse response = Repository.GraboCliente(clienteFormat, "NEW");
+            ClienteResponse response = await Repository.GraboCliente(clienteFormat, "NEW");
 
             response.IdOperacion = idOperacion;
 

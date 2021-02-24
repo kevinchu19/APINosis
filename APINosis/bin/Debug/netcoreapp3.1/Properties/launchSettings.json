@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "ancmHostingModel": "OutOfProcess",
-      "use64Bit": true
+      "use64Bit": false
     },
     "APINosis": {
       "commandName": "Project",
