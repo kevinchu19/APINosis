@@ -20,6 +20,7 @@ namespace APINosis.Models
         public string Vendedor { get; set; }
         public string Cobrador { get; set; }
         public string Provincia { get; set; }
+        public string Localidad { get; set; }
         public string Zona { get; set; }
         public string Actividad { get; set; }
         public string Categoria { get; set; }
@@ -29,6 +30,7 @@ namespace APINosis.Models
         public string PaisEntrega { get; set; }
         public string CodigoPostalEntrega { get; set; }
         public string ProvinciaEntrega { get; set; }
+        public string LocalidadEntrega { get; set; }
         public string TipoDocumento1 { get; set; }
         public string TipoDocumento2 { get; set; }
         public string TipoDocumento3 { get; set; }
@@ -46,7 +48,10 @@ namespace APINosis.Models
         public string EmailRecibos { get; set; }
         public string EnviaMail { get; set; }
         public string FechaCambioRazonSocial { get; set; }
+        public string IdiomaReferencia { get; set; }
         public List<ContactosDTO> Contactos { get; set; }
+
+        public List<ImpuestosDTO> Impuestos{ get; set; }
 
     }
 }

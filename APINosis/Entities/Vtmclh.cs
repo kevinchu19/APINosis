@@ -171,5 +171,7 @@ namespace APINosis.Entities
         public string VtmclhSysver { get; set; }
         public string VtmclhCmpver { get; set; }
         public List<Vtmclc> Contactos { get; set; }
+        public List<Vtmcli> Impuestos{ get; set; }
+
     }
 }

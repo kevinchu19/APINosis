@@ -35,6 +35,7 @@ namespace APINosis.Repositories
             
             List<Vtmclh> clientes = await Context.Vtmclh
                 .Where(c => c.VtmclhNrocta == numeroCliente || numeroCliente == null)
+                .Include(i => i.Impuestos)
                 .Include(c=>c.Contactos)
                 .ToListAsync();
 
@@ -143,10 +144,12 @@ namespace APINosis.Repositories
 
             foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
             {
+
                 var value = propiedad.GetValue(cliente, null);
 
                 if (propiedad.PropertyType == typeof(string))
                 {
+                    
                     if ((string)value != "null" && (string)value != "NULL" &&
                             value != null && propiedad.Name != "VtmclhNrocta" &&
                             propiedad.Name != "Contactos")
@@ -156,6 +159,14 @@ namespace APINosis.Repositories
                             if ((string)value != "J" && (string)value != "F")
                             {
                                 return new ClienteResponse("Bad Request", 0, $"El campo Tipo de Persona tiene un valor inválido");
+                            }
+                        }
+
+                        if (propiedad.Name == "VtmclhLanexp")
+                        {
+                            if ((string)value != "1" && (string)value != "2" && (string)value != "3")
+                            {
+                                return new ClienteResponse("Bad Request", 0, $"El campo Idioma de referencia tiene un valor inválido");
                             }
                         }
 
@@ -301,7 +312,7 @@ namespace APINosis.Repositories
                     GrtpacCodpos = codpos,
                     GrtpacDescrp = "Generado Automáticamente",
                     GrtpacPaipro = pais,
-                    GrtpacCodpro = jurisdiccion,
+                    GrtpacCodpro = "NA",
                     GrtpacFecalt = DateTime.Now,
                     GrtpacFecmod = DateTime.Now,
                     GrtpacUltopr = "A",

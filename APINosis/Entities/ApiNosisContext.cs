@@ -20,6 +20,7 @@ namespace APINosis.Entities
         public virtual DbSet<Vtmclc> Vtmclc { get; set; }
         public virtual DbSet<Vtmclh> Vtmclh { get; set; }
         public virtual DbSet<Grtpac> Grtpac { get; set; }
+        public virtual DbSet<Vtmcli> Vtmcli { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1104,6 +1105,147 @@ namespace APINosis.Entities
                     .HasColumnName("GRTPAC_USERID");
             });
 
+            modelBuilder.Entity<Vtmcli>(entity =>
+            {
+                entity.HasKey(e => new { e.VtmcliNrocta, e.VtmcliTipimp });
+
+                entity.ToTable("VTMCLI");
+
+                entity.HasOne(e => e.cliente)
+                      .WithMany(i => i.Impuestos)
+                      .HasForeignKey(c => c.VtmcliNrocta);
+
+                entity.Property(e => e.VtmcliNrocta)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_NROCTA");
+
+                entity.Property(e => e.VtmcliTipimp)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_TIPIMP");
+
+                entity.Property(e => e.VtmcliCmpver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_CMPVER");
+
+                entity.Property(e => e.VtmcliCndisc)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_CNDISC");
+
+                entity.Property(e => e.VtmcliCorres)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_CORRES")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmcliDebaja)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_DEBAJA")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmcliDisimp)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_DISIMP")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmcliExeden)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("VTMCLI_EXEDEN");
+
+                entity.Property(e => e.VtmcliFchdes)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLI_FCHDES");
+
+                entity.Property(e => e.VtmcliFecalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLI_FECALT");
+
+                entity.Property(e => e.VtmcliFechas)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLI_FECHAS");
+
+                entity.Property(e => e.VtmcliFecmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("VTMCLI_FECMOD");
+
+                entity.Property(e => e.VtmcliHormov)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_HORMOV");
+
+                entity.Property(e => e.VtmcliImpisc)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_IMPISC");
+
+                entity.Property(e => e.VtmcliInclui)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_INCLUI")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmcliLotori)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_LOTORI");
+
+                entity.Property(e => e.VtmcliLotrec)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_LOTREC");
+
+                entity.Property(e => e.VtmcliLottra)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_LOTTRA");
+
+                entity.Property(e => e.VtmcliModule)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_MODULE");
+
+                entity.Property(e => e.VtmcliOalias)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_OALIAS");
+
+                entity.Property(e => e.VtmcliResolc)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_RESOLC");
+
+                entity.Property(e => e.VtmcliSysver)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_SYSVER");
+
+                entity.Property(e => e.VtmcliTstamp)
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("VTMCLI_TSTAMP");
+
+                entity.Property(e => e.VtmcliUltopr)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_ULTOPR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.VtmcliUserid)
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_USERID");
+
+                entity.Property(e => e.VtmcliVigenc)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("VTMCLI_VIGENC")
+                    .IsFixedLength(true);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

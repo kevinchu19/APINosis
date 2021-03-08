@@ -121,7 +121,11 @@ namespace APINosis.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ClienteDTO>>> Get(string? numeroCliente)
         {
-            numeroCliente = string.Format("{0:00000000}", int.Parse(numeroCliente));
+
+            if (Env.IsProduction())
+            {
+                numeroCliente = string.Format("{0:00000000}", int.Parse(numeroCliente));
+            }
 
             List<ClienteDTO> clientesDTO = Mapper.Map<List<ClienteDTO>>(await Repository.Get(numeroCliente));
 

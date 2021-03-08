@@ -82,6 +82,9 @@ namespace APINosis
                 .ForMember(dest => dest.USR_VTMCLH_MAILRC, opt => opt.MapFrom(src => src.EmailRecibos))
                 .ForMember(dest => dest.USR_VTMCLH_ENMAIL, opt => opt.MapFrom(src => src.EnviaMail))
                 .ForMember(dest => dest.USR_VTMCLH_FECANT, opt => opt.MapFrom(src => src.FechaCambioRazonSocial))
+                .ForMember(dest => dest.USR_VTMCLH_LOCAL1 , opt => opt.MapFrom(src => src.Localidad))
+                .ForMember(dest => dest.USR_VTMCLH_LOCAL2, opt => opt.MapFrom(src => src.LocalidadEntrega))
+                .ForMember(dest => dest.VTMCLH_LANEXP, opt => opt.MapFrom(src => src.IdiomaReferencia))
                 .ReverseMap();
 
                 configuration.CreateMap<Vtmclh, ClienteDTO>()
@@ -123,6 +126,9 @@ namespace APINosis
                     .ForMember(dest => dest.EmailRecibos, opt => opt.MapFrom(src => src.UsrVtmclhMailrc))
                     .ForMember(dest => dest.EnviaMail, opt => opt.MapFrom(src => src.UsrVtmclhEnmail))
                     .ForMember(dest => dest.FechaCambioRazonSocial, opt => opt.MapFrom(src => src.UsrVtmclhFecant))
+                    .ForMember(dest => dest.Localidad, opt => opt.MapFrom(src => src.UsrVtmclhLocal1))
+                    .ForMember(dest => dest.LocalidadEntrega, opt => opt.MapFrom(src => src.UsrVtmclhLocal2))
+                    .ForMember(dest => dest.IdiomaReferencia, opt => opt.MapFrom(src => src.VtmclhLanexp))
                 .ReverseMap();
 
                 configuration.CreateMap<Vtmclc, ContactosDTO>()
@@ -145,6 +151,12 @@ namespace APINosis
                 .ForMember(dest => dest.VTMCLC_TELINT, opt => opt.MapFrom(src => src.Telefono))
                 .ForMember(dest => dest.VTMCLC_CELULA, opt => opt.MapFrom(src => src.Celular))
                 .ForMember(dest => dest.VTMCLC_RECFAC, opt => opt.MapFrom(src => src.ReclamoFacturas))
+                .ReverseMap();
+
+                configuration.CreateMap<Vtmcli, ImpuestosDTO>()
+                .ForMember(dest => dest.CodigoImpuesto, opt => opt.MapFrom(src => src.VtmcliTipimp))
+                .ForMember(dest => dest.Corresponde, opt => opt.MapFrom(src => src.VtmcliCorres))
+                .ForMember(dest => dest.IVAIncluido, opt => opt.MapFrom(src => src.VtmcliInclui))
                 .ReverseMap();
             }
                 , typeof(Startup));
