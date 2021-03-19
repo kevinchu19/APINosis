@@ -4,6 +4,7 @@ using APINosis.Interfaces;
 using APINosis.Models;
 using APINosis.OE;
 using AutoMapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -114,6 +115,7 @@ namespace APINosis.Repositories
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
         {
             string errorAltaCodigoPostal = "";
+            string situacionDeIvaActual = "";
 
             errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.VtmclhCodpai, cliente.VtmclhCodpos, cliente.VtmclhJurisd);
 
@@ -138,6 +140,8 @@ namespace APINosis.Repositories
                 return new ClienteResponse("Bad Request", 0, $"El cliente {cliente.VtmclhNrocta} no existe");
             }
 
+            situacionDeIvaActual = clienteAActualizar.VtmclhCndiva;
+
             Type typeCliente = cliente.GetType();
 
             System.Reflection.PropertyInfo[] listaPropiedades = typeCliente.GetProperties();
@@ -161,6 +165,7 @@ namespace APINosis.Repositories
                                 return new ClienteResponse("Bad Request", 0, $"El campo Tipo de Persona tiene un valor inválido");
                             }
                         }
+                        
 
                         if (propiedad.Name == "VtmclhLanexp")
                         {
@@ -199,8 +204,23 @@ namespace APINosis.Repositories
                     return response;
                 }
             }
-            
-            
+
+
+            if (situacionDeIvaActual != clienteAActualizar.VtmclhCndiva)
+            {
+                try
+                {
+                    await Context.Database.BeginTransactionAsync();
+                    var rowsAffected = await Context.Database.ExecuteSqlRawAsync($"EXEC ALM_RegeneraVTMCLI @p0", parameters: new[] { cliente.VtmclhNrocta });
+                    await Context.Database.CommitTransactionAsync();
+                }
+                catch (Exception e)
+                {
+                    return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
+                }
+
+            }
+
             return new ClienteResponse("OK", 0);
 
         }
