@@ -1,0 +1,279 @@
+﻿using ApiNosis.Models;
+using APINosis.Entities;
+using APINosis.Helpers;
+using APINosis.Interfaces;
+using APINosis.Models;
+using APINosis.OE;
+using AutoMapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+
+namespace APINosis.Repositories
+{
+    public class ContratoRepository: Repository
+    {
+        
+        public IOEObject oCvmcth { get; set; }
+        public Translate Translate { get; }
+
+        public ContratoRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration, IOEObject oInstanceCvmcth, Translate translate) :
+            base(context, configuration, logger)
+        {
+            oCvmcth = oInstanceCvmcth;
+            Translate = translate;
+        }
+        
+        public async Task<List<Cvmcth>> Get(string? tipoContrato, string codigoContrato, int numeroExtension)
+        {
+
+            Logger.Information($"Se recibio consulta de contrato {tipoContrato} - {codigoContrato} - {numeroExtension}");
+            
+            List<Cvmcth> contratos = await Context.Cvmcth
+                .Where(c => c.Cvmcth_Codcon == tipoContrato && 
+                            c.Cvmcth_Nrocon == codigoContrato &&
+                            c.Cvmcth_Nroext == numeroExtension)
+                .Include(i => i.Items)
+                .ToListAsync();
+
+            Logger.Information($"Se recuperaron datos correctamente");
+            return contratos;
+        }
+
+
+
+        public async Task<ContratoResponse> GraboContrato(Cvmcth contrato, string tipoOperacion)
+        {
+
+            oCvmcth.instancioObjeto(tipoOperacion);
+
+            Type typeContrato = contrato.GetType();
+
+            System.Reflection.PropertyInfo[] listaPropiedades = typeContrato.GetProperties();
+
+            foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+            {
+                if (propiedad.PropertyType == typeof(string))
+                {
+                    oCvmcth.asignoaTM("Cvmcth", propiedad.Name, (string)propiedad.GetValue(contrato, null), 1);
+                }
+
+                if (propiedad.PropertyType == typeof(ICollection<Cvmcti>))
+                {
+                    oCvmcth.limpioGrilla("CVMCTI");
+                    foreach (Cvmcti item in contrato.Items)
+                    {
+                        oCvmcth.asignoaTM("CVMCTI", "", item, 2);
+                    }
+                }
+
+                
+            }
+            Save PerformedOperation = oCvmcth.save();
+
+            bool result = PerformedOperation.Result;
+            string mensajeError = PerformedOperation.errorMessage;
+
+
+            oCvmcth.closeObjectInstance();
+
+            if (result == false)
+            {
+                return new ContratoResponse("Bad Request", 0, mensajeError);
+            }
+
+            return new ContratoResponse("OK", 0, contrato);
+        }
+
+        public async Task<ContratoResponse> ActualizoContrato(Cvmcth contrato)
+        {
+
+            Cvmcth contratoAActualizar = await Context.Cvmcth
+                                        .FindAsync(new object[] { contrato.Cvmcth_Codcon,
+                                                                  contrato.Cvmcth_Nrocon,
+                                                                  contrato.Cvmcth_Nroext });
+            if (contratoAActualizar == null)
+            {
+                return new ContratoResponse("Not Found", 0, $"El contrato no existe");
+            }
+
+            Type typeContrato= contrato.GetType();
+
+            System.Reflection.PropertyInfo[] listaPropiedades = typeContrato.GetProperties();
+
+            foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+            {
+
+                var value = propiedad.GetValue(contrato, null);
+
+                if (propiedad.PropertyType == typeof(string))
+                {
+                    
+                    if ((string)value != "null" && (string)value != "NULL" &&
+                            value != null && 
+                            propiedad.Name != "Cvmcth_Codcon" &&
+                            propiedad.Name != "Cvmcth_Nrocon" &&
+                            propiedad.Name != "Cvmcth_Nroext" &&
+                            propiedad.Name != "Items")
+                    {
+
+                        typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                    }
+                }
+
+            }
+
+            contratoAActualizar.Cvmcth_Fecmod = DateTime.Now;
+            contratoAActualizar.Cvmcth_Ultopr= "M";
+            contratoAActualizar.Cvmcth_Userid = "API";
+
+            try
+            {
+                await Context.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+                return new ContratoResponse("Bad Request", 0, e.InnerException.Message);
+            }
+
+            foreach (Cvmcti items in contrato.Items)
+            {
+                items.Cvmcti_Codcon = contrato.Cvmcth_Codcon;
+                items.Cvmcti_Nrocon = contrato.Cvmcth_Nrocon;
+                items.Cvmcti_Nroext = contrato.Cvmcth_Nroext;
+                ContratoResponse response = await this.actualizoItem(items);
+                if (response.Estado != 200)
+                {
+                    return response;
+                }
+            }
+
+            return new ContratoResponse("OK", 0);
+
+        }
+
+        private async Task<ContratoResponse> actualizoItem(Cvmcti item)
+        {
+            Cvmcti ItemAActualizar = await Context.Cvmcti
+                                        .FindAsync(new object[] { item.Cvmcti_Codcon, item.Cvmcti_Nrocon, item.Cvmcti_Nroext, item.Cvmcti_Nroitm });
+            if (ItemAActualizar == null)
+            {
+                Cvmcti nuevoItem = new Cvmcti{};
+
+                Type typeItem = item.GetType();
+
+                System.Reflection.PropertyInfo[] listaPropiedades = typeItem.GetProperties();
+
+                foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+                {
+                    string value = (string)propiedad.GetValue(item, null);
+                    if (value != "null" && value != "NULL" && value != null )
+                    {
+                        typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
+                    }
+
+                }
+
+
+                nuevoItem.Cvmcti_Fecalt= DateTime.Now;
+                nuevoItem.Cvmcti_Fecmod = DateTime.Now;
+                nuevoItem.Cvmcti_Debaja = "N";
+                nuevoItem.Cvmcti_Oalias = "VTMCLC";
+                nuevoItem.Cvmcti_Ultopr = "M";
+                nuevoItem.Cvmcti_Userid = "API";
+                
+                Context.Cvmcti.Add(nuevoItem);
+
+                try
+                {
+                    await Context.SaveChangesAsync();
+
+                }
+                catch (Exception e)
+                {
+                    return new ContratoResponse("Bad Request", 0, e.InnerException.Message);
+                }
+            }
+            else
+            {
+                Type typeItem = item.GetType();
+
+                System.Reflection.PropertyInfo[] listaPropiedades = typeItem.GetProperties();
+
+                foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+                {
+                    string value = (string)propiedad.GetValue(item, null);
+                    if (value != "null" && value != "NULL" && value != null && 
+                                propiedad.Name != "Cvmcti_Codcon" && 
+                                propiedad.Name != "Cvmcti_Nrocon" &&
+                                propiedad.Name != "Cvmcti_Nroext" &&
+                                propiedad.Name != "Cvmcti_Nroitm" )
+                    {
+
+                        typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
+                    }
+
+                }
+
+                ItemAActualizar.Cvmcti_Fecmod = DateTime.Now;
+                ItemAActualizar.Cvmcti_Ultopr= "M";
+                ItemAActualizar.Cvmcti_Userid = "API";
+
+                try
+                {
+                    await Context.SaveChangesAsync();
+
+                }
+                catch (Exception e)
+                {
+                    return new ContratoResponse("Bad Request", 0, e.InnerException.Message);
+                }
+            }
+            return new ContratoResponse("OK", 0);
+
+        }
+
+        private async Task<string> GeneroCodigoPostal(string pais, string codpos, string jurisdiccion)
+        {
+            Grtpac codigoPostal = await Context.Grtpac
+                                        .Where(c => c.GrtpacCodpai == pais && c.GrtpacCodpos == codpos)
+                                        .FirstOrDefaultAsync();
+            if (codigoPostal == null)
+            {
+                Grtpac newCodigoPostal = new Grtpac
+                {
+                    GrtpacCodpai = pais,
+                    GrtpacCodpos = codpos,
+                    GrtpacDescrp = "Generado Automáticamente",
+                    GrtpacPaipro = pais,
+                    GrtpacCodpro = "NA",
+                    GrtpacFecalt = DateTime.Now,
+                    GrtpacFecmod = DateTime.Now,
+                    GrtpacUltopr = "A",
+                    GrtpacOalias = "GRTPAC",
+                    GrtpacDebaja = "N",
+                    GrtpacUserid = "API-CRM"
+                };
+                await Context.Grtpac.AddAsync(newCodigoPostal);
+                try
+                {
+                    await Context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return $"Error al generar codigo postal {newCodigoPostal.GrtpacCodpos}: {e.InnerException.Message}";
+                }
+            }
+
+            return "";
+        }
+    }
+}
+

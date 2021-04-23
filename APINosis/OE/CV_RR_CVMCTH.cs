@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace APINosis.OE
 {
-    public class VT_TT_VTMCLH: OEBase
+    public class CV_RR_CVMCTH: OEBase
     {
         
-        public VT_TT_VTMCLH(string user, string password, string companyName): base(user, password, companyName) //NO AGREGAR DEPENDENCIAS A OTROS SERVICIOS
+        public CV_RR_CVMCTH(string user, string password, string companyName): base(user, password, companyName) //NO AGREGAR DEPENDENCIAS A OTROS SERVICIOS
         {}
 
         public void instancioObjeto(string tipoOperacion)
         {
-            object[] objetoSoftland = new object[] { "VTMCLH", 4, tipoOperacion};
+            object[] objetoSoftland = new object[] { "CVMCTH01", 4, tipoOperacion};
             oInstance = OEType.InvokeMember("GetObject", BindingFlags.InvokeMethod, null, oCompany, objetoSoftland);
                 
         }

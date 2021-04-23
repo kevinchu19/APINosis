@@ -21,6 +21,8 @@ namespace APINosis.Entities
         public virtual DbSet<Vtmclh> Vtmclh { get; set; }
         public virtual DbSet<Grtpac> Grtpac { get; set; }
         public virtual DbSet<Vtmcli> Vtmcli { get; set; }
+        public virtual DbSet<Cvmcth> Cvmcth { get; set; }
+        public virtual DbSet<Cvmcti> Cvmcti { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1245,6 +1247,721 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("VTMCLI_VIGENC")
                     .IsFixedLength(true);
+            });
+
+            modelBuilder.Entity<Cvmcth>(entity =>
+            {
+                entity.HasKey(e => new { e.Cvmcth_Codcon, e.Cvmcth_Nrocon, e.Cvmcth_Nroext });
+
+                entity.ToTable("CVMCTH");
+
+                entity.HasMany(e => e.Items)
+                      .WithOne(c => c.Contrato);
+
+                entity.HasIndex(e => new { e.Cvmcth_Nroext, e.Cvmcth_Descrp }, "CVMCTH_SuperFind");
+
+                entity.HasIndex(e => e.Cvmcth_Nroext, "W_CV_VTRMVH");
+
+                entity.Property(e => e.Cvmcth_Codcon)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODCON");
+
+                entity.Property(e => e.Cvmcth_Nrocon)
+                    .HasMaxLength(13)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_NROCON");
+
+                entity.Property(e => e.Cvmcth_Nroext).HasColumnName("CVMCTH_NROEXT");
+
+                entity.Property(e => e.Cvmcth_Actcof)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_ACTCOF")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Actlis)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_ACTLIS")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Auxaju)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_AUXAJU");
+
+                entity.Property(e => e.Cvmcth_Auxfba)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_AUXFBA");
+
+                entity.Property(e => e.Cvmcth_Auxrte)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_AUXRTE");
+
+                entity.Property(e => e.Cvmcth_Cerdec)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CERDEC")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Cndcom)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CNDCOM")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Cndpag)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CNDPAG");
+
+                entity.Property(e => e.Cvmcth_Codcst)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODCST")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Codctr)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODCTR");
+
+                entity.Property(e => e.Cvmcth_Codcvt)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODCVT")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Codemp)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODEMP");
+
+                entity.Property(e => e.Cvmcth_Codlis)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODLIS")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Codopr)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_CODOPR");
+
+                entity.Property(e => e.Cvmcth_Coef01)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COEF01");
+
+                entity.Property(e => e.Cvmcth_Coef02)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COEF02");
+
+                entity.Property(e => e.Cvmcth_Coef03)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COEF03");
+
+                entity.Property(e => e.Cvmcth_Coef04)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COEF04");
+
+                entity.Property(e => e.Cvmcth_Coef05)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COEF05");
+
+                entity.Property(e => e.Cvmcth_Coefic)
+                    .HasColumnType("numeric(20, 6)")
+                    .HasColumnName("CVMCTH_COEFIC");
+
+                entity.Property(e => e.Cvmcth_Cofdev)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COFDEV");
+
+                entity.Property(e => e.Cvmcth_Coffac)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COFFAC");
+
+                entity.Property(e => e.Cvmcth_Coflis)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_COFLIS");
+
+                entity.Property(e => e.Cvmcth_Debaja)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_DEBAJA")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Deposi)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_DEPOSI");
+
+                entity.Property(e => e.Cvmcth_Descrp)
+                    .HasMaxLength(150)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_DESCRP");
+
+                entity.Property(e => e.Cvmcth_Dimobl)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_DIMOBL");
+
+                entity.Property(e => e.Cvmcth_Dimori)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_DIMORI");
+
+                entity.Property(e => e.Cvmcth_Estact)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_ESTACT");
+
+                entity.Property(e => e.Cvmcth_Estcon)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_ESTCON");
+
+                entity.Property(e => e.Cvmcth_Facdes)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FACDES");
+
+                entity.Property(e => e.Cvmcth_Fachas)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FACHAS");
+
+                entity.Property(e => e.Cvmcth_Fchaju)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHAJU");
+
+                entity.Property(e => e.Cvmcth_Fchbas)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHBAS");
+
+                entity.Property(e => e.Cvmcth_Fchinb)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHINB");
+
+                entity.Property(e => e.Cvmcth_Fchmov)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHMOV");
+
+                entity.Property(e => e.Cvmcth_Fchpeb)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHPEB");
+
+                entity.Property(e => e.Cvmcth_Fchper)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHPER");
+
+                entity.Property(e => e.Cvmcth_Fchrte)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHRTE");
+
+                entity.Property(e => e.Cvmcth_Fchteb)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHTEB");
+
+                entity.Property(e => e.Cvmcth_Fchter)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHTER");
+
+                entity.Property(e => e.Cvmcth_Fchula)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FCHULA");
+
+                entity.Property(e => e.Cvmcth_Fecalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FECALT");
+
+                entity.Property(e => e.Cvmcth_Feclis)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FECLIS");
+
+                entity.Property(e => e.Cvmcth_Fecmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_FECMOD");
+
+                entity.Property(e => e.Cvmcth_Freact).HasColumnName("CVMCTH_FREACT");
+
+                entity.Property(e => e.Cvmcth_Frefac).HasColumnName("CVMCTH_FREFAC");
+
+                entity.Property(e => e.Cvmcth_Grubon)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_GRUBON");
+                entity.Property(e => e.Cvmcth_Modcst)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_MODCST");
+
+                entity.Property(e => e.Cvmcth_Modcvt)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_MODCVT");
+
+                entity.Property(e => e.Cvmcth_Nrocta)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_NROCTA");
+
+                entity.Property(e => e.Cvmcth_Nrosub)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_NROSUB");
+
+                entity.Property(e => e.Cvmcth_Oalias)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_OALIAS");
+
+                entity.Property(e => e.Cvmcth_Obshis)
+                    .HasColumnType("text")
+                    .HasColumnName("CVMCTH_OBSHIS");
+
+                entity.Property(e => e.Cvmcth_Oleole)
+                    .HasColumnType("text")
+                    .HasColumnName("CVMCTH_OLEOLE");
+
+                entity.Property(e => e.Cvmcth_Pctc01)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("CVMCTH_PCTC01");
+
+                entity.Property(e => e.Cvmcth_Pctc02)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("CVMCTH_PCTC02");
+
+                entity.Property(e => e.Cvmcth_Pctc03)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("CVMCTH_PCTC03");
+
+                entity.Property(e => e.Cvmcth_Pctc04)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("CVMCTH_PCTC04");
+
+                entity.Property(e => e.Cvmcth_Pctc05)
+                    .HasColumnType("numeric(15, 7)")
+                    .HasColumnName("CVMCTH_PCTC05");
+
+                entity.Property(e => e.Cvmcth_Percan)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_PERCAN")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Priact)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_PRIACT");
+
+                entity.Property(e => e.Cvmcth_Priaju)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_PRIAJU");
+
+                entity.Property(e => e.Cvmcth_Prifac)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_PRIFAC");
+
+                entity.Property(e => e.Cvmcth_Recnov)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RECNOV")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Rubr01)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR01");
+
+                entity.Property(e => e.Cvmcth_Rubr02)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR02");
+
+                entity.Property(e => e.Cvmcth_Rubr03)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR03");
+
+                entity.Property(e => e.Cvmcth_Rubr04)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR04");
+
+                entity.Property(e => e.Cvmcth_Rubr05)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR05");
+
+                entity.Property(e => e.Cvmcth_Rubr06)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR06");
+
+                entity.Property(e => e.Cvmcth_Rubr07)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR07");
+
+                entity.Property(e => e.Cvmcth_Rubr08)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR08");
+
+                entity.Property(e => e.Cvmcth_Rubr09)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR09");
+
+                entity.Property(e => e.Cvmcth_Rubr10)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_RUBR10");
+
+                entity.Property(e => e.Cvmcth_Sector)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_SECTOR");
+
+                entity.Property(e => e.Cvmcth_Subcue)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_SUBCUE");
+
+                entity.Property(e => e.Cvmcth_Subori)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_SUBORI");
+
+                entity.Property(e => e.Cvmcth_Textos)
+                    .HasColumnType("text")
+                    .HasColumnName("CVMCTH_TEXTOS");
+
+                entity.Property(e => e.Cvmcth_Tipexp)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_TIPEXP");
+
+                entity.Property(e => e.Cvmcth_Tipopr)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_TIPOPR");
+
+                entity.Property(e => e.Cvmcth_Ufaaux)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_UFAAUX");
+
+                entity.Property(e => e.Cvmcth_Ultaju)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_ULTAJU");
+
+                entity.Property(e => e.Cvmcth_Ultbas)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_ULTBAS");
+
+                entity.Property(e => e.Cvmcth_Ultfac)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_ULTFAC");
+
+                entity.Property(e => e.Cvmcth_Ultfba)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTH_ULTFBA");
+
+                entity.Property(e => e.Cvmcth_Ultopr)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_ULTOPR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Unific)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_UNIFIC")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcth_Userid)
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_USERID");
+
+                entity.Property(e => e.Cvmcth_Vnddor)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_VNDDOR");
+
+                entity.Property(e => e.Cvmcth_Vtcero)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTH_VTCERO")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Usr_Cvmcth_Mpago)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTH_MPAGO");
+            });
+
+            modelBuilder.Entity<Cvmcti>(entity =>
+            {
+                entity.HasKey(e => new { e.Cvmcti_Codcon, e.Cvmcti_Nrocon, e.Cvmcti_Nroext, e.Cvmcti_Nroitm, e.Cvmcti_Debhab });
+
+                entity.ToTable("CVMCTI");
+
+                entity.HasIndex(e => new { e.Cvmcti_Tippro, e.Cvmcti_Artcod, e.Usr_Cvmcti_Codotr, e.Usr_Cvmcti_Nrootr }, "USR_FCH_COM_N");
+
+                entity.Property(e => e.Cvmcti_Codcon)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODCON");
+
+                entity.Property(e => e.Cvmcti_Nrocon)
+                    .HasMaxLength(13)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_NROCON");
+
+                entity.Property(e => e.Cvmcti_Nroext).HasColumnName("CVMCTI_NROEXT");
+
+                entity.Property(e => e.Cvmcti_Nroitm).HasColumnName("CVMCTI_NROITM");
+
+                entity.Property(e => e.Cvmcti_Debhab)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_DEBHAB");
+
+                entity.Property(e => e.Cvmcti_Actlis)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_ACTLIS")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Artcod)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_ARTCOD");
+
+                entity.Property(e => e.Cvmcti_Auxaju)
+                    .HasColumnType("numeric(20, 6)")
+                    .HasColumnName("CVMCTI_AUXAJU");
+
+                entity.Property(e => e.Cvmcti_Cantid)
+                    .HasColumnType("numeric(18, 4)")
+                    .HasColumnName("CVMCTI_CANTID");
+
+                entity.Property(e => e.Cvmcti_Cntsec)
+                    .HasColumnType("numeric(18, 4)")
+                    .HasColumnName("CVMCTI_CNTSEC");
+
+                entity.Property(e => e.Cvmcti_Codano)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODANO");
+
+                entity.Property(e => e.Cvmcti_Codcpt)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODCPT");
+
+                entity.Property(e => e.Cvmcti_Codemp)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODEMP");
+
+                entity.Property(e => e.Cvmcti_Codniv)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODNIV");
+
+                entity.Property(e => e.Cvmcti_Codopr)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CODOPR");
+
+                entity.Property(e => e.Cvmcti_Cuenta)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_CUENTA");
+
+                entity.Property(e => e.Cvmcti_Debaja)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_DEBAJA")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Facsec)
+                    .HasColumnType("numeric(12, 6)")
+                    .HasColumnName("CVMCTI_FACSEC");
+
+                entity.Property(e => e.Cvmcti_Fecalt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTI_FECALT");
+
+                entity.Property(e => e.Cvmcti_Fecmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTI_FECMOD");
+
+                entity.Property(e => e.Cvmcti_Norden).HasColumnName("CVMCTI_NORDEN");
+
+                entity.Property(e => e.Cvmcti_Oalias)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_OALIAS");
+
+                entity.Property(e => e.Cvmcti_Preaju)
+                    .HasColumnType("numeric(20, 6)")
+                    .HasColumnName("CVMCTI_PREAJU");
+
+                entity.Property(e => e.Cvmcti_Precio)
+                    .HasColumnType("numeric(20, 6)")
+                    .HasColumnName("CVMCTI_PRECIO");
+
+                entity.Property(e => e.Cvmcti_Recnov)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_RECNOV")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Stocks)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_STOCKS");
+
+                entity.Property(e => e.Cvmcti_Texadi)
+                    .HasColumnType("text")
+                    .HasColumnName("CVMCTI_TEXADI");
+
+                entity.Property(e => e.Cvmcti_Tipcpt)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_TIPCPT")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Tipopr)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_TIPOPR");
+
+                entity.Property(e => e.Cvmcti_Tippro)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_TIPPRO")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Travig)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_TRAVIG")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Ultopr)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_ULTOPR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Cvmcti_Unimed)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_UNIMED");
+
+                entity.Property(e => e.Cvmcti_Unisec)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_UNISEC");
+
+                entity.Property(e => e.Cvmcti_Userid)
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
+                    .HasColumnName("CVMCTI_USERID");
+
+                entity.Property(e => e.Cvmcti_Vigdde)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTI_VIGDDE");
+
+                entity.Property(e => e.Cvmcti_Vighta)
+                    .HasColumnType("datetime")
+                    .HasColumnName("CVMCTI_VIGHTA");
+
+                entity.Property(e => e.Usr_Cvmcti_Archiv)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_ARCHIV");
+
+                entity.Property(e => e.Usr_Cvmcti_Codmod)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_CODMOD")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Usr_Cvmcti_Codotr)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_CODOTR")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Usr_Cvmcti_Fccnew)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_CVMCTI_FCCNEW");
+
+                entity.Property(e => e.Usr_Cvmcti_Fchcom)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_CVMCTI_FCHCOM");
+
+                entity.Property(e => e.Usr_Cvmcti_Fchimp)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_CVMCTI_FCHIMP");
+
+                entity.Property(e => e.Usr_Cvmcti_Fchmod)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_CVMCTI_FCHMOD");
+
+                entity.Property(e => e.Usr_Cvmcti_Fchmov)
+                    .HasColumnType("datetime")
+                    .HasColumnName("USR_CVMCTI_FCHMOV");
+
+                entity.Property(e => e.Usr_Cvmcti_Idcust)
+                    .HasMaxLength(15)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_IDCUST");
+
+                entity.Property(e => e.Usr_Cvmcti_Modmod)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_MODMOD");
+
+                entity.Property(e => e.Usr_Cvmcti_Modotr)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_MODOTR");
+
+                entity.Property(e => e.Usr_Cvmcti_Nroitm).HasColumnName("USR_CVMCTI_NROITM");
+
+                entity.Property(e => e.Usr_Cvmcti_Nromod).HasColumnName("USR_CVMCTI_NROMOD");
+
+                entity.Property(e => e.Usr_Cvmcti_Nrooc)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_NROOC");
+
+                entity.Property(e => e.Usr_Cvmcti_Nrootr).HasColumnName("USR_CVMCTI_NROOTR");
+
+                entity.Property(e => e.Usr_Cvmcti_Nroreg).HasColumnName("USR_CVMCTI_NROREG");
+
+                entity.Property(e => e.Usr_Cvmcti_Vnddo2)
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_VNDDO2");
+
+                entity.Property(e => e.Usr_Cvmcti_Vnddor)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false)
+                    .HasColumnName("USR_CVMCTI_VNDDOR");
             });
 
             OnModelCreatingPartial(modelBuilder);

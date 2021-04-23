@@ -14,9 +14,7 @@ namespace APINosis.Helpers
 {
     public class FiltrodeExcepcion : ExceptionFilterAttribute, IExceptionFilter
     {
-        private ClienteResponse respuestaPorExcepcionPost = new ClienteResponse("", 0, "");
-        private ClienteResponse respuestaPorExcepcionGet = new ClienteResponse("", 0, "");
-        public Serilog.ILogger logger { get; }
+       public Serilog.ILogger logger { get; }
 
         public FiltrodeExcepcion(Serilog.ILogger logger)
         {
