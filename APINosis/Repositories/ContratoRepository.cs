@@ -238,11 +238,19 @@ namespace APINosis.Repositories
                    
                 }
 
+                nuevoItem.Cvmcti_Preaju = 0;
+                nuevoItem.Cvmcti_Auxaju = 0;
+                nuevoItem.Cvmcti_Modcpt = "VT";
+                nuevoItem.Cvmcti_Tipcpt = "A";
+                nuevoItem.Cvmcti_Codcpt = "V001";
+                nuevoItem.Cvmcti_Stocks = "N";
+                nuevoItem.Cvmcti_Cuenta = "41010101";
+                nuevoItem.Cvmcti_Unimed = "UN";
                 nuevoItem.Cvmcti_Debhab = "H";
                 nuevoItem.Cvmcti_Fecalt= DateTime.Now;
                 nuevoItem.Cvmcti_Fecmod = DateTime.Now;
                 nuevoItem.Cvmcti_Debaja = "N";
-                nuevoItem.Cvmcti_Oalias = "CVMCTH01";
+                nuevoItem.Cvmcti_Oalias = "CVMCTI01";
                 nuevoItem.Cvmcti_Ultopr = "M";
                 nuevoItem.Cvmcti_Userid = "API";
                 
