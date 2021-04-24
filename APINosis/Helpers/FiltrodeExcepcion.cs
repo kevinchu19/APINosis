@@ -24,7 +24,7 @@ namespace APINosis.Helpers
         public async override void  OnException(ExceptionContext context)
         {
 
-            logger.Fatal(context.Exception.Message);
+            logger.Fatal(context.Exception.StackTrace);
 
             var exception = context.Exception;
 

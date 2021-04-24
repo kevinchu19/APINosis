@@ -120,7 +120,7 @@ namespace APINosis.OE
                                 OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                             }
                             break;
-                        case 3: case 4: case 5: case 6: case 9:
+                        case 3: case 4: case 6: case 9:
 
                             if (value != null)
                             {
@@ -130,6 +130,16 @@ namespace APINosis.OE
                                 }
                             }
                             
+                            break;
+                        case 5:
+                            if (value != null)
+                            {
+                                if ((short)value != 0)
+                                {
+                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                }
+                            }
+
                             break;
                         case 7:
                             if (value != null)
