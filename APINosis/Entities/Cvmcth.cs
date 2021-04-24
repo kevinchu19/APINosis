@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -22,25 +23,13 @@ namespace APINosis.Entities
         public string Cvmcth_Codcst { get; set; }
         public string Cvmcth_Deposi { get; set; }
         public string Cvmcth_Sector { get; set; }
-        public DateTime? Cvmcth_Fchmov { get; set; }
+        public DateTime Cvmcth_Fchmov { get; set; } = DateTime.Now;
         public string Cvmcth_Actcof { get; set; }
-        public DateTime? Cvmcth_Facdes { get; set; }
-        public DateTime? Cvmcth_Fachas { get; set; }
-        public DateTime? Cvmcth_Prifac { get; set; }
-        public DateTime? Cvmcth_Ultfac { get; set; }
-        public DateTime? Cvmcth_Ufaaux { get; set; }
-        public short? Cvmcth_Freact { get; set; }
-        public short? Cvmcth_Frefac { get; set; }
-        public DateTime? Cvmcth_Fchaju { get; set; }
-        public DateTime? Cvmcth_Fchula { get; set; }
-        public DateTime? Cvmcth_Priact { get; set; }
-        public DateTime? Cvmcth_Ultaju { get; set; }
-        public DateTime? Cvmcth_Ultbas { get; set; }
-        public DateTime? Cvmcth_Fchpeb { get; set; }
-        public DateTime? Cvmcth_Fchper { get; set; }
-        public DateTime? Cvmcth_Fchteb { get; set; }
-        public DateTime? Cvmcth_Fchter { get; set; }
-        public DateTime? Cvmcth_Fchbas { get; set; }
+        public DateTime Cvmcth_Facdes { get; set; }
+        public DateTime Cvmcth_Prifac { get; set; }
+        public DateTime Cvmcth_Ultfac { get; set; }
+        public short Cvmcth_Freact { get; set; }
+        public short Cvmcth_Frefac { get; set; }
         public string Cvmcth_Codlis { get; set; }
         public string Cvmcth_Grubon { get; set; }
         public DateTime? Cvmcth_Feclis { get; set; }
@@ -82,13 +71,6 @@ namespace APINosis.Entities
         public string Cvmcth_Obshis { get; set; }
         public string Cvmcth_Percan { get; set; }
         public string Cvmcth_Recnov { get; set; }
-        public DateTime? Cvmcth_Fchrte { get; set; }
-        public DateTime? Cvmcth_Ultfba { get; set; }
-        public DateTime? Cvmcth_Fchinb { get; set; }
-        public DateTime? Cvmcth_Priaju { get; set; }
-        public DateTime? Cvmcth_Auxrte { get; set; }
-        public DateTime? Cvmcth_Auxfba { get; set; }
-        public DateTime? Cvmcth_Auxaju { get; set; }
         public string Cvmcth_Cerdec { get; set; }
         public string Cvmcth_Tipopr { get; set; }
         public string Cvmcth_Codopr { get; set; }
@@ -103,5 +85,7 @@ namespace APINosis.Entities
         public string Cvmcth_Debaja { get; set; }
         public string Cvmcth_Oalias { get; set; }
         public ICollection<Cvmcti> Items { get; set; }
+        [NotMapped]
+        public virtual string Cvmcth_Desfre { get; set; }
     }
 }

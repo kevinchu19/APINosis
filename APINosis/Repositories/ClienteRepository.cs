@@ -19,14 +19,12 @@ namespace APINosis.Repositories
     public class ClienteRepository: Repository
     {
         
-        public IOEObject oVTMCLH { get; set; }
-        public Translate Translate { get; }
+        public VT_TT_VTMCLH oVTMCLH { get; set; }
 
-        public ClienteRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration, IOEObject oInstanceVTMCLH, Translate translate) :
+        public ClienteRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration, VT_TT_VTMCLH oInstanceVTMCLH) :
             base(context, configuration, logger)
         {
             oVTMCLH = oInstanceVTMCLH;
-            Translate = translate;
         }
         
         public async Task<List<Vtmclh>> Get(string numeroCliente)
@@ -109,7 +107,7 @@ namespace APINosis.Repositories
                 return new ClienteResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ClienteResponse("OK", 0, cliente);
+            return new ClienteResponse("OK", 0, cliente, "Cliente");
         }
 
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
@@ -221,7 +219,7 @@ namespace APINosis.Repositories
 
             }
 
-            return new ClienteResponse("OK", 0);
+            return new ClienteResponse("OK", 0, new VtmclhDTO(),"Cliente");
 
         }
 
@@ -315,7 +313,7 @@ namespace APINosis.Repositories
                     return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
                 }
             }
-            return new ClienteResponse("OK", 0);
+            return new ClienteResponse("OK", 0, new VtmclhDTO(), "Cliente");
 
         }
 

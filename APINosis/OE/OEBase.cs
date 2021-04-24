@@ -21,8 +21,9 @@ namespace APINosis.OE
         protected object oTable { get; set; }
         protected object oRow { get; set; }
         protected object oField { get; set; }
+        public string _pathLanguage { get; }
 
-        public OEBase(string user, string password, string companyName)
+        public OEBase(string user, string password, string companyName, string pathLanguage)
         {
             OEType = Type.GetTypeFromProgID("cwlwoe.global");
             OEInst = Activator.CreateInstance(OEType);
@@ -31,7 +32,7 @@ namespace APINosis.OE
 
             oApplication = OEType.InvokeMember("GetApplication", BindingFlags.InvokeMethod, null, OEInst, userPassword);
             oCompany = OEType.InvokeMember("Companies", BindingFlags.GetProperty, null, oApplication, company);
-
+            _pathLanguage = pathLanguage;
         }
 
         public void limpioGrilla(string table)
@@ -59,6 +60,8 @@ namespace APINosis.OE
             string[] sErrorMessage = new string[] { null };
             object result = OEType.InvokeMember("Save", BindingFlags.InvokeMethod, null, oInstance, sErrorMessage);
 
+            Translate oTranslate = new Translate(_pathLanguage);
+
             if ((bool)result == false && sErrorMessage[0] == null)
             {
                 int messageCount = (int)OEType.InvokeMember("MessageCount", BindingFlags.GetProperty, null, oInstance, null);
@@ -69,8 +72,7 @@ namespace APINosis.OE
                     string description = (string)OEType.InvokeMember("Description", BindingFlags.GetProperty, null, oMessages, null);
                     if (description != "")
                     {
-                        //sErrorMessage[0] =  oTranslate.traducir(description);
-                        sErrorMessage[0] = description;
+                        sErrorMessage[0] =  oTranslate.traducir(description);
                         break;
                     }
                 }
@@ -87,30 +89,73 @@ namespace APINosis.OE
 
         }
 
+        protected bool campoAuditoria(string field)
+        {
+            string camposAuditoria = "FECALT,FECMOD,ULTOPR,DEBAJA,OALIAS,USERID,CONTRATO";
+
+            if (field.Length <6)
+            {
+                var a = 1;
+            }
+            if (camposAuditoria.IndexOf(field.Substring(field.Length - 6,6).ToUpper() ) >= 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         protected void resuelvoValor(dynamic oField, object value)
         {
-            if ((string)value != "null" && (string)value != "NULL" && value != null)
+            try
             {
-                try
+                if ((bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null) == false)
                 {
-                    if ((bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null) == false)
+                    switch ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null))
                     {
-                        if ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null) == 8)
-                        {
-                            DateTime dateValue = DateTime.ParseExact((string)value, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                            value = dateValue.ToString("yyyyMMdd");
-                        }
+                        case 8:
+                            if (value != null)
+                            {
+                                DateTime dateValue = (DateTime)value;
+                                value = dateValue.ToString("yyyyMMdd");
+                                OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                            }
+                            break;
+                        case 3: case 4: case 5: case 6: case 9:
 
-                        OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                            if (value != null)
+                            {
+                                if ((int)value != 0)
+                                {
+                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                }
+                            }
+                            
+                            break;
+                        case 7:
+                            if (value != null)
+                            {
+                                if ((decimal)value != 0)
+                                {
+                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                }
+                            }
+                            break;
+                        default:
+                            if ((string)value != "null" && (string)value != "NULL" && value != null)
+                            {
+                                OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                            }
+                            break;
 
                     };
+                }
 
-                }
-                catch (Exception e)
-                {
-                    throw new BadRequestException($"Error al completar el campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} con el valor {value}: {e.InnerException.Message}");
-                }
             }
+            catch (Exception e)
+            {
+                throw new BadRequestException($"Error al completar el campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} con el valor {value}: {e.InnerException.Message}");
+            }
+            
         }
 
     }

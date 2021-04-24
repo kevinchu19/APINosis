@@ -13,18 +13,11 @@ namespace OE.Models
         public string Titulo { get; set; }
         public string Mensaje{ get; set; }
 
-        protected BaseResponse(string titulo, int idOperacion)
-        {
-            Estado = 200;
-            Mensaje = "Cliente actualizado con éxito";
-            Titulo = titulo;
-            IdOperacion = idOperacion;
-        }
-
-        protected BaseResponse(string titulo, int idOperacion, T resource)
+       
+        protected BaseResponse(string titulo, int idOperacion, T resource,string recurso)
         {
             Estado  = 200;
-            Mensaje = "Cliente generado con éxito";
+            Mensaje = $"{recurso} generado con éxito";
             Titulo = titulo;
             IdOperacion = idOperacion;
         }

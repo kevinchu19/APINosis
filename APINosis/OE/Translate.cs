@@ -14,11 +14,11 @@ namespace APINosis.OE
         private Type TRType{ get; set; }
         
 
-        public Translate(IConfiguration configuration)
+        public Translate(string pathLanguage)
         {
             TRType = Type.GetTypeFromProgID("GRWTranslate.GRWTraducciones");
             oTranslate = Activator.CreateInstance(TRType);
-            TRType.InvokeMember("DatabasePath", BindingFlags.SetProperty, null, oTranslate, new object[] { configuration["PathLanguage"]});
+            TRType.InvokeMember("DatabasePath", BindingFlags.SetProperty, null, oTranslate, new object[] { pathLanguage});
         }
 
         public string traducir(string error)

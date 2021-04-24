@@ -21,6 +21,7 @@ using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using APINosis.Interfaces;
 using ApiNosis.Models;
+using ApiNosis.MapperHelp;
 
 namespace APINosis
 {
@@ -36,13 +37,12 @@ namespace APINosis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddSingleton<Translate>();
-            services.AddTransient<IOEObject, VT_TT_VTMCLH>(provider => 
-                new VT_TT_VTMCLH( "admin",Configuration["PasswordAdmin"],Configuration["CompanyName"]));
 
-            services.AddTransient<IOEObject, CV_RR_CVMCTH>(provider =>
-                new CV_RR_CVMCTH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"]));
+            services.AddTransient<VT_TT_VTMCLH>(provider =>
+                new VT_TT_VTMCLH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]));
+
+            services.AddTransient<CV_RR_CVMCTH>(provider =>
+                new CV_RR_CVMCTH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]));
 
             services.AddAutoMapper(configuration =>
             {
@@ -85,7 +85,7 @@ namespace APINosis
                 .ForMember(dest => dest.USR_VTMCLH_MAILRC, opt => opt.MapFrom(src => src.EmailRecibos))
                 .ForMember(dest => dest.USR_VTMCLH_ENMAIL, opt => opt.MapFrom(src => src.EnviaMail))
                 .ForMember(dest => dest.USR_VTMCLH_FECANT, opt => opt.MapFrom(src => src.FechaCambioRazonSocial))
-                .ForMember(dest => dest.USR_VTMCLH_LOCAL1 , opt => opt.MapFrom(src => src.Localidad))
+                .ForMember(dest => dest.USR_VTMCLH_LOCAL1, opt => opt.MapFrom(src => src.Localidad))
                 .ForMember(dest => dest.USR_VTMCLH_LOCAL2, opt => opt.MapFrom(src => src.LocalidadEntrega))
                 .ForMember(dest => dest.VTMCLH_LANEXP, opt => opt.MapFrom(src => src.IdiomaReferencia))
                 .ReverseMap();
@@ -161,60 +161,62 @@ namespace APINosis
                 .ForMember(dest => dest.Corresponde, opt => opt.MapFrom(src => src.VtmcliCorres))
                 .ForMember(dest => dest.IVAIncluido, opt => opt.MapFrom(src => src.VtmcliInclui))
                 .ReverseMap();
+                
+                configuration.CreateMap<string, DateTime>().ConvertUsing(new DateTimeTypeConverter());
 
-                configuration.CreateMap<Cvmcth, ContratosDTO>()
-                .ForMember(dest => dest.TipoContrato, opt => opt.MapFrom(src => src.Cvmcth_Codcon))
-                .ForMember(dest => dest.CodigoContrato, opt => opt.MapFrom(src => src.Cvmcth_Nrocon))
-                .ForMember(dest => dest.Extension, opt => opt.MapFrom(src => src.Cvmcth_Nroext))
-                .ForMember(dest => dest.Descripcion, opt => opt.MapFrom(src => src.Cvmcth_Descrp))
-                .ForMember(dest => dest.Cliente, opt => opt.MapFrom(src => src.Cvmcth_Nrocta))
-                .ForMember(dest => dest.Codigodesubcuenta, opt => opt.MapFrom(src => src.Cvmcth_Nrosub))
-                .ForMember(dest => dest.Condiciondepago, opt => opt.MapFrom(src => src.Cvmcth_Cndpag))
-                .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Cvmcth_Vnddor))
-                .ForMember(dest => dest.Contratista, opt => opt.MapFrom(src => src.Cvmcth_Codctr))
-                .ForMember(dest => dest.ComprobanteVentas, opt => opt.MapFrom(src => src.Cvmcth_Codcvt))
-                .ForMember(dest => dest.Del, opt => opt.MapFrom(src => src.Cvmcth_Facdes))
-                .ForMember(dest => dest.Al, opt => opt.MapFrom(src => src.Cvmcth_Fachas))
-                .ForMember(dest => dest.Emisiondela1rafactura, opt => opt.MapFrom(src => src.Cvmcth_Prifac))
-                .ForMember(dest => dest.Ultimafacturaaemitir, opt => opt.MapFrom(src => src.Cvmcth_Ultfac))
-                .ForMember(dest => dest.Listadeprecios, opt => opt.MapFrom(src => src.Cvmcth_Codlis))
-                .ForMember(dest => dest.MonedaEmision, opt => opt.MapFrom(src => src.Cvmcth_Coffac))
-                .ForMember(dest => dest.Preciosvigentesalfacturar, opt => opt.MapFrom(src => src.Cvmcth_Actlis))
-                .ForMember(dest => dest.Observaciones, opt => opt.MapFrom(src => src.Cvmcth_Textos))
-                .ForMember(dest => dest.Facturacion, opt => opt.MapFrom(src => src.Cvmcth_Frefac))
-                .ForMember(dest => dest.RecuperaitemsenNovedades, opt => opt.MapFrom(src => src.Cvmcth_Recnov))
-                .ForMember(dest => dest.Tipodeexportacion, opt => opt.MapFrom(src => src.Cvmcth_Tipexp))
-                .ForMember(dest => dest.Condicioncomercial, opt => opt.MapFrom(src => src.Cvmcth_Cndcom))
-                .ForMember(dest => dest.ModalidaddePago, opt => opt.MapFrom(src => src.Usr_Cvmcth_Mpago))
+                configuration.CreateMap<ContratosDTO, Cvmcth>()
+                .ForMember(dest => dest.Cvmcth_Codcon, opt => opt.MapFrom(src => src.TipoContrato))
+                .ForMember(dest => dest.Cvmcth_Nrocon, opt => opt.MapFrom(src => src.CodigoContrato))
+                .ForMember(dest => dest.Cvmcth_Nroext, opt => opt.MapFrom(src => src.Extension))
+                .ForMember(dest => dest.Cvmcth_Descrp, opt => opt.MapFrom(src => src.Descripcion))
+                .ForMember(dest => dest.Cvmcth_Nrocta, opt => opt.MapFrom(src => src.Cliente))
+                .ForMember(dest => dest.Cvmcth_Nrosub, opt => opt.MapFrom(src => src.Codigodesubcuenta))
+                .ForMember(dest => dest.Cvmcth_Cndpag, opt => opt.MapFrom(src => src.Condiciondepago))
+                .ForMember(dest => dest.Cvmcth_Vnddor, opt => opt.MapFrom(src => src.Vendedor))
+                .ForMember(dest => dest.Cvmcth_Codctr, opt => opt.MapFrom(src => src.Contratista))
+                .ForMember(dest => dest.Cvmcth_Codcvt, opt => opt.MapFrom(src => src.ComprobanteVentas))
+                .ForMember(dest => dest.Cvmcth_Facdes, opt => opt.MapFrom(src => src.Del))
+                //.ForMember(dest => dest.Cvmcth_Fachas, opt => opt.MapFrom(src => src.Al))
+                .ForMember(dest => dest.Cvmcth_Prifac, opt => opt.MapFrom(src => src.Emisiondela1rafactura))
+                .ForMember(dest => dest.Cvmcth_Ultfac, opt => opt.MapFrom(src => src.Ultimafacturaaemitir))
+                .ForMember(dest => dest.Cvmcth_Codlis, opt => opt.MapFrom(src => src.Listadeprecios))
+                .ForMember(dest => dest.Cvmcth_Coffac, opt => opt.MapFrom(src => src.MonedaEmision))
+                .ForMember(dest => dest.Cvmcth_Actlis, opt => opt.MapFrom(src => src.Preciosvigentesalfacturar))
+                .ForMember(dest => dest.Cvmcth_Textos, opt => opt.MapFrom(src => src.Observaciones))
+                .ForMember(dest => dest.Cvmcth_Desfre, opt => opt.MapFrom(src => src.Facturacion))
+                .ForMember(dest => dest.Cvmcth_Recnov, opt => opt.MapFrom(src => src.RecuperaitemsenNovedades))
+                .ForMember(dest => dest.Cvmcth_Tipexp, opt => opt.MapFrom(src => src.Tipodeexportacion))
+                .ForMember(dest => dest.Cvmcth_Cndcom, opt => opt.MapFrom(src => src.Condicioncomercial))
+                .ForMember(dest => dest.Usr_Cvmcth_Mpago, opt => opt.MapFrom(src => src.ModalidaddePago))
                 .ReverseMap();
 
-                configuration.CreateMap<Cvmcti, ItemsContratosDTO>()
-                .ForMember(dest => dest.Numerodeitem, opt => opt.MapFrom(src => src.Cvmcti_Nroitm))
-                .ForMember(dest => dest.Tipodeproducto, opt => opt.MapFrom(src => src.Cvmcti_Tippro))
-                .ForMember(dest => dest.Codigodeproducto, opt => opt.MapFrom(src => src.Cvmcti_Artcod))
-                .ForMember(dest => dest.TextoAdicional, opt => opt.MapFrom(src => src.Cvmcti_Texadi))
-                .ForMember(dest => dest.Precio, opt => opt.MapFrom(src => src.Cvmcti_Precio))
-                .ForMember(dest => dest.Cantidad, opt => opt.MapFrom(src => src.Cvmcti_Cantid))
-                .ForMember(dest => dest.TrabajaConVigencia, opt => opt.MapFrom(src => src.Cvmcti_Travig))
-                .ForMember(dest => dest.Desde, opt => opt.MapFrom(src => src.Cvmcti_Vigdde))
-                .ForMember(dest => dest.Hasta, opt => opt.MapFrom(src => src.Cvmcti_Vighta))
-                .ForMember(dest => dest.Preciosvigentesalfacturar, opt => opt.MapFrom(src => src.Cvmcti_Actlis))
-                .ForMember(dest => dest.Vendedor, opt => opt.MapFrom(src => src.Usr_Cvmcti_Vnddor))
-                .ForMember(dest => dest.Vendedor2, opt => opt.MapFrom(src => src.Usr_Cvmcti_Vnddo2))
-                .ForMember(dest => dest.ModuloOrdendeTrabajo, opt => opt.MapFrom(src => src.Usr_Cvmcti_Modotr))
-                .ForMember(dest => dest.CodigoOrdendeTrabajo, opt => opt.MapFrom(src => src.Usr_Cvmcti_Codotr))
-                .ForMember(dest => dest.NumeroOrdendeTrabajo, opt => opt.MapFrom(src => src.Usr_Cvmcti_Nrootr))
-                .ForMember(dest => dest.FechadeMovimiento, opt => opt.MapFrom(src => src.Usr_Cvmcti_Fchmov))
-                .ForMember(dest => dest.ModulodeOTModificacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Modmod))
-                .ForMember(dest => dest.FechadeComision, opt => opt.MapFrom(src => src.Usr_Cvmcti_Fchcom))
-                .ForMember(dest => dest.CodigodeOTModificacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Codmod))
-                .ForMember(dest => dest.NumerodeOTModificacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Nromod))
-                .ForMember(dest => dest.FechadeOTModificacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Fchmod))
-                .ForMember(dest => dest.NumerodeOrdendecompra, opt => opt.MapFrom(src => src.Usr_Cvmcti_Nrooc))
-                .ForMember(dest => dest.ArchivodeExportacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Archiv))
-                .ForMember(dest => dest.IDCustom, opt => opt.MapFrom(src => src.Usr_Cvmcti_Idcust))
-                .ForMember(dest => dest.NumerodeRegistroExpo, opt => opt.MapFrom(src => src.Usr_Cvmcti_Nroreg))
-                .ForMember(dest => dest.FechadeExportacion, opt => opt.MapFrom(src => src.Usr_Cvmcti_Fchimp))
+                configuration.CreateMap<ItemsContratosDTO, Cvmcti>()
+                .ForMember(dest => dest.Cvmcti_Nroitm, opt => opt.MapFrom(src => src.Numerodeitem))
+                .ForMember(dest => dest.Cvmcti_Tippro, opt => opt.MapFrom(src => src.Tipodeproducto))
+                .ForMember(dest => dest.Cvmcti_Artcod, opt => opt.MapFrom(src => src.Codigodeproducto))
+                .ForMember(dest => dest.Cvmcti_Texadi, opt => opt.MapFrom(src => src.TextoAdicional))
+                .ForMember(dest => dest.Cvmcti_Precio, opt => opt.MapFrom(src => src.Precio))
+                .ForMember(dest => dest.Cvmcti_Cantid, opt => opt.MapFrom(src => src.Cantidad))
+                .ForMember(dest => dest.Cvmcti_Travig, opt => opt.MapFrom(src => src.TrabajaConVigencia))
+                .ForMember(dest => dest.Cvmcti_Vigdde, opt => opt.MapFrom(src => src.Desde))
+                .ForMember(dest => dest.Cvmcti_Vighta, opt => opt.MapFrom(src => src.Hasta))
+                .ForMember(dest => dest.Cvmcti_Actlis, opt => opt.MapFrom(src => src.Preciosvigentesalfacturar))
+                .ForMember(dest => dest.Usr_Cvmcti_Vnddor, opt => opt.MapFrom(src => src.Vendedor))
+                .ForMember(dest => dest.Usr_Cvmcti_Vnddo2, opt => opt.MapFrom(src => src.Vendedor2))
+                .ForMember(dest => dest.Usr_Cvmcti_Modotr, opt => opt.MapFrom(src => src.ModuloOrdendeTrabajo))
+                .ForMember(dest => dest.Usr_Cvmcti_Codotr, opt => opt.MapFrom(src => src.CodigoOrdendeTrabajo))
+                .ForMember(dest => dest.Usr_Cvmcti_Nrootr, opt => opt.MapFrom(src => src.NumeroOrdendeTrabajo))
+                .ForMember(dest => dest.Usr_Cvmcti_Fchmov, opt => opt.MapFrom(src => src.FechadeMovimiento))
+                .ForMember(dest => dest.Usr_Cvmcti_Modmod, opt => opt.MapFrom(src => src.ModulodeOTModificacion))
+                .ForMember(dest => dest.Usr_Cvmcti_Fchcom, opt => opt.MapFrom(src => src.FechadeComision))
+                .ForMember(dest => dest.Usr_Cvmcti_Codmod, opt => opt.MapFrom(src => src.CodigodeOTModificacion))
+                .ForMember(dest => dest.Usr_Cvmcti_Nromod, opt => opt.MapFrom(src => src.NumerodeOTModificacion))
+                .ForMember(dest => dest.Usr_Cvmcti_Fchmod, opt => opt.MapFrom(src => src.FechadeOTModificacion))
+                .ForMember(dest => dest.Usr_Cvmcti_Nrooc, opt => opt.MapFrom(src => src.NumerodeOrdendecompra))
+                .ForMember(dest => dest.Usr_Cvmcti_Archiv, opt => opt.MapFrom(src => src.ArchivodeExportacion))
+                .ForMember(dest => dest.Usr_Cvmcti_Idcust, opt => opt.MapFrom(src => src.IDCustom))
+                .ForMember(dest => dest.Usr_Cvmcti_Nroreg, opt => opt.MapFrom(src => src.NumerodeRegistroExpo))
+                .ForMember(dest => dest.Usr_Cvmcti_Fchimp, opt => opt.MapFrom(src => src.FechadeExportacion))
                 .ReverseMap();
             }
                 , typeof(Startup));
@@ -227,16 +229,18 @@ namespace APINosis
 
             services.AddDbContext<ApiNosisContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")).EnableSensitiveDataLogging());
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
 
             services.AddControllers();
             services.AddCors();
 
-            
+
             services.AddMvc()
                 .AddXmlDataContractSerializerFormatters();
 
             services.AddScoped<ClienteRepository>();
+
+            services.AddScoped<ContratoRepository>();
 
             services.AddSingleton<Serilog.ILogger>(options =>
             {
@@ -247,10 +251,10 @@ namespace APINosis
                             .WriteTo
                             .MSSqlServer(
                                 connectionString: connstring,
-                                sinkOptions: new MSSqlServerSinkOptions { TableName = tableName, AutoCreateSqlTable = true},
+                                sinkOptions: new MSSqlServerSinkOptions { TableName = tableName, AutoCreateSqlTable = true },
                                 restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                             .CreateLogger();
-            
+
             });
 
 

@@ -1,4 +1,5 @@
-﻿using APINosis.Helpers;
+﻿using APINosis.Entities;
+using APINosis.Helpers;
 using APINosis.Interfaces;
 using APINosis.Models;
 using Microsoft.Extensions.Configuration;
@@ -12,10 +13,11 @@ using System.Threading.Tasks;
 
 namespace APINosis.OE
 {
-    public class CV_RR_CVMCTH: OEBase
+    public class CV_RR_CVMCTH: OEBase, IOEObject
     {
         
-        public CV_RR_CVMCTH(string user, string password, string companyName): base(user, password, companyName) //NO AGREGAR DEPENDENCIAS A OTROS SERVICIOS
+        public CV_RR_CVMCTH(string user, string password, string companyName, string pathLanguage): 
+            base(user, password, companyName, pathLanguage) //NO AGREGAR DEPENDENCIAS A OTROS SERVICIOS
         {}
 
         public void instancioObjeto(string tipoOperacion)
@@ -49,30 +51,35 @@ namespace APINosis.OE
 
             switch (valor)
             {
-                case string:
-                    value = (string)(object)valor;
-                    oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
-                    resuelvoValor(oField, value);
+                
+                case Cvmcti:
+                    Cvmcti item = (Cvmcti)(object) valor;
+                    Type typeItem= item.GetType();
 
-                    break;
-
-                case VtmclcDTO:
-                    VtmclcDTO contacto = (VtmclcDTO)(object) valor;
-                    Type typeContacto = contacto.GetType();
-
-                    System.Reflection.PropertyInfo[] listaPropiedades = typeContacto.GetProperties();
+                    System.Reflection.PropertyInfo[] listaPropiedades = typeItem.GetProperties();
 
                     foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
                     {
-                        oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { propiedad.Name });
-                        value = (string)propiedad.GetValue(contacto, null);
-                        resuelvoValor(oField, value);
+                        if (!campoAuditoria(propiedad.Name))
+                        {
+                            oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { propiedad.Name });
+                            value = propiedad.GetValue(item, null);
+                            resuelvoValor(oField, value);
+                        }
+                        
                     }
 
                     break;
 
                 default:
+                    if (!campoAuditoria(field))
+                    {
+                        oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
+                        resuelvoValor(oField, valor);
+                    }
+
                     break;
+
             }
 
 

@@ -1256,7 +1256,8 @@ namespace APINosis.Entities
                 entity.ToTable("CVMCTH");
 
                 entity.HasMany(e => e.Items)
-                      .WithOne(c => c.Contrato);
+                      .WithOne(c => c.Contrato)
+                      .HasForeignKey(d => new { d.Cvmcti_Codcon, d.Cvmcti_Nrocon, d.Cvmcti_Nroext });
 
                 entity.HasIndex(e => new { e.Cvmcth_Nroext, e.Cvmcth_Descrp }, "CVMCTH_SuperFind");
 
@@ -1285,18 +1286,6 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("CVMCTH_ACTLIS")
                     .IsFixedLength(true);
-
-                entity.Property(e => e.Cvmcth_Auxaju)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_AUXAJU");
-
-                entity.Property(e => e.Cvmcth_Auxfba)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_AUXFBA");
-
-                entity.Property(e => e.Cvmcth_Auxrte)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_AUXRTE");
 
                 entity.Property(e => e.Cvmcth_Cerdec)
                     .HasMaxLength(1)
@@ -1433,50 +1422,11 @@ namespace APINosis.Entities
                     .HasColumnType("datetime")
                     .HasColumnName("CVMCTH_FACDES");
 
-                entity.Property(e => e.Cvmcth_Fachas)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FACHAS");
-
-                entity.Property(e => e.Cvmcth_Fchaju)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHAJU");
-
-                entity.Property(e => e.Cvmcth_Fchbas)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHBAS");
-
-                entity.Property(e => e.Cvmcth_Fchinb)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHINB");
 
                 entity.Property(e => e.Cvmcth_Fchmov)
                     .HasColumnType("datetime")
                     .HasColumnName("CVMCTH_FCHMOV");
-
-                entity.Property(e => e.Cvmcth_Fchpeb)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHPEB");
-
-                entity.Property(e => e.Cvmcth_Fchper)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHPER");
-
-                entity.Property(e => e.Cvmcth_Fchrte)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHRTE");
-
-                entity.Property(e => e.Cvmcth_Fchteb)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHTEB");
-
-                entity.Property(e => e.Cvmcth_Fchter)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHTER");
-
-                entity.Property(e => e.Cvmcth_Fchula)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_FCHULA");
-
+                
                 entity.Property(e => e.Cvmcth_Fecalt)
                     .HasColumnType("datetime")
                     .HasColumnName("CVMCTH_FECALT");
@@ -1555,14 +1505,6 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("CVMCTH_PERCAN")
                     .IsFixedLength(true);
-
-                entity.Property(e => e.Cvmcth_Priact)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_PRIACT");
-
-                entity.Property(e => e.Cvmcth_Priaju)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_PRIAJU");
 
                 entity.Property(e => e.Cvmcth_Prifac)
                     .HasColumnType("datetime")
@@ -1653,25 +1595,10 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("CVMCTH_TIPOPR");
 
-                entity.Property(e => e.Cvmcth_Ufaaux)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_UFAAUX");
-
-                entity.Property(e => e.Cvmcth_Ultaju)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_ULTAJU");
-
-                entity.Property(e => e.Cvmcth_Ultbas)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_ULTBAS");
-
                 entity.Property(e => e.Cvmcth_Ultfac)
                     .HasColumnType("datetime")
                     .HasColumnName("CVMCTH_ULTFAC");
 
-                entity.Property(e => e.Cvmcth_Ultfba)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CVMCTH_ULTFBA");
 
                 entity.Property(e => e.Cvmcth_Ultopr)
                     .HasMaxLength(1)
@@ -1709,7 +1636,7 @@ namespace APINosis.Entities
 
             modelBuilder.Entity<Cvmcti>(entity =>
             {
-                entity.HasKey(e => new { e.Cvmcti_Codcon, e.Cvmcti_Nrocon, e.Cvmcti_Nroext, e.Cvmcti_Nroitm, e.Cvmcti_Debhab });
+                entity.HasKey(e => new { e.Cvmcti_Codcon, e.Cvmcti_Nrocon, e.Cvmcti_Nroext, e.Cvmcti_Nroitm});
 
                 entity.ToTable("CVMCTI");
 
@@ -1904,9 +1831,6 @@ namespace APINosis.Entities
                     .HasColumnName("USR_CVMCTI_CODOTR")
                     .IsFixedLength(true);
 
-                entity.Property(e => e.Usr_Cvmcti_Fccnew)
-                    .HasColumnType("datetime")
-                    .HasColumnName("USR_CVMCTI_FCCNEW");
 
                 entity.Property(e => e.Usr_Cvmcti_Fchcom)
                     .HasColumnType("datetime")

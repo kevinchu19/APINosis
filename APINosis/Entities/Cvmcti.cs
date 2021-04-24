@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -56,14 +57,13 @@ namespace APINosis.Entities
         public string Usr_Cvmcti_Idcust { get; set; }
         public int? Usr_Cvmcti_Nroreg { get; set; }
         public DateTime? Usr_Cvmcti_Fchimp { get; set; }
-        public DateTime? Usr_Cvmcti_Fccnew { get; set; }
         public DateTime? Cvmcti_Fecalt { get; set; }
         public DateTime? Cvmcti_Fecmod { get; set; }
         public string Cvmcti_Userid { get; set; }
         public string Cvmcti_Ultopr { get; set; }
         public string Cvmcti_Debaja { get; set; }
         public string Cvmcti_Oalias { get; set; }
-
-        public Cvmcth Contrato { get; set; }
+        [NotMapped]
+        public virtual Cvmcth Contrato { get; set; }
     }
 }

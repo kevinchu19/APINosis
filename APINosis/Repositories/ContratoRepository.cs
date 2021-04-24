@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -20,14 +21,12 @@ namespace APINosis.Repositories
     public class ContratoRepository: Repository
     {
         
-        public IOEObject oCvmcth { get; set; }
-        public Translate Translate { get; }
+        public CV_RR_CVMCTH oCvmcth { get; set; }        
 
-        public ContratoRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration, IOEObject oInstanceCvmcth, Translate translate) :
+        public ContratoRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration, CV_RR_CVMCTH oInstanceCvmcth) :
             base(context, configuration, logger)
         {
             oCvmcth = oInstanceCvmcth;
-            Translate = translate;
         }
         
         public async Task<List<Cvmcth>> Get(string? tipoContrato, string codigoContrato, int numeroExtension)
@@ -59,18 +58,18 @@ namespace APINosis.Repositories
 
             foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
             {
-                if (propiedad.PropertyType == typeof(string))
-                {
-                    oCvmcth.asignoaTM("Cvmcth", propiedad.Name, (string)propiedad.GetValue(contrato, null), 1);
-                }
 
                 if (propiedad.PropertyType == typeof(ICollection<Cvmcti>))
                 {
-                    oCvmcth.limpioGrilla("CVMCTI");
+                    oCvmcth.limpioGrilla("CVMCTI01");
                     foreach (Cvmcti item in contrato.Items)
                     {
-                        oCvmcth.asignoaTM("CVMCTI", "", item, 2);
+                        oCvmcth.asignoaTM("CVMCTI01", "", item, 2);
                     }
+                }
+                else
+                {  
+                    oCvmcth.asignoaTM("CVMCTH01", propiedad.Name, propiedad.GetValue(contrato, null), 1);
                 }
 
                 
@@ -88,7 +87,7 @@ namespace APINosis.Repositories
                 return new ContratoResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ContratoResponse("OK", 0, contrato);
+            return new ContratoResponse("OK", 0, contrato, "Contrato");
         }
 
         public async Task<ContratoResponse> ActualizoContrato(Cvmcth contrato)
@@ -122,8 +121,38 @@ namespace APINosis.Repositories
                             propiedad.Name != "Cvmcth_Nroext" &&
                             propiedad.Name != "Items")
                     {
-
-                        typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                        if (propiedad.Name == "Cvmcth_Desfre")
+                        {
+                            short valorAAsignar = 0;
+                            switch (value)
+                            {
+                                case "A":
+                                    valorAAsignar = 360;
+                                    break;
+                                case "M":
+                                    valorAAsignar = 30;
+                                    break;
+                                case "B":
+                                    valorAAsignar = 60;
+                                    break;
+                                case "T":
+                                    valorAAsignar = 40;
+                                    break;
+                                case "C":
+                                    valorAAsignar = 30;
+                                    break;
+                                case "S":
+                                    valorAAsignar = 180;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            contratoAActualizar.Cvmcth_Frefac = valorAAsignar;                        }
+                        else
+                        {
+                            typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                        }
+                        
                     }
                 }
 
@@ -148,21 +177,22 @@ namespace APINosis.Repositories
                 items.Cvmcti_Codcon = contrato.Cvmcth_Codcon;
                 items.Cvmcti_Nrocon = contrato.Cvmcth_Nrocon;
                 items.Cvmcti_Nroext = contrato.Cvmcth_Nroext;
-                ContratoResponse response = await this.actualizoItem(items);
+                ContratoResponse response = await this.actualizoItem(items, contrato);
                 if (response.Estado != 200)
                 {
                     return response;
                 }
             }
 
-            return new ContratoResponse("OK", 0);
+            return new ContratoResponse("OK", 0, contrato, "Contrato");
 
         }
 
-        private async Task<ContratoResponse> actualizoItem(Cvmcti item)
+        private async Task<ContratoResponse> actualizoItem(Cvmcti item, Cvmcth contrato)
         {
             Cvmcti ItemAActualizar = await Context.Cvmcti
-                                        .FindAsync(new object[] { item.Cvmcti_Codcon, item.Cvmcti_Nrocon, item.Cvmcti_Nroext, item.Cvmcti_Nroitm });
+                                        .FindAsync(new object[] { item.Cvmcti_Codcon, item.Cvmcti_Nrocon,
+                                                                  item.Cvmcti_Nroext, item.Cvmcti_Nroitm });
             if (ItemAActualizar == null)
             {
                 Cvmcti nuevoItem = new Cvmcti{};
@@ -173,19 +203,46 @@ namespace APINosis.Repositories
 
                 foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
                 {
-                    string value = (string)propiedad.GetValue(item, null);
-                    if (value != "null" && value != "NULL" && value != null )
-                    {
-                        typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
-                    }
+               
+                        object value = propiedad.GetValue(item, null);
+                        switch (propiedad.GetValue(item, null))
+                        {
+                            case string:
+                                if ((string)value != "null" && (string)value != "NULL" && value != null)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
+                                }
+                                break;
+                            case int:
+                                if ((int)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
+                                }
+                                break;
+                            case short:
+                                if ((short)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
+                                }
+                                break;
+                            case decimal:
+                                if ((decimal)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, nuevoItem, new object[] { value });
+                                }
+                                break;
+                            default:
+                                break;
+                        }
 
+                   
                 }
 
-
+                nuevoItem.Cvmcti_Debhab = "H";
                 nuevoItem.Cvmcti_Fecalt= DateTime.Now;
                 nuevoItem.Cvmcti_Fecmod = DateTime.Now;
                 nuevoItem.Cvmcti_Debaja = "N";
-                nuevoItem.Cvmcti_Oalias = "VTMCLC";
+                nuevoItem.Cvmcti_Oalias = "CVMCTH01";
                 nuevoItem.Cvmcti_Ultopr = "M";
                 nuevoItem.Cvmcti_Userid = "API";
                 
@@ -209,15 +266,42 @@ namespace APINosis.Repositories
 
                 foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
                 {
-                    string value = (string)propiedad.GetValue(item, null);
-                    if (value != "null" && value != "NULL" && value != null && 
-                                propiedad.Name != "Cvmcti_Codcon" && 
-                                propiedad.Name != "Cvmcti_Nrocon" &&
-                                propiedad.Name != "Cvmcti_Nroext" &&
-                                propiedad.Name != "Cvmcti_Nroitm" )
+                    if (propiedad.Name != "Cvmcti_Codcon" &&
+                        propiedad.Name != "Cvmcti_Nrocon" &&
+                        propiedad.Name != "Cvmcti_Nroext" &&
+                        propiedad.Name != "Cvmcti_Nroitm")
                     {
+                        object value = propiedad.GetValue(item, null);
+                        switch (propiedad.GetValue(item,null))
+                        {
+                            case string:
+                                if ((string)value != "null" && (string)value != "NULL" && value != null)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
+                                }
+                                break;
+                            case int: 
+                                if ((int)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
+                                }
+                                break;
+                            case short:
+                                if ((short)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
+                                }
+                                break;
+                            case decimal:
+                                if ((decimal)value != 0)
+                                {
+                                    typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
+                                }
+                                break;
+                            default:
+                                break;
+                        }   
 
-                        typeItem.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, ItemAActualizar, new object[] { value });
                     }
 
                 }
@@ -236,7 +320,7 @@ namespace APINosis.Repositories
                     return new ContratoResponse("Bad Request", 0, e.InnerException.Message);
                 }
             }
-            return new ContratoResponse("OK", 0);
+            return new ContratoResponse("OK", 0, contrato, "Contrato");
 
         }
 

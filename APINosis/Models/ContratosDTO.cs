@@ -18,10 +18,9 @@ namespace ApiNosis.Models
         public string Vendedor { get; set; }
         public string Contratista { get; set; }
         public string ComprobanteVentas { get; set; }
-        public DateTime Del { get; set; }
-        public DateTime Al { get; set; }
-        public DateTime Emisiondela1rafactura { get; set; }
-        public DateTime Ultimafacturaaemitir { get; set; }
+        public string Del { get; set; }
+        public string Emisiondela1rafactura { get; set; }
+        public string Ultimafacturaaemitir { get; set; }
         public string Listadeprecios { get; set; }
         public string MonedaEmision { get; set; }
         public string Preciosvigentesalfacturar { get; set; }
@@ -31,6 +30,6 @@ namespace ApiNosis.Models
         public string Tipodeexportacion { get; set; }
         public string Condicioncomercial { get; set; }
         public string ModalidaddePago { get; set; }
-        public ItemsContratosDTO Items { get; set; }
+        public ICollection<ItemsContratosDTO> Items { get; set; }
     }
 }
