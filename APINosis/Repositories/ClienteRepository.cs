@@ -107,7 +107,7 @@ namespace APINosis.Repositories
                 return new ClienteResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ClienteResponse("OK", 0, cliente, "Cliente");
+            return new ClienteResponse("OK", 0, cliente, "Cliente generado");
         }
 
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
@@ -219,7 +219,7 @@ namespace APINosis.Repositories
 
             }
 
-            return new ClienteResponse("OK", 0, new VtmclhDTO(),"Cliente");
+            return new ClienteResponse("OK", 0, new VtmclhDTO(),"Cliente actualizado");
 
         }
 
@@ -313,7 +313,7 @@ namespace APINosis.Repositories
                     return new ClienteResponse("Bad Request", 0, e.InnerException.Message);
                 }
             }
-            return new ClienteResponse("OK", 0, new VtmclhDTO(), "Cliente");
+            return new ClienteResponse("OK", 0, new VtmclhDTO(), "Cliente actualizado");
 
         }
 

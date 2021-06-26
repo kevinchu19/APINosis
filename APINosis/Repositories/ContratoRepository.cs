@@ -68,7 +68,7 @@ namespace APINosis.Repositories
                     }
                 }
                 else
-                {  
+                {
                     oCvmcth.asignoaTM("CVMCTH01", propiedad.Name, propiedad.GetValue(contrato, null), 1);
                 }
 
@@ -87,7 +87,7 @@ namespace APINosis.Repositories
                 return new ContratoResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ContratoResponse("OK", 0, contrato, "Contrato");
+            return new ContratoResponse("OK", 0, contrato, "Contrato generado");
         }
 
         public async Task<ContratoResponse> ActualizoContrato(Cvmcth contrato)
@@ -121,37 +121,58 @@ namespace APINosis.Repositories
                             propiedad.Name != "Cvmcth_Nroext" &&
                             propiedad.Name != "Items")
                     {
-                        if (propiedad.Name == "Cvmcth_Desfre")
+                        switch (propiedad.Name)
                         {
-                            short valorAAsignar = 0;
-                            switch (value)
-                            {
-                                case "A":
-                                    valorAAsignar = 360;
-                                    break;
-                                case "M":
-                                    valorAAsignar = 30;
-                                    break;
-                                case "B":
-                                    valorAAsignar = 60;
-                                    break;
-                                case "T":
-                                    valorAAsignar = 40;
-                                    break;
-                                case "C":
-                                    valorAAsignar = 30;
-                                    break;
-                                case "S":
-                                    valorAAsignar = 180;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            contratoAActualizar.Cvmcth_Frefac = valorAAsignar;                        }
-                        else
-                        {
-                            typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                            case "Cvmcth_Desfre":
+                                short valorAAsignar = 0;
+                                switch (value)
+                                {
+                                    case "A":
+                                        valorAAsignar = 360;
+                                        break;
+                                    case "M":
+                                        valorAAsignar = 30;
+                                        break;
+                                    case "B":
+                                        valorAAsignar = 60;
+                                        break;
+                                    case "T":
+                                        valorAAsignar = 40;
+                                        break;
+                                    case "C":
+                                        valorAAsignar = 30;
+                                        break;
+                                    case "S":
+                                        valorAAsignar = 180;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                contratoAActualizar.Cvmcth_Frefac = valorAAsignar;
+                                break;
+                            case "Cvmcth_Nrocta": case "Cvmcth_Nrosub":
+                                string codigoCliente = propiedad.Name == "Cvmcth_Nrocta" ? contrato.Cvmcth_Nrocta : contrato.Cvmcth_Nrosub; 
+                                bool ExisteCliente = await ValidoVTMCLH(codigoCliente);
+                                if (ExisteCliente == false)
+                                {
+                                    return new ContratoResponse("Bad Request", 0, $"El codigo {codigoCliente} no se encuentra creado como cliente.");
+                                }
+                                typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                                break;
+
+                            case "Cvmcth_Codcvt":
+                                bool ExisteComprobante = await ValidoGRCCBH(contrato);
+                                if (ExisteComprobante ==false)
+                                {
+                                    return new ContratoResponse("Bad Request", 0, $"El comprobante de ventas {contrato.Cvmcth_Codcvt} no existe.");
+                                }
+                                typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                                break;
+                            default:
+                                typeContrato.InvokeMember(propiedad.Name, BindingFlags.SetProperty, null, contratoAActualizar, new object[] { value });
+                                break;
                         }
+
                         
                     }
                 }
@@ -184,8 +205,28 @@ namespace APINosis.Repositories
                 }
             }
 
-            return new ContratoResponse("OK", 0, contrato, "Contrato");
+            return new ContratoResponse("OK", 0, contrato, "Contrato actualizado");
 
+        }
+
+        private async Task<bool> ValidoVTMCLH(string codigoCliente)
+        {
+            Vtmclh cliente = await Context.Vtmclh.FindAsync(new object[] { codigoCliente });
+            if (cliente != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private async Task<bool> ValidoGRCCBH(Cvmcth contrato)
+        {
+            Grccbh comprobanteVT = await Context.Grccbh.FindAsync(new object[] { "VT", contrato.Cvmcth_Codcvt });
+            if (comprobanteVT != null)
+            {
+                return true;
+            }
+            return false;
         }
 
         private async Task<ContratoResponse> actualizoItem(Cvmcti item, Cvmcth contrato)
@@ -328,7 +369,7 @@ namespace APINosis.Repositories
                     return new ContratoResponse("Bad Request", 0, e.InnerException.Message);
                 }
             }
-            return new ContratoResponse("OK", 0, contrato, "Contrato");
+            return new ContratoResponse("OK", 0, contrato, "Contrato actualizado");
 
         }
 

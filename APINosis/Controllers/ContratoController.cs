@@ -50,14 +50,14 @@ namespace APINosis.Controllers
             foreach (ContratosDTO contrato in contratos)
             {
                 Logger.Information($"Se recibio actualizacion de datos del contrato{contrato.TipoContrato} - " +
-                                   $"'{contrato.CodigoContrato} - Id de operacion: {contrato.idOperacion}");
+                                   $"'{contrato.CodigoContrato} - Id de operacion: {contrato.IdOperacion}");
                 
-                int idOperacion = contrato.idOperacion;
+                int idOperacion = contrato.IdOperacion;
 
                 if (Env.IsProduction())
                 {
                     if (int.TryParse(contrato.Cliente, out _)) { contrato.Cliente= string.Format("{0:00000000}", int.Parse(contrato.Cliente)); };
-                    if (int.TryParse(contrato.Codigodesubcuenta, out _)) { contrato.Codigodesubcuenta = string.Format("{0:00000000}", int.Parse(contrato.Codigodesubcuenta)); }
+                    if (int.TryParse(contrato.CodigoDeSubcuenta, out _)) { contrato.CodigoDeSubcuenta= string.Format("{0:00000000}", int.Parse(contrato.CodigoDeSubcuenta)); }
                 }
 
                 Cvmcth contratoFormat = Mapper.Map<ContratosDTO, Cvmcth>(contrato);
@@ -90,14 +90,14 @@ namespace APINosis.Controllers
         public async Task<ActionResult<ClienteResponse>> Post ([FromBody] ContratosDTO contrato)
         {
             Logger.Information($"Se recibio posteo de nuevo contrato{contrato.TipoContrato} - {contrato.CodigoContrato} - " +
-                                $"Id de operacion: {contrato.idOperacion}");
+                                $"Id de operacion: {contrato.IdOperacion}");
 
-            int idOperacion = contrato.idOperacion;
+            int idOperacion = contrato.IdOperacion;
 
             if (Env.IsProduction())
             {
                 if (int.TryParse(contrato.Cliente, out _)) { contrato.Cliente = string.Format("{0:00000000}", int.Parse(contrato.Cliente)); };
-                if (int.TryParse(contrato.Codigodesubcuenta, out _)) { contrato.Codigodesubcuenta = string.Format("{0:00000000}", int.Parse(contrato.Codigodesubcuenta)); }
+                if (int.TryParse(contrato.CodigoDeSubcuenta, out _)) { contrato.CodigoDeSubcuenta = string.Format("{0:00000000}", int.Parse(contrato.CodigoDeSubcuenta)); }
             }
 
 

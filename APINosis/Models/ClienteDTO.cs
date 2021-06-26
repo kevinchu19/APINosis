@@ -14,7 +14,7 @@ namespace APINosis.Models
         public string DireccionFiscal { get; set; }
         public string Pais { get; set; }
         public string CodigoPostal { get; set; }
-        public string SituacionFrenteAlIVA { get; set; }
+        public string SituacionFrenteAlIva { get; set; }
         public string TipoDocumento { get; set; }
         public string NumeroDocumento { get; set; }
         public string Vendedor { get; set; }

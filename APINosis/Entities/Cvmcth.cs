@@ -85,6 +85,7 @@ namespace APINosis.Entities
         public string Cvmcth_Debaja { get; set; }
         public string Cvmcth_Oalias { get; set; }
         public ICollection<Cvmcti> Items { get; set; }
+
         [NotMapped]
         public virtual string Cvmcth_Desfre { get; set; }
     }

@@ -9,5 +9,6 @@ namespace APINosis.Models
     {
         public bool Result { get; set; }
         public string errorMessage{ get; set; }
+
     }
 }

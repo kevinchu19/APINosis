@@ -17,7 +17,7 @@ namespace OE.Models
         protected BaseResponse(string titulo, int idOperacion, T resource,string recurso)
         {
             Estado  = 200;
-            Mensaje = $"{recurso} generado con éxito";
+            Mensaje = $"{recurso} con éxito";
             Titulo = titulo;
             IdOperacion = idOperacion;
         }
