@@ -2,6 +2,7 @@
 using APINosis.Helpers;
 using APINosis.Interfaces;
 using APINosis.Models;
+using APINosis.Models.Response;
 using APINosis.OE;
 using AutoMapper;
 using Microsoft.Data.SqlClient;
@@ -107,7 +108,7 @@ namespace APINosis.Repositories
                 return new ClienteResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ClienteResponse("OK", 0, cliente, "Cliente generado");
+            return new ClienteResponse("OK", 0, null, "Cliente generado");
         }
 
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
@@ -219,7 +220,7 @@ namespace APINosis.Repositories
 
             }
 
-            return new ClienteResponse("OK", 0, new VtmclhDTO(),"Cliente actualizado");
+            return new ClienteResponse("OK", 0, null,"Cliente actualizado");
 
         }
 

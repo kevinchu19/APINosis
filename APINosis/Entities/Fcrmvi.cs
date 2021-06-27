@@ -11,12 +11,12 @@ namespace APINosis.Entities
         public string Fcrmvi_Codfor { get; set; }
         public int Fcrmvi_Nrofor { get; set; }
         public int Fcrmvi_Nroitm { get; set; }
-        public int Fcrmvi_Nivexp { get; set; }
+        public string Fcrmvi_Nivexp { get; set; }
         public string Fcrmvi_Modapl { get; set; }
         public string Fcrmvi_Codapl { get; set; }
         public int Fcrmvi_Nroapl { get; set; }
         public int Fcrmvi_Itmapl { get; set; }
-        public int Fcrmvi_Expapl { get; set; }
+        public string Fcrmvi_Expapl { get; set; }
         public string Fcrmvi_Tipcpt { get; set; }
         public string Fcrmvi_Codcpt { get; set; }
         public string Fcrmvi_Tipori { get; set; }

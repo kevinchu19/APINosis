@@ -1,6 +1,7 @@
 ﻿using APINosis.Helpers;
 using APINosis.Interfaces;
 using APINosis.Models;
+using APINosis.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,6 +20,7 @@ namespace APINosis.OE
         protected object oCompany { get; set; }
         protected object oWizard { get; set; }
         protected object oCurrentStep { get; set; }
+        protected object oFieldsWizard { get; set; }
         protected object oInstance { get; set; }
         protected object oTable { get; set; }
         protected object oRow { get; set; }
@@ -42,12 +44,13 @@ namespace APINosis.OE
         {
             oCurrentStep = OEType.InvokeMember("CurrentStep", BindingFlags.GetProperty, null, oWizard, null);
             oTable= OEType.InvokeMember("Table", BindingFlags.GetProperty, null, oCurrentStep, null);
-          
+            oFieldsWizard= OEType.InvokeMember("Fields", BindingFlags.InvokeMethod, null, oTable, null);
+
             if (!campoAuditoria(field))
             {
                 try
                 {
-                    oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
+                    oField = OEType.InvokeMember("Item", BindingFlags.InvokeMethod, null, oFieldsWizard, new object[] { field });
                 }
                 catch { }
 
@@ -105,7 +108,10 @@ namespace APINosis.OE
                         {
                             oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { field });
                         }
-                        catch {}
+                        catch 
+                        {
+                            throw new BadRequestException($"Error al completar el campo {field} con el valor {valor}: El campo no existe");
+                        }
 
                         resuelvoValor(oField, valor);
                     }
@@ -142,13 +148,14 @@ namespace APINosis.OE
         {
             string[] sErrorMessage = new string[] { null };
             object result = OEType.InvokeMember("Save", BindingFlags.InvokeMethod, null, oInstance, sErrorMessage);
-
+            ComprobanteGenerado comprobanteGenerado = new ComprobanteGenerado();
+            
             Translate oTranslate = new Translate(_pathLanguage);
 
             if ((bool)result == false && sErrorMessage[0] == null)
             {
                 int messageCount = (int)OEType.InvokeMember("MessageCount", BindingFlags.GetProperty, null, oInstance, null);
-                int i = 0;
+                int i;
                 for (i = messageCount; i >= 1; i--)
                 {
                     dynamic oMessages = OEType.InvokeMember("Messages", BindingFlags.GetProperty, null, oInstance, new object[] { i });
@@ -160,13 +167,44 @@ namespace APINosis.OE
                     }
                 }
             }
+            else
+            {
+                dynamic oDataAccess = OEType.InvokeMember("DataAccess", BindingFlags.GetProperty, null, oInstance, null);
+                dynamic oPerformedOperations = OEType.InvokeMember("PerformedOperations", BindingFlags.GetProperty, null, oDataAccess, null);
+                foreach (dynamic oPerform in oPerformedOperations)
+                {
+                    dynamic oKeys = OEType.InvokeMember("Keys", BindingFlags.GetProperty, null, oPerform, null);
+                    int count = OEType.InvokeMember("Count", BindingFlags.GetProperty, null, oKeys, null);
+                    for (int i = 1; i <= count; i++)
+                    {
+                        dynamic oKey = OEType.InvokeMember("Keys", BindingFlags.GetProperty, null, oPerform, new object[] { i });
+                        string name = OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oKey, null);
+                        switch (name.Substring(name.Length-6,6))
+                        {
+                            case "MODFOR":
+                                comprobanteGenerado.ModuloComprobante = OEType.InvokeMember("Value", BindingFlags.GetProperty, null, oKey, null);
+                                break;
+                            case "CODFOR":
+                                comprobanteGenerado.CodigoComprobante = OEType.InvokeMember("Value", BindingFlags.GetProperty, null, oKey, null);
+                                break;
+                            case "NROFOR":
+                                comprobanteGenerado.NumeroComprobante = OEType.InvokeMember("Value", BindingFlags.GetProperty, null, oKey, null);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+            }
 
             this.closeObjectInstance();
 
             return new Save
             {
                 Result = (bool)result,
-                errorMessage = sErrorMessage[0]
+                errorMessage = sErrorMessage[0],
+                ComprobanteGenerado = comprobanteGenerado
             };
 
 
@@ -189,19 +227,34 @@ namespace APINosis.OE
 
         protected void resuelvoValor(dynamic oField, object value)
         {
+            bool campoHabilitado;
             try
             {
-                if ((bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null) == false)
+                try
                 {
+                    campoHabilitado = (bool)OEType.InvokeMember("Readonly", BindingFlags.GetProperty, null, oField, null);
+                }
+                catch
+                {
+                    //Si es campo de wizard entra por aca
+                    campoHabilitado = !(bool)OEType.InvokeMember("Enabled", BindingFlags.GetProperty, null, oField, null);
+                }
+                if (!campoHabilitado)
+                {
+                    try
+                    {
+                        OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
+                    }
+                    catch {}
                     switch ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null))
                     {
+                        
                         case 8:
                             if (value != null)
                             {
 
                                 DateTime dateValue = (DateTime)value;
                                 value = dateValue.ToString("yyyyMMdd");
-                                OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                                 OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                             }
                             break;
@@ -211,7 +264,6 @@ namespace APINosis.OE
                             {
                                 if ((int)value != 0)
                                 {
-                                    OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                                     OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                                 }
                             }
@@ -222,7 +274,6 @@ namespace APINosis.OE
                             {
                                 if ((short)value != 0)
                                 {
-                                    OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                                     OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                                 }
                             }
@@ -233,7 +284,6 @@ namespace APINosis.OE
                             {
                                 if ((decimal)value != 0)
                                 {
-                                    OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                                     OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                                 }
                             }
@@ -242,7 +292,6 @@ namespace APINosis.OE
 
                             if ((string)value != "null" && (string)value != "NULL" && value != null)
                             {
-                                OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                                 OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
                             }
                             break;
@@ -253,7 +302,7 @@ namespace APINosis.OE
             }
             catch (Exception e)
             {
-                throw new BadRequestException($"Error al completar el campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} con el valor {value}: {e.InnerException.Message}");
+                throw new BadRequestException($"Error al completar el campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} con el valor {value}: {e.Message}");
             }
             
         }

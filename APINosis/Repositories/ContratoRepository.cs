@@ -3,6 +3,7 @@ using APINosis.Entities;
 using APINosis.Helpers;
 using APINosis.Interfaces;
 using APINosis.Models;
+using APINosis.Models.Response;
 using APINosis.OE;
 using AutoMapper;
 using Microsoft.Data.SqlClient;
@@ -87,7 +88,7 @@ namespace APINosis.Repositories
                 return new ContratoResponse("Bad Request", 0, mensajeError);
             }
 
-            return new ContratoResponse("OK", 0, contrato, "Contrato generado");
+            return new ContratoResponse("OK", 0, null, "Contrato generado");
         }
 
         public async Task<ContratoResponse> ActualizoContrato(Cvmcth contrato)
@@ -205,7 +206,7 @@ namespace APINosis.Repositories
                 }
             }
 
-            return new ContratoResponse("OK", 0, contrato, "Contrato actualizado");
+            return new ContratoResponse("OK", 0, null, "Contrato actualizado");
 
         }
 

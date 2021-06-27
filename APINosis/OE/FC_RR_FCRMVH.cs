@@ -21,7 +21,7 @@ namespace APINosis.OE
         public void MoveNext()
         {
             OEType.InvokeMember("MoveNext", BindingFlags.InvokeMethod, null, oWizard, null);
-            oInstance = OEType.InvokeMember("NextObject", BindingFlags.InvokeMethod, null, oWizard, null);
+            oInstance = OEType.InvokeMember("NextObject", BindingFlags.GetProperty, null, oWizard, null);
         }
 
     }

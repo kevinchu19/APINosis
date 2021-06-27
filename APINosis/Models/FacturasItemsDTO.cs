@@ -27,7 +27,7 @@ namespace ApiNosis.Models
         public string ModuloOTOriginal { get; set; }
         public string CodigoOTOriginal { get; set; }
         public decimal NumeroOTOriginal { get; set; }
-        public DateTime FechaOTOriginal { get; set; }
+        public string FechaOTOriginal { get; set; }
         public string NumeroOrdendeCompra { get; set; }
         public int NumeroItemCustom { get; set; }
         public string IDCustom { get; set; }

@@ -1,11 +1,10 @@
 ﻿using APINosis.Entities;
-using OE.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace APINosis.Models
+namespace APINosis.Models.Response
 {
     public class ContratoResponse : BaseResponse<Cvmcth>
     {

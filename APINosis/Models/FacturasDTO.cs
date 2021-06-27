@@ -7,10 +7,11 @@ namespace ApiNosis.Models
 {
     public class FacturasDTO
     {
+        public int IdOperacion { get; set; }
         public string CircuitoOrigen { get; set; }
         public string CircuitoAplicacion { get; set; }
         public string ComprobanteVentas { get; set; }
-        public DateTime FechaContable { get; set; }
+        public string FechaContable { get; set; }
         public string Cliente { get; set; }
         public string CodigoSubcuenta { get; set; }
         public string DireccionEntrega { get; set; }
@@ -30,7 +31,7 @@ namespace ApiNosis.Models
         public string ModalidadPago { get; set; }
         public string LocalidadEntrega { get; set; }
         public string CodigoPostalExtendidoEntrega { get; set; }
-        public DateTime FechaFactura { get; set; }
+        public string FechaFactura { get; set; }
         public IEnumerable<FacturasItemsDTO> Items { get; set; } 
         
     }

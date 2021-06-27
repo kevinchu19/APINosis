@@ -48,6 +48,13 @@ namespace APINosis
             services.AddTransient(provider =>
                 new FC_RR_FCRMVH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]));
 
+            services.AddScoped<ClienteRepository>();
+
+            services.AddScoped<ContratoRepository>();
+
+            services.AddScoped<FacturasRepository>();
+
+
             services.AddAutoMapper(configuration =>
             {
                 configuration.CreateMap<string, DateTime>().ConvertUsing(new DateTimeTypeConverter());
@@ -287,7 +294,11 @@ namespace APINosis
             {
                 Options.Filters.Add(typeof(FiltrodeExcepcion));
             })
-                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null)
+                .AddJsonOptions(options =>
+                    { 
+                        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                        options.JsonSerializerOptions.IgnoreNullValues = true;
+                    })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
                 
             
@@ -303,9 +314,6 @@ namespace APINosis
             services.AddMvc()
                 .AddXmlDataContractSerializerFormatters();
 
-            services.AddScoped<ClienteRepository>();
-
-            services.AddScoped<ContratoRepository>();
 
             services.AddSingleton<Serilog.ILogger>(options =>
             {
