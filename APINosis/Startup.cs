@@ -234,6 +234,8 @@ namespace APINosis
                 .ForMember(dest => dest.Virt_Circom, opt => opt.MapFrom(src => src.CircuitoOrigen))
                 .ForMember(dest => dest.Virt_Cirapl, opt => opt.MapFrom(src => src.CircuitoAplicacion))
                 .ForMember(dest => dest.Virt_Codcvt, opt => opt.MapFrom(src => src.ComprobanteVentas))
+                .ForMember(dest => dest.Fcrmvh_Codfor, opt => opt.MapFrom(src => src.CodigoComprobante))
+                .ForMember(dest => dest.Fcrmvh_Nrofor, opt => opt.MapFrom(src => src.NumeroComprobante))
                 .ForMember(dest => dest.Fcrmvh_Fchmov, opt => opt.MapFrom(src => src.FechaContable))
                 .ForMember(dest => dest.Fcrmvh_Nrocta, opt => opt.MapFrom(src => src.Cliente))
                 .ForMember(dest => dest.Fcrmvh_Nrosub, opt => opt.MapFrom(src => src.CodigoSubcuenta))
@@ -255,6 +257,7 @@ namespace APINosis
                 .ForMember(dest => dest.Usr_Fcrmvh_Local2, opt => opt.MapFrom(src => src.LocalidadEntrega))
                 .ForMember(dest => dest.Usr_Fcrmvh_Subpo2, opt => opt.MapFrom(src => src.CodigoPostalExtendidoEntrega))
                 .ForMember(dest => dest.Usr_Fcrmvh_Fchfac, opt => opt.MapFrom(src => src.FechaFactura))
+                .ForMember(dest => dest.Usr_Fcrmvh_Idcrm, opt => opt.MapFrom(src => src.IdOperacion))
                 .ReverseMap();
 
                 configuration.CreateMap<FacturasItemsDTO, Fcrmvi>()

@@ -17,12 +17,12 @@ namespace APINosis.Entities
         public int Fcrmvi_Nroapl { get; set; }
         public int Fcrmvi_Itmapl { get; set; }
         public string Fcrmvi_Expapl { get; set; }
-        public string Fcrmvi_Tipcpt { get; set; }
-        public string Fcrmvi_Codcpt { get; set; }
         public string Fcrmvi_Tipori { get; set; }
         public string Fcrmvi_Artori { get; set; }
-        public decimal? Fcrmvi_Precio { get; set; }
+        public string Fcrmvi_Tipcpt { get; set; }
+        public string Fcrmvi_Codcpt { get; set; }
         public decimal? Fcrmvi_Cantid { get; set; }
+        public decimal? Fcrmvi_Precio { get; set; }
         public decimal? Fcrmvi_Cntbon { get; set; }
         public decimal? Fcrmvi_Pctbf1 { get; set; }
         public decimal? Fcrmvi_Pctbf2 { get; set; }
@@ -43,6 +43,8 @@ namespace APINosis.Entities
         public string Usr_Fcrmvi_Idcust { get; set; }
         public string Usr_Fcrmvi_Vnddor { get; set; }
         public string Usr_Fcrmvi_Vnddo2 { get; set; }
+
+        public Fcrmvh factura { get; set; }
 
 
     }

@@ -2833,6 +2833,9 @@ namespace APINosis.Entities
 
                 entity.ToTable("FCRMVH");
 
+                entity.HasMany(e => e.Items)
+                      .WithOne(c => c.factura);
+
                 entity.HasIndex(e => e.Fcrmvh_Nrofor, "GR_NUMERATION");
                 
                 entity.HasIndex(e => new { e.Fcrmvh_Modfor, e.Fcrmvh_Codfor, e.Fcrmvh_Nrofor, e.Fcrmvh_Fchmov }, "W_FC_FCRMVH");
@@ -2977,15 +2980,19 @@ namespace APINosis.Entities
                     .HasMaxLength(6)
                     .IsUnicode(false)
                     .HasColumnName("FCRMVH_VNDDOR");
-                });
+
+                entity.Property(e => e.Usr_Fcrmvh_Idcrm).HasColumnName("USR_FCRMVH_IDCRM");
+            });
 
             modelBuilder.Entity<Fcrmvi>(entity =>
             {
                 entity.HasKey(e => new { e.Fcrmvi_Modfor, e.Fcrmvi_Codfor, e.Fcrmvi_Nrofor, e.Fcrmvi_Nroitm, e.Fcrmvi_Nivexp, e.Fcrmvi_Modapl, e.Fcrmvi_Codapl, e.Fcrmvi_Nroapl, e.Fcrmvi_Itmapl, e.Fcrmvi_Expapl });
 
                 entity.ToTable("FCRMVI");
+                entity.HasOne(e => e.factura)
+                      .WithMany(c => c.Items)
+                      .HasForeignKey(c => new { c.Fcrmvi_Modfor, c.Fcrmvi_Codfor, c.Fcrmvi_Nrofor });
 
-                
                 entity.HasIndex(e => new { e.Fcrmvi_Modapl, e.Fcrmvi_Codapl, e.Fcrmvi_Nroapl, e.Fcrmvi_Itmapl, e.Fcrmvi_Expapl }, "S_FC_FCRMVH");
 
                 entity.HasIndex(e => new { e.Fcrmvi_Modapl, e.Fcrmvi_Codapl, e.Fcrmvi_Nroapl }, "T_FC_FCRMVH");
@@ -3102,6 +3109,8 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("FCRMVI_TIPORI")
                     .IsFixedLength(true);
+
+
 
             });
 

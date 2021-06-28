@@ -79,7 +79,7 @@ namespace APINosis.OE
                 oRow = OEType.InvokeMember("Add", BindingFlags.InvokeMethod, null, oRows, new object[] { (int)count + 1 });
             }
 
-
+            
             switch (field) // si el campo es vacio, esta mandando un item de grilla
             {
 
@@ -87,12 +87,12 @@ namespace APINosis.OE
                     T item = (T)(object)valor;
                     Type typeItem = item.GetType();
 
-                    System.Reflection.PropertyInfo[] listaPropiedades = typeItem.GetProperties();
+                    PropertyInfo[] listaPropiedades = typeItem.GetProperties();
 
-                    foreach (System.Reflection.PropertyInfo propiedad in listaPropiedades)
+                    foreach (PropertyInfo propiedad in listaPropiedades)
                     {
-                        if (!campoAuditoria(propiedad.Name))
-                        {
+                        if (!campoAuditoria(propiedad.Name) && !propiedad.PropertyType.Namespace.StartsWith("APINosis")) //para validar que solo tome tipos de dato system base
+                        { 
                             oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { propiedad.Name });
                             value = propiedad.GetValue(item, null);
                             resuelvoValor(oField, value);
@@ -148,7 +148,7 @@ namespace APINosis.OE
         {
             string[] sErrorMessage = new string[] { null };
             object result = OEType.InvokeMember("Save", BindingFlags.InvokeMethod, null, oInstance, sErrorMessage);
-            ComprobanteGenerado comprobanteGenerado = new ComprobanteGenerado();
+            ComprobanteGenerado comprobanteGenerado = new ComprobanteGenerado( );
             
             Translate oTranslate = new Translate(_pathLanguage);
 

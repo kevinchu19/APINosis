@@ -1,4 +1,5 @@
-﻿using System;
+﻿using APINosis.Models.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace ApiNosis.Models
         public int IdOperacion { get; set; }
         public string CircuitoOrigen { get; set; }
         public string CircuitoAplicacion { get; set; }
+        public string  CodigoComprobante { get; set; }
+        public int NumeroComprobante { get; set; }
         public string ComprobanteVentas { get; set; }
         public string FechaContable { get; set; }
         public string Cliente { get; set; }
@@ -32,7 +35,11 @@ namespace ApiNosis.Models
         public string LocalidadEntrega { get; set; }
         public string CodigoPostalExtendidoEntrega { get; set; }
         public string FechaFactura { get; set; }
-        public IEnumerable<FacturasItemsDTO> Items { get; set; } 
-        
+        public string NumeroCAE { get; set; }
+        public DateTime? VencimientoCAE { get; set; }
+        public IEnumerable<FacturasItemsDTO> Items { get; set; }
+        public List<ImpuestosComprobanteGenerado> Impuestos { get; set; } = new List<ImpuestosComprobanteGenerado>();
+        public decimal? ImporteTotal { get; set; }
+
     }
 }

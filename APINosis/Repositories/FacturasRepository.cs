@@ -84,13 +84,57 @@ namespace APINosis.Repositories
                 return new FacturaResponse("Bad Request", 0, mensajeError);
             }
 
+
+            PerformedOperation.ComprobanteGenerado.Impuestos.AddRange(await RecuperoImpuestosComprobante(PerformedOperation.ComprobanteGenerado.ModuloComprobante,
+                                                                                            PerformedOperation.ComprobanteGenerado.CodigoComprobante,
+                                                                                            PerformedOperation.ComprobanteGenerado.NumeroComprobante));
+
+            PerformedOperation.ComprobanteGenerado.ImporteTotal = await RecuperoTotalComprobante(PerformedOperation.ComprobanteGenerado.ModuloComprobante,
+                                                                                            PerformedOperation.ComprobanteGenerado.CodigoComprobante,
+                                                                                            PerformedOperation.ComprobanteGenerado.NumeroComprobante);
+
+            return new FacturaResponse("OK", 0, PerformedOperation.ComprobanteGenerado, "Comprobante generado");
+        }
+
+        public async Task<Fcrmvh> Get(string codigoComprobante, int? numeroComprobante, int? idOperacion)
+        {
+            return await Context.Fcrmvh.Where(c=> (c.Fcrmvh_Modfor == "VT" && 
+                                            c.Fcrmvh_Codfor == codigoComprobante &&
+                                            c.Fcrmvh_Nrofor == numeroComprobante) || (c.Usr_Fcrmvh_Idcrm == idOperacion && idOperacion!=null) )
+                                        .Include(i => i.Items)
+                                        .FirstOrDefaultAsync();
+        }
+
+        public async Task<Vtrmvh> RecuperoDatosCAE(string moduloComprobante, string codigoComprobante, int numeroComprobante)
+        {
+            Vtrmvh header = await Context.Vtrmvh
+                        .Where(c => c.Vtrmvh_Modfor == moduloComprobante &&
+                                    c.Vtrmvh_Codfor == codigoComprobante &&
+                                    c.Vtrmvh_Nrofor == numeroComprobante).FirstOrDefaultAsync();
+            return header;
+        }
+
+        public async Task<decimal?> RecuperoTotalComprobante(string moduloComprobante, string codigoComprobante, int numeroComprobante)
+        {
+            Vtrmvi total = await Context.Vtrmvi
+                        .Where(c => c.Vtrmvi_Modfor == moduloComprobante &&
+                                    c.Vtrmvi_Codfor == codigoComprobante &&
+                                    c.Vtrmvi_Nrofor == numeroComprobante &&
+                                    c.Vtrmvi_Tipcpt == "T").FirstOrDefaultAsync();
+            return total.Vtrmvi_Impnac;
+        }
+
+        public async Task<IEnumerable<ImpuestosComprobanteGenerado>> RecuperoImpuestosComprobante(string moduloComprobante, string codigoComprobante, int numeroComprobante)
+        {
+            List<ImpuestosComprobanteGenerado> result = new List<ImpuestosComprobanteGenerado>();
+
             IEnumerable<Vtrmvp> impuestos = await Context.Vtrmvp
-                        .Where(c => c.Vtrmvp_Modfor == PerformedOperation.ComprobanteGenerado.ModuloComprobante &&
-                                    c.Vtrmvp_Codfor == PerformedOperation.ComprobanteGenerado.CodigoComprobante &&
-                                    c.Vtrmvp_Nrofor == PerformedOperation.ComprobanteGenerado.NumeroComprobante).ToListAsync();
+                        .Where(c => c.Vtrmvp_Modfor == moduloComprobante &&
+                                    c.Vtrmvp_Codfor == codigoComprobante &&
+                                    c.Vtrmvp_Nrofor == numeroComprobante).ToListAsync();
             foreach (Vtrmvp impuesto in impuestos)
             {
-                PerformedOperation.ComprobanteGenerado.Impuestos.Add(new ImpuestosComprobanteGenerado()
+                result.Add(new ImpuestosComprobanteGenerado()
                 {
                     TipoConcepto = impuesto.Vtrmvp_Tipcpt,
                     Concepto = impuesto.Vtrmvp_Codcpt,
@@ -99,19 +143,11 @@ namespace APINosis.Repositories
                     ImporteImpuesto = impuesto.Vtrmvp_Impues
 
                 });
+
             }
 
-            Vtrmvi total = await Context.Vtrmvi
-                        .Where(c => c.Vtrmvi_Modfor == PerformedOperation.ComprobanteGenerado.ModuloComprobante &&
-                                    c.Vtrmvi_Codfor == PerformedOperation.ComprobanteGenerado.CodigoComprobante &&
-                                    c.Vtrmvi_Nrofor == PerformedOperation.ComprobanteGenerado.NumeroComprobante &&
-                                    c.Vtrmvi_Tipcpt == "T").FirstOrDefaultAsync();
-
-            PerformedOperation.ComprobanteGenerado.ImporteTotal = total.Vtrmvi_Impnac;
-            
-            return new FacturaResponse("OK", 0, PerformedOperation.ComprobanteGenerado, "Comprobante generado");
+            return result;
         }
-
 
         private async Task<string> GeneroCodigoPostal(string pais, string codpos, string jurisdiccion)
         {

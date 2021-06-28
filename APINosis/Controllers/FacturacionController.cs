@@ -20,7 +20,7 @@ namespace APINosis.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FacturaController : ControllerBase
+    public class FacturacionController : ControllerBase
     {
 
         public FacturasRepository Repository { get; }
@@ -28,7 +28,7 @@ namespace APINosis.Controllers
         public IMapper Mapper { get; }
         public IWebHostEnvironment Env { get; }
 
-        public FacturaController(FacturasRepository repository, Serilog.ILogger logger, IMapper mapper, IWebHostEnvironment env)
+        public FacturacionController(FacturasRepository repository, Serilog.ILogger logger, IMapper mapper, IWebHostEnvironment env)
         {
             Repository = repository;
             Logger = logger;
@@ -36,6 +36,23 @@ namespace APINosis.Controllers
             Env = env;
         }
 
+
+        [HttpGet]
+        public async Task<ActionResult<FacturasDTO>> Get(string codigoComprobante, int? numeroComprobante, int? idOperacion)
+        {
+
+            FacturasDTO factura = Mapper.Map<FacturasDTO>(await Repository.Get(codigoComprobante, numeroComprobante, idOperacion));
+
+
+            Vtrmvh header = await Repository.RecuperoDatosCAE("VT", factura.CodigoComprobante, factura.NumeroComprobante);
+            factura.NumeroCAE = header.Vtrmvh_Nrocae;
+            factura.VencimientoCAE = header.Vtrmvh_Vencae;
+
+            factura.Impuestos.AddRange(await Repository.RecuperoImpuestosComprobante("VT", factura.CodigoComprobante, factura.NumeroComprobante));
+            factura.ImporteTotal = await Repository.RecuperoTotalComprobante("VT", factura.CodigoComprobante, factura.NumeroComprobante);
+
+            return factura;
+        }
         [HttpPost]
         public async Task<ActionResult<FacturaResponse>> Post([FromBody] FacturasDTO factura)
         {

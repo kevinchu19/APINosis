@@ -39,6 +39,7 @@ namespace APINosis.Entities
         public string Usr_Fcrmvh_Local2 { get; set; }
         public string Usr_Fcrmvh_Subpo2 { get; set; }
         public DateTime Usr_Fcrmvh_Fchfac { get; set; }
+        public int? Usr_Fcrmvh_Idcrm { get; set; }
 
         [NotMapped]
         public string Sar_Virt_Tipdop { get; set; }
