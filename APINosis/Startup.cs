@@ -48,11 +48,17 @@ namespace APINosis
             services.AddTransient(provider =>
                 new FC_RR_FCRMVH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]));
 
+            services.AddTransient(provider =>
+                new VT_TT_VTRMVH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]));
+
+
             services.AddScoped<ClienteRepository>();
 
             services.AddScoped<ContratoRepository>();
 
             services.AddScoped<FacturasRepository>();
+
+            services.AddScoped<RecibosRepository>();
 
 
             services.AddAutoMapper(configuration =>
@@ -288,6 +294,63 @@ namespace APINosis
                 .ForMember(dest => dest.Usr_Fcrmvi_Vnddor, opt => opt.MapFrom(src => src.Vendedor))
                 .ForMember(dest => dest.Usr_Fcrmvi_Vnddo2, opt => opt.MapFrom(src => src.Vendedor2))
                 .ReverseMap();
+                
+                configuration.CreateMap<RecibosDTO, Vtrrch>()
+                .ForMember(dest => dest.Vtrmvh_Codcom, opt => opt.MapFrom(src => src.CodigoComprobanteAGenerar))
+                .ForMember(dest => dest.Vtrmvh_Nrocta, opt => opt.MapFrom(src => src.Cliente))
+                .ForMember(dest => dest.Vtrmvh_Fchmov, opt => opt.MapFrom(src => src.FechaContable))
+                .ForMember(dest => dest.Vtrmvh_Cobrad, opt => opt.MapFrom(src => src.Cobrador))
+                .ForMember(dest => dest.Vtrmvh_Textos, opt => opt.MapFrom(src => src.Observacion))
+                .ForMember(dest => dest.Vtrmvh_Nrosub, opt => opt.MapFrom(src => src.CodigoSubcuenta))
+                .ForMember(dest => dest.Vtrmvh_Fchpar, opt => opt.MapFrom(src => src.FechaParidades))
+                .ForMember(dest => dest.Vtrmvh_Utpaor, opt => opt.MapFrom(src => src.UtilizaParidadesOriginales))
+                .ForMember(dest => dest.Usr_Vtrmvh_Fchcbu, opt => opt.MapFrom(src => src.FechaDebito))
+                .ReverseMap();
+
+                configuration.CreateMap<AplicacionesDTO, Vtrrcc01>()
+                .ForMember(dest => dest.Vtrmvc_Codapl, opt => opt.MapFrom(src => src.CodigoFormularioAplicacion))
+                .ForMember(dest => dest.Vtrmvc_Nroapl, opt => opt.MapFrom(src => src.NumeroFormularioAplicacion))
+                .ForMember(dest => dest.Vtrmvc_Cuotas, opt => opt.MapFrom(src => src.Cuota))
+                .ForMember(dest => dest.Virt_Cannac, opt => opt.MapFrom(src => src.ImporteNacionalAplicado))
+                .ForMember(dest => dest.Virt_Descto, opt => opt.MapFrom(src => src.DescuentoRecargo))
+                .ForMember(dest => dest.Vtrmvc_Coflis, opt => opt.MapFrom(src => src.Moneda))
+                .ForMember(dest => dest.Virt_Canext, opt => opt.MapFrom(src => src.ImporteExtranjeraAplicado))
+                .ForMember(dest => dest.Virt_Pctbf1, opt => opt.MapFrom(src => src.PorcentajeDescuentoRecargo1))
+                .ForMember(dest => dest.Virt_Pctbf2, opt => opt.MapFrom(src => src.PorcentajeDescuentoRecargo2))
+                .ForMember(dest => dest.Virt_Pctbf3, opt => opt.MapFrom(src => src.PorcentajeDescuentoRecargo3))
+                .ReverseMap();
+
+                configuration.CreateMap<MediosDeCobroDTO, Vtrrcc04>()
+                .ForMember(dest => dest.Cjrmvi_Tipcpt, opt => opt.MapFrom(src => src.TipoConcepto))
+                .ForMember(dest => dest.Cjrmvi_Codcpt, opt => opt.MapFrom(src => src.CodigoConcepto))
+                .ForMember(dest => dest.Cjrmvi_Cheque, opt => opt.MapFrom(src => src.Cheque))
+                .ForMember(dest => dest.Cjrmvi_Chesuc, opt => opt.MapFrom(src => src.SucursalCheque))
+                .ForMember(dest => dest.Cjrmvi_Codbco, opt => opt.MapFrom(src => src.CodigoBancoCheque))
+                .ForMember(dest => dest.Cjrmvi_Fchaux, opt => opt.MapFrom(src => src.FechaVencimientoCheque))
+                .ForMember(dest => dest.Cjrmvi_Catego, opt => opt.MapFrom(src => src.CategoriaCheque))
+                .ForMember(dest => dest.Cjrmvi_Import, opt => opt.MapFrom(src => src.ImporteNacional))
+                .ForMember(dest => dest.Cjrmvi_Cambio, opt => opt.MapFrom(src => src.TipoCambio))
+                .ForMember(dest => dest.Cjrmvi_Impuss, opt => opt.MapFrom(src => src.ImporteExtranjera))
+                .ForMember(dest => dest.Cjrmvi_Docfir, opt => opt.MapFrom(src => src.FirmanteCheque))
+                .ForMember(dest => dest.Cjrmvi_Textos, opt => opt.MapFrom(src => src.Observaciones))
+                .ForMember(dest => dest.Cjrmvi_Tipdoc, opt => opt.MapFrom(src => src.TipoDocumentoCheque))
+                .ForMember(dest => dest.Cjrmvi_Nrodoc, opt => opt.MapFrom(src => src.NumeroDocumentoCheque))
+                .ForMember(dest => dest.Cjrmvi_Comori, opt => opt.MapFrom(src => src.EstructuraComprobanteOriginal))
+                .ForMember(dest => dest.Cjrmvi_Codori, opt => opt.MapFrom(src => src.CodigoOriginal))
+                .ForMember(dest => dest.Usr_Cjrmvi_Ctacte, opt => opt.MapFrom(src => src.CuentaCorriente))
+                .ForMember(dest => dest.Usr_Cjrmvi_Titula, opt => opt.MapFrom(src => src.Titular))
+                .ForMember(dest => dest.Usr_Cjrmvi_Nrotar, opt => opt.MapFrom(src => src.NumerodeTC))
+                .ForMember(dest => dest.Usr_Cjrmvi_Codaut, opt => opt.MapFrom(src => src.CodigodeAutorizacionTarjetasIDPaypal))
+                .ForMember(dest => dest.Usr_Cjrmvi_Feccbu, opt => opt.MapFrom(src => src.FechaCobranza))
+                .ForMember(dest => dest.Usr_Cjrmvi_Numlot, opt => opt.MapFrom(src => src.NumeroLote))
+                .ForMember(dest => dest.Usr_Cjrmvi_Numcup, opt => opt.MapFrom(src => src.NumeroCupon))
+                .ForMember(dest => dest.Usr_Cjrmvi_Cuotas, opt => opt.MapFrom(src => src.Cuotas))
+                .ForMember(dest => dest.Usr_Cjrmvi_Fecope, opt => opt.MapFrom(src => src.FechaOperacion))
+                .ForMember(dest => dest.Usr_Cjrmvi_Codest, opt => opt.MapFrom(src => src.CodigoEstablecimiento))
+                .ForMember(dest => dest.Usr_Cjrmvi_Idcomp, opt => opt.MapFrom(src => src.IDCompra))
+                .ForMember(dest => dest.Usr_Cjrmvi_Idpago, opt => opt.MapFrom(src => src.IDPago))
+                .ReverseMap();
+
 
             }
                 , typeof(Startup));
