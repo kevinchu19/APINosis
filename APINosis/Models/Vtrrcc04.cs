@@ -12,7 +12,7 @@ namespace APINosis.Models
         public int? Cjrmvi_Cheque { get; set; }
         public int? Cjrmvi_Chesuc { get; set; }
         public string Cjrmvi_Codbco { get; set; }
-        public DateTime Cjrmvi_Fchaux { get; set; }
+        public DateTime? Cjrmvi_Fchaux { get; set; }
         public string Cjrmvi_Catego { get; set; }
         public decimal Cjrmvi_Import { get; set; }
         public decimal? Cjrmvi_Cambio { get; set; }
@@ -27,11 +27,11 @@ namespace APINosis.Models
         public string Usr_Cjrmvi_Titula { get; set; }
         public string Usr_Cjrmvi_Nrotar { get; set; }
         public string Usr_Cjrmvi_Codaut { get; set; }
-        public DateTime Usr_Cjrmvi_Feccbu { get; set; }
+        public DateTime? Usr_Cjrmvi_Feccbu { get; set; }
         public int? Usr_Cjrmvi_Numlot { get; set; }
         public int? Usr_Cjrmvi_Numcup { get; set; }
         public int? Usr_Cjrmvi_Cuotas { get; set; }
-        public DateTime Usr_Cjrmvi_Fecope { get; set; }
+        public DateTime? Usr_Cjrmvi_Fecope { get; set; }
         public string Usr_Cjrmvi_Codest { get; set; }
         public string Usr_Cjrmvi_Idcomp { get; set; }
         public string Usr_Cjrmvi_Idpago { get; set; }

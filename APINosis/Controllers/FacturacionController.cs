@@ -44,6 +44,10 @@ namespace APINosis.Controllers
             FacturasDTO factura = Mapper.Map<FacturasDTO>(await Repository.Get(codigoComprobante, numeroComprobante, idOperacion));
 
 
+            if (factura ==null)
+            {
+                throw new BadRequestException("El comprobante solicitado no existe.");
+            }
             Vtrmvh header = await Repository.RecuperoDatosCAE("VT", factura.CodigoComprobante, factura.NumeroComprobante);
             factura.NumeroCAE = header.Vtrmvh_Nrocae;
             factura.VencimientoCAE = header.Vtrmvh_Vencae;

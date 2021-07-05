@@ -74,7 +74,7 @@ namespace APINosis.Repositories
             {
                 if (propiedad.PropertyType == typeof(string))
                 {
-                    oVTMCLH.asignoaTM("VTMCLH", propiedad.Name, (string)propiedad.GetValue(cliente, null), 1);
+                    oVTMCLH.asignoaTM("VTMCLH", propiedad.Name, (string)propiedad.GetValue(cliente, null), 1, Logger);
                 }
 
                 if (propiedad.PropertyType == typeof(List<VtmclcDTO>))
@@ -82,16 +82,16 @@ namespace APINosis.Repositories
                     oVTMCLH.limpioGrilla("VTMCLC");
                     foreach (VtmclcDTO contacto in cliente.Contactos)
                     {
-                        oVTMCLH.asignoaTM("VTMCLC", "", (VtmclcDTO)contacto, 2);
+                        oVTMCLH.asignoaTM("VTMCLC", "", (VtmclcDTO)contacto, 2, Logger);
                     }
                 }
 
                 
             }
 
-            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODCRD", "NA", 1);
-            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_ZONENT", "NA", 1);
-            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODEXP", "2", 1);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODCRD", "NA", 1, Logger);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_ZONENT", "NA", 1, Logger);
+            oVTMCLH.asignoaTM("VTMCLH", "VTMCLH_CODEXP", "2", 1, Logger);
 
             
 

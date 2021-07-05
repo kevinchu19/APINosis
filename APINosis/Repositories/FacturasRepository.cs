@@ -39,9 +39,9 @@ namespace APINosis.Repositories
 
             oFcrmvh.instancioObjeto(tipoOperacion);
 
-            oFcrmvh.asignoaTMWizard("VIRT_CIRCOM", factura.Virt_Circom);
-            oFcrmvh.asignoaTMWizard("VIRT_CIRAPL", factura.Virt_Cirapl);
-            oFcrmvh.asignoaTMWizard("VIRT_CODCVT", factura.Virt_Codcvt);
+            oFcrmvh.asignoaTMWizard("VIRT_CIRCOM", factura.Virt_Circom, Logger);
+            oFcrmvh.asignoaTMWizard("VIRT_CIRAPL", factura.Virt_Cirapl, Logger);
+            oFcrmvh.asignoaTMWizard("VIRT_CODCVT", factura.Virt_Codcvt, Logger);
 
             oFcrmvh.MoveNext();
 
@@ -62,12 +62,12 @@ namespace APINosis.Repositories
                     
                     foreach (Fcrmvi item in factura.Items)
                     {
-                        oFcrmvh.asignoaTM("FCRMVI", "", item, 2);
+                        oFcrmvh.asignoaTM("FCRMVI", "", item, 2, Logger);
                     }
                 }
                 else
                 {
-                    oFcrmvh.asignoaTM("FCRMVH", propiedad.Name, propiedad.GetValue(factura, null), 1);
+                    oFcrmvh.asignoaTM("FCRMVH", propiedad.Name, propiedad.GetValue(factura, null), 1, Logger);
                 }
 
 

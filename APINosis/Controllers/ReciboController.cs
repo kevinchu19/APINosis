@@ -37,7 +37,21 @@ namespace APINosis.Controllers
         }
 
 
-        
+        [HttpGet]
+        public async Task<ActionResult<RecibosDTO>> Get(string codigoComprobante, int? numeroComprobante, int? idOperacion)
+        {
+
+            RecibosDTO recibo = Mapper.Map<RecibosDTO>(await Repository.Get(codigoComprobante, numeroComprobante, idOperacion));
+
+            if (recibo== null)
+            {
+                throw new BadRequestException("El comprobante solicitado no existe.");
+            }
+
+            return recibo;
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<ReciboResponse>> Post([FromBody] RecibosDTO recibo)
         {
@@ -60,7 +74,7 @@ namespace APINosis.Controllers
                 ModelState.AddModelError("Error", "Error de formato");
             }
 
-            ReciboResponse response = recibo.TipoMovimiento == "R" ? await Repository.GraboRecibo(reciboFormat, "NEW") :
+            ReciboResponse response = recibo.TipoMovimiento == "R" ? await Repository.GraboRecibo(reciboFormat, "RUN_FOR_SCRIPT") :
                                                                      await Repository.GraboAnulacion (reciboFormat, "NEW");
          
             response.IdOperacion = idOperacion;

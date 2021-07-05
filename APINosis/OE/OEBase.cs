@@ -40,7 +40,7 @@ namespace APINosis.OE
         }
 
 
-        public void asignoaTMWizard<T>(string field, T valor)
+        public void asignoaTMWizard<T>(string field, T valor, Serilog.ILogger logger)
         {
             oCurrentStep = OEType.InvokeMember("CurrentStep", BindingFlags.GetProperty, null, oWizard, null);
             oTable= OEType.InvokeMember("Table", BindingFlags.GetProperty, null, oCurrentStep, null);
@@ -54,11 +54,11 @@ namespace APINosis.OE
                 }
                 catch { }
 
-                resuelvoValor(oField, valor);
+                resuelvoValor(oField, valor, logger);
             }
 
         }
-        public void asignoaTM<T>(string table, string field, T valor, int deepnessLevel)
+        public void asignoaTM<T>(string table, string field, T valor, int deepnessLevel, Serilog.ILogger logger)
         {
             object value;
 
@@ -95,7 +95,7 @@ namespace APINosis.OE
                         { 
                             oField = OEType.InvokeMember("Fields", BindingFlags.GetProperty, null, oRow, new object[] { propiedad.Name });
                             value = propiedad.GetValue(item, null);
-                            resuelvoValor(oField, value);
+                            resuelvoValor(oField, value, logger);
                         }
                     }
 
@@ -113,7 +113,7 @@ namespace APINosis.OE
                             throw new BadRequestException($"Error al completar el campo {field} con el valor {valor}: El campo no existe");
                         }
 
-                        resuelvoValor(oField, valor);
+                        resuelvoValor(oField, valor, logger);
                     }
 
                     break;
@@ -134,11 +134,14 @@ namespace APINosis.OE
         }
 
         public void closeObjectInstance()
-        {
-            Marshal.ReleaseComObject(oField);
-            Marshal.ReleaseComObject(oRow);
-            Marshal.ReleaseComObject(oTable);
-            Marshal.ReleaseComObject(oInstance);
+        { 
+            if (oFieldsWizard != null) { Marshal.ReleaseComObject(oFieldsWizard);}
+            if (oCurrentStep != null) { Marshal.ReleaseComObject(oCurrentStep);}    
+            if (oWizard != null) { Marshal.ReleaseComObject(oWizard);}
+            if (oField != null) { Marshal.ReleaseComObject(oField);}
+            if (oRow != null) { Marshal.ReleaseComObject(oRow); }
+            if (oTable != null) { Marshal.ReleaseComObject(oTable); }
+            if (oInstance != null) { Marshal.ReleaseComObject(oInstance); }
             Marshal.ReleaseComObject(oApplication);
             Marshal.ReleaseComObject(oCompany);
             //OEType = null;
@@ -225,8 +228,12 @@ namespace APINosis.OE
             return false;
         }
 
-        protected void resuelvoValor(dynamic oField, object value)
+        protected void resuelvoValor(dynamic oField, object value, Serilog.ILogger logger)
         {
+            if(OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null) == "CJRMVI_CHEQUE")
+            {
+                var a = 1;
+            }
             bool campoHabilitado;
             try
             {
@@ -243,62 +250,45 @@ namespace APINosis.OE
                 {
                     try
                     {
-                        OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
+                        //OEType.InvokeMember("Validating", BindingFlags.SetProperty, null, oInstance, new object[] { true });
                     }
                     catch {}
                     switch ((int)OEType.InvokeMember("DataType", BindingFlags.GetProperty, null, oField, null))
                     {
                         
                         case 8:
-                            if (value != null)
+                            if (value != null) //fecha
                             {
 
                                 DateTime dateValue = (DateTime)value;
                                 value = dateValue.ToString("yyyyMMdd");
                                 OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                logger.Information($"campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} completado con el valor {value}");
                             }
                             break;
-                        case 3: case 4: case 6: case 9:
+                        case 3: case 4: case 5: case 6: case 7: case 9: //numero
 
                             if (value != null)
                             {
-                                if ((int)value != 0)
-                                {
-                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
-                                }
+                                OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                logger.Information($"campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} completado con el valor {value}");
                             }
                             
                             break;
-                        case 5:
-                            if (value != null)
-                            {
-                                if ((short)value != 0)
-                                {
-                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
-                                }
-                            }
-
-                            break;
-                        case 7:
-                            if (value != null)
-                            {
-                                if ((decimal)value != 0)
-                                {
-                                    OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
-                                }
-                            }
-                            break;
                         default:
 
-                            if ((string)value != "null" && (string)value != "NULL" && value != null)
+                            if ((string)value != "null" && (string)value != "NULL" && value != null) //caracter
                             {
                                 OEType.InvokeMember("Value", BindingFlags.SetProperty, null, oField, new object[] { value });
+                                logger.Information($"campo {OEType.InvokeMember("Name", BindingFlags.GetProperty, null, oField, null)} completado con el valor {value}");
                             }
                             break;
 
                     };
+                    
                 }
 
+                
             }
             catch (Exception e)
             {

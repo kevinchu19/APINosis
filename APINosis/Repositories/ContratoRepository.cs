@@ -65,12 +65,12 @@ namespace APINosis.Repositories
                     oCvmcth.limpioGrilla("CVMCTI01");
                     foreach (Cvmcti item in contrato.Items)
                     {
-                        oCvmcth.asignoaTM("CVMCTI01", "", item, 2);
+                        oCvmcth.asignoaTM("CVMCTI01", "", item, 2, Logger);
                     }
                 }
                 else
                 {
-                    oCvmcth.asignoaTM("CVMCTH01", propiedad.Name, propiedad.GetValue(contrato, null), 1);
+                    oCvmcth.asignoaTM("CVMCTH01", propiedad.Name, propiedad.GetValue(contrato, null), 1, Logger);
                 }
 
                 

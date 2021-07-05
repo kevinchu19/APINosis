@@ -12,6 +12,10 @@ namespace APINosis.Models
         public string TipoMovimiento { get; set; }
         public string CodigoReciboAnular { get; set; }
         public int? NumeroReciboAnular { get; set; }
+        public string CodigoRecibo { get; set; }
+        public int? NumeroRecibo { get; set; }
+        public string CodigoComprobanteAnulacion{ get; set; }
+        public int? NumeroComprobanteAnulacion { get; set; }
 
         public string CodigoComprobanteAGenerar { get; set; }
         public string Cliente { get; set; }

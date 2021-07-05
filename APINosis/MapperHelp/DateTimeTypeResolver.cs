@@ -13,7 +13,7 @@ namespace ApiNosis.MapperHelp
     {
         public DateTime Convert(string source, DateTime destination, ResolutionContext context)
         {
-            return System.Convert.ToDateTime(DateTime.ParseExact(source, "yyyyMMdd",
+            return source==null ? DateTime.Now : System.Convert.ToDateTime(DateTime.ParseExact(source, "yyyyMMdd",
                 CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
         }
     }

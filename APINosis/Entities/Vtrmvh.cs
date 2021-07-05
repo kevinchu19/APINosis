@@ -92,5 +92,9 @@ namespace APINosis.Entities
         public string Vtrmvh_Codsce { get; set; }
         public string Vtrmvh_Clamov { get; set; }
         public int? Vtrmvh_Claaut { get; set; }
+        public int? Usr_Vtrmvh_Idcrm { get; set; }
+        public DateTime? Usr_Vtrmvh_Fchcbu { get; set; }
+        public List<Vtrmvc> Aplicaciones { get; set; }
+        public List<Cjrmvi> MediosDeCobro { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using APINosis.Models;
 using APINosis.Models.Response;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -24,10 +25,25 @@ namespace APINosis.Helpers
 
         public async override void  OnException(ExceptionContext context)
         {
+            string errorMessage;
+            if (context.Exception.InnerException != null)
+            {
+                errorMessage = $"{context.Exception.InnerException}";
+                
+                if (typeof(AutoMapperMappingException) == context.Exception.InnerException.GetType())
+                {
+                    AutoMapperMappingException errorAutomapper = (AutoMapperMappingException)context.Exception.InnerException;
+                    errorMessage = $"Error: {errorAutomapper} origen: {errorAutomapper.MemberMap.SourceMember.Name}. " +
+                        $"Destino:{errorAutomapper.MemberMap.DestinationName}";
+                }
+            }
+            else
+            {
+                errorMessage = $"{context.Exception.Message}"; //- {context.Exception.StackTrace}";
+            }
 
-            logger.Fatal(context.Exception.StackTrace);
+            logger.Fatal(errorMessage);
 
-            var exception = context.Exception;
 
             ClienteResponse response = new ClienteResponse("",0,"") { };
 
@@ -43,10 +59,19 @@ namespace APINosis.Helpers
                     context.HttpContext.Response.StatusCode =
                         (int)HttpStatusCode.NotFound;
                     break;
+                case "APINosis.Helpers.BadRequestException":
+                    response.Estado = 400;
+                    response.Titulo = "Bad Request";
+                    response.IdOperacion = 0;
+                    response.Mensaje = errorMessage;
+                    context.Result = new NotFoundObjectResult(response);
+                    context.HttpContext.Response.StatusCode =
+                        (int)HttpStatusCode.BadRequest;
+                    break;
                 default:
                     response.Estado = 500;
                     response.Titulo = "Error interno de la aplicación";
-                    response.Mensaje = exception.Message;
+                    response.Mensaje = errorMessage;
                     response.IdOperacion = 0;
                     context.Result = new ObjectResult(response);
                     context.HttpContext.Response.StatusCode =
