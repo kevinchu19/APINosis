@@ -106,7 +106,7 @@ namespace APINosis.Controllers
                 ModelState.AddModelError("Error", "Error de formato");
             }
 
-            ClienteResponse response = await Repository.GraboCliente(clienteFormat, "NEW");
+            ClienteResponse response = await Repository.GraboClienteSoftland(clienteFormat, "NEW");
 
             response.IdOperacion = idOperacion;
 
@@ -136,6 +136,51 @@ namespace APINosis.Controllers
 
             return clientesDTO;
         }
-        
+
+
+        [HttpPost]
+        [Route("v2")]
+        public async Task<ActionResult<ClienteResponse>> PostSql([FromBody] ClienteDTO cliente)
+        {
+            Logger.Information($"Se recibio posteo de nuevo cliente{cliente.NumeroCliente} - {cliente.RazonSocial} - Id de operacion: {cliente.IdOperacion}");
+
+            int idOperacion = cliente.IdOperacion;
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(cliente.NumeroCliente, out _)) { cliente.NumeroCliente = string.Format("{0:00000000}", int.Parse(cliente.NumeroCliente)); };
+                if (int.TryParse(cliente.NumeroSubcuenta, out _)) { cliente.NumeroSubcuenta = string.Format("{0:00000000}", int.Parse(cliente.NumeroSubcuenta)); }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Error", "Error de formato");
+            }
+
+            ClienteResponse response = await Repository.GraboClienteSql(cliente);
+
+            response.IdOperacion = idOperacion;
+
+            if (response.Estado != 200)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+
+        }
+
+        [HttpGet]
+        [Route("transaccion/{id}")]
+        public async Task<ActionResult<Transaccion>> GetByIdOperacion(string id)
+        {
+
+            //List<ClienteDTO> clientesDTO = Mapper.Map<List<ClienteDTO>>(await Repository.Get(numeroCliente));
+
+            return await Repository.GetTransaccionById(id);
+
+
+        }
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿
 using APINosis.Entities;
+using APINosis.Helpers;
+using APINosis.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -99,5 +101,110 @@ namespace APINosis.Repositories
             return result;
 
         }
+
+
+
+        public async Task<string> ExecuteSqlInsertToTablaSAR(string query)
+        {
+            using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    await connection.OpenAsync();
+                    try
+                    {
+                        await command.ExecuteNonQueryAsync();
+
+                        await InsertaCwJmSchedules("USR_CL");
+                    }
+                    catch (SqlException ex)
+                    {
+                        if (ex.Number == 2627)
+                        {
+                            return $"Error al generar registracion. El id de operacion ya existe.";
+                        }
+                        else
+                        {
+                            return ex.Message;
+                        }
+
+                    }
+                }
+
+                return "";
+            }
+        }
+
+        private async Task InsertaCwJmSchedules(string codjob)
+        {
+            using (SqlConnection sql = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
+            {
+                using (SqlCommand cmd = new SqlCommand("ALM_InsCwJmSchedules", sql))
+                {
+
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@CODJOB", codjob));
+
+                    await sql.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+                    //Logger.Information("Se insertó cwjmschedules");
+                }
+            }
+        }
+
+        protected async Task<Transaccion> GetTransaccion(string idOperacion, string table)
+        {
+            string query = $"SELECT * FROM {table} WHERE {table}_IDENTI = '{idOperacion}'";
+
+            using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    
+                    try
+                    {
+                        await connection.OpenAsync();
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    switch ((string)reader[$"{table}_STATUS"])
+                                    {
+                                        case "E":
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], (string)reader[$"{table}_ERRMSG"]);
+
+                                        case "S":
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], (object)reader[$"{table}_NROCTA"]);
+
+                                        case "N":
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Pendiente de procesar.");
+
+                                        default:
+                                            break;
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                throw new NotFoundException($"El id de operación {idOperacion} no existe.");
+                            }
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new BadRequestException($"Error al consultar el id de operacion");
+                    }
+
+                    return new Transaccion(idOperacion.ToString(), "", "");
+                }
+
+
+            }
+        }
+
     }
 }

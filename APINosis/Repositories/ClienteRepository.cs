@@ -19,7 +19,6 @@ namespace APINosis.Repositories
 {
     public class ClienteRepository: Repository
     {
-        
         public VT_TT_VTMCLH oVTMCLH { get; set; }
 
         public ClienteRepository(ApiNosisContext context, Serilog.ILogger logger,IConfiguration configuration) :
@@ -27,7 +26,14 @@ namespace APINosis.Repositories
         {
             //oVTMCLH = oInstanceVTMCLH;
         }
-        
+
+        public async Task<Transaccion> GetTransaccionById(string id)
+        {
+
+            return await GetTransaccion(id, "SAR_VTMCLH");
+
+        }
+
         public async Task<List<ClienteDTO>> Get(string numeroCliente)
         {
 
@@ -65,7 +71,7 @@ namespace APINosis.Repositories
 
 
 
-        public async Task<ClienteResponse> GraboCliente(VtmclhDTO cliente, string tipoOperacion)
+        public async Task<ClienteResponse> GraboClienteSoftland(VtmclhDTO cliente, string tipoOperacion)
         {
 
             string errorAltaCodigoPostal = "";
@@ -141,6 +147,62 @@ namespace APINosis.Repositories
 
             return new ClienteResponse("OK", 0, null, "Cliente generado");
         }
+
+        public async Task<ClienteResponse> GraboClienteSql(ClienteDTO cliente)
+        {
+            InsertSqlHelpers sqlHelp= new InsertSqlHelpers(Configuration);
+            
+            string errorAltaCodigoPostal = "";
+
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.Pais, cliente.CodigoPostal, cliente.Provincia);
+
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
+
+            errorAltaCodigoPostal = await GeneroCodigoPostal(cliente.PaisEntrega, cliente.CodigoPostalEntrega, cliente.ProvinciaEntrega);
+
+            if (errorAltaCodigoPostal != "")
+            {
+                return new ClienteResponse("Bad Request", 0, errorAltaCodigoPostal);
+            }
+
+            List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_VTMCLH(cliente).ToList();
+
+            string query= ArmoQueryInsertTablaSAR(mapeoCampos.Where(k => k.Value is not IEnumerable<object>).ToList(), "SAR_VTMCLH");
+
+            foreach (KeyValuePair<string,object> tablaHija in mapeoCampos.Where(k=>k.Value is IEnumerable<object>).ToList())
+            {
+                foreach (var item in (IEnumerable<object>)tablaHija.Value)
+                {
+                    switch (tablaHija.Key)
+                    {
+                        case "USR_VTMCLI":
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_VTMCLI((ImpuestosDTO)item, cliente.IdOperacion).ToList();
+                            query = ArmoQueryInsertTablaSAR(mapeoCampos,tablaHija.Key,query);
+                            break;
+                        case "USR_VTMCLC":
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_VTMCLC((ContactosDTO)item, cliente.IdOperacion).ToList();
+                            query = ArmoQueryInsertTablaSAR(mapeoCampos, tablaHija.Key, query);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
+            }
+            
+            string errorMessage = await ExecuteSqlInsertToTablaSAR(query);
+            
+            
+            return errorMessage != "" ? new ClienteResponse("Bad Request", cliente.IdOperacion, errorMessage) : 
+                                        new ClienteResponse("OK", cliente.IdOperacion, null, "Petición procesada");
+
+            
+        }
+
+        
 
         public async Task<ClienteResponse> ActualizoCliente(Vtmclh cliente)
         {
@@ -489,6 +551,39 @@ namespace APINosis.Repositories
 
             return "";
         }
+
+
+        public string ArmoQueryInsertTablaSAR( List<KeyValuePair<string,object>> fieldsValues, string tableDestination, string previousQuery = "")
+        {
+            string query = previousQuery + "INSERT INTO [dbo].["+ tableDestination + "] (";
+
+            foreach (var item in fieldsValues)
+            {
+                query = query + item.Key + ",";
+            }
+
+            query = query.Remove(query.Length - 1, 1) + ") VALUES (";
+
+            foreach (var item in fieldsValues)
+            {
+                query = query + item.Value + ",";
+            }
+            query = query.Remove(query.Length - 1, 1) + ");";
+
+            return query;
+
+
+        }
+
+       
+
+      
+
+
     }
+
+
 }
+
+
 
