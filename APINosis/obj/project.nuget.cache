@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BY6FFHfNI8kZiR36ppOr8T7tRXn1R2Xlbpvw7mh7ILKuYgahLVf+5Qy8tQBvo9OLbMHOuYVUeRyj0XFF+Xh3lw==",
+  "dgSpecHash": "6o3pPuUjGLytSb/WCx6ndX3ckOcZnU3z9Z1B4aXVCPD6wyxGansLqf1B1Yr1OOc5Hmdj8Hx8U6cD/SXhoJjJkQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator\\source\\repos\\APINosis-master\\APINosis\\OE.csproj",
+  "projectFilePath": "C:\\Users\\Administrator\\source\\repos\\APINosis\\APINosis\\OE.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\automapper\\10.1.0\\automapper.10.1.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.0\\automapper.extensions.microsoft.dependencyinjection.8.1.0.nupkg.sha512",

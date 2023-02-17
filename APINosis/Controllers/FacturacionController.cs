@@ -79,7 +79,7 @@ namespace APINosis.Controllers
                 ModelState.AddModelError("Error", "Error de formato");
             }
 
-            FacturaResponse response = await Repository.GraboFactura(facturaFormat, "NEW");
+            FacturaResponse response = await Repository.GraboFacturaSoftland(facturaFormat, "NEW");
 
             response.IdOperacion = idOperacion;
 
@@ -92,6 +92,39 @@ namespace APINosis.Controllers
 
         }
 
-     
+        [HttpPost]
+        [Route("v2")]
+        public async Task<ActionResult<FacturaResponse>> PostSql([FromBody] FacturasDTO factura)
+        {
+            Logger.Information($"Se recibio posteo de nueva factura {factura.CircuitoOrigen} - {factura.CircuitoAplicacion} - " +
+                              $"Id de operacion: {factura.IdOperacion}");
+            int idOperacion = factura.IdOperacion;
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(factura.Cliente, out _)) { factura.Cliente = string.Format("{0:00000000}", int.Parse(factura.Cliente)); };
+                if (int.TryParse(factura.CodigoSubcuenta, out _)) { factura.CodigoSubcuenta = string.Format("{0:00000000}", int.Parse(factura.CodigoSubcuenta)); }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Error", "Error de formato");
+            }
+
+            FacturaResponse response = await Repository.GraboFacturaSQL(factura);
+
+            response.IdOperacion = idOperacion;
+
+            if (response.Estado != 200)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+
+        }
+
+
+
     }
 }

@@ -29,7 +29,59 @@ namespace APINosis.Repositories
             //oFcrmvh = oInstanceFCRMVH;
         }
 
-        public async Task<FacturaResponse> GraboFactura(Fcrmvh factura, string tipoOperacion)
+
+        public async Task<FacturaResponse> GraboFacturaSQL(FacturasDTO factura)
+        {
+            InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
+
+            Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == factura.Cliente).FirstOrDefaultAsync();
+            if (cliente == null)
+            {
+                return new FacturaResponse("Bad Request", 0, $"El cliente {factura.Cliente} no existe.");
+            }
+
+            List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVH(factura, factura.IdOperacion).ToList();
+
+            string query = "BEGIN TRAN ";
+            query += ArmoQueryInsertTablaSAR(mapeoCampos.Where(k => k.Value is not IEnumerable<object>).ToList(), "SAR_FCRMVH");
+            
+            foreach (KeyValuePair<string, object> tablaHija in mapeoCampos.Where(k => k.Value is IEnumerable<object>).ToList())
+            {
+                int index = 0;
+                foreach (var item in (IEnumerable<object>)tablaHija.Value)
+                {
+                    index++;
+                    switch (tablaHija.Key)
+                    {
+                        case "SAR_FCRMVI":
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVI((FacturasItemsDTO)item, factura.IdOperacion, index).ToList();
+                            query = ArmoQueryInsertTablaSAR(mapeoCampos, tablaHija.Key, query);
+                            break;
+                        case "SAR_FCRMVI07":
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVI07((ImpuestosFacturasDTO)item, factura.IdOperacion, index).ToList();
+                            query = ArmoQueryInsertTablaSAR(mapeoCampos, tablaHija.Key, query);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
+
+
+            query += " COMMIT TRAN ";
+
+            string errorMessage = await ExecuteSqlInsertToTablaSAR(query);
+
+
+            return errorMessage != "" ? new FacturaResponse("Bad Request", factura.IdOperacion, errorMessage) :
+                                        new FacturaResponse("OK", factura.IdOperacion, null, "Petición procesada");
+
+
+        }
+
+
+        public async Task<FacturaResponse> GraboFacturaSoftland(Fcrmvh factura, string tipoOperacion)
         {
 
             Vtmclh cliente = await Context.Vtmclh.Where(c=>c.VtmclhNrocta == factura.Fcrmvh_Nrocta).FirstOrDefaultAsync();

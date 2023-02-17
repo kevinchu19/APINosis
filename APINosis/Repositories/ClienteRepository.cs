@@ -553,28 +553,6 @@ namespace APINosis.Repositories
         }
 
 
-        public string ArmoQueryInsertTablaSAR( List<KeyValuePair<string,object>> fieldsValues, string tableDestination, string previousQuery = "")
-        {
-            string query = previousQuery + "INSERT INTO [dbo].["+ tableDestination + "] (";
-
-            foreach (var item in fieldsValues)
-            {
-                query = query + item.Key + ",";
-            }
-
-            query = query.Remove(query.Length - 1, 1) + ") VALUES (";
-
-            foreach (var item in fieldsValues)
-            {
-                query = query + item.Value + ",";
-            }
-            query = query.Remove(query.Length - 1, 1) + ");";
-
-            return query;
-
-
-        }
-
        
 
       

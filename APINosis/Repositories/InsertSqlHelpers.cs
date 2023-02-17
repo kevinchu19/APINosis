@@ -1,4 +1,5 @@
-﻿using APINosis.Helpers;
+﻿using ApiNosis.Models;
+using APINosis.Helpers;
 using APINosis.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -92,14 +93,21 @@ namespace APINosis.Repositories
 
         public Dictionary<string, object> CreateDictionarySAR_VTMCLI(ImpuestosDTO impuestoCliente, int idOperacion)
         {
-            Dictionary<string, object> Sar_Vtmcli = new Dictionary<string, object>();
+            Dictionary<string, object> Sar_Vtmclc = new Dictionary<string, object>();
 
-            Sar_Vtmcli.Add("USR_VTMCLI_IDENTI", FormatStringSql(idOperacion));
-            Sar_Vtmcli.Add("USR_VTMCLI_TIPIMP", FormatStringSql(impuestoCliente.CodigoImpuesto));
-            Sar_Vtmcli.Add("USR_VTMCLI_INCLUI", FormatStringSql(impuestoCliente.IVAIncluido));
-            Sar_Vtmcli.Add("USR_VTMCLI_CORRES", FormatStringSql(impuestoCliente.Corresponde));
+            Sar_Vtmclc.Add("USR_VTMCLI_IDENTI", FormatStringSql(idOperacion));
+            Sar_Vtmclc.Add("USR_VTMCLI_TIPIMP", FormatStringSql(impuestoCliente.CodigoImpuesto));
+            Sar_Vtmclc.Add("USR_VTMCLI_INCLUI", FormatStringSql(impuestoCliente.IVAIncluido));
+            Sar_Vtmclc.Add("USR_VTMCLI_CORRES", FormatStringSql(impuestoCliente.Corresponde));
 
-            return Sar_Vtmcli;
+            Sar_Vtmclc.Add("USR_VT_FECALT", "GETDATE()");
+            Sar_Vtmclc.Add("USR_VT_FECMOD", "GETDATE()");
+            Sar_Vtmclc.Add("USR_VT_USERID", FormatStringSql("API"));
+            Sar_Vtmclc.Add("USR_VT_ULTOPR", FormatStringSql("A"));
+            Sar_Vtmclc.Add("USR_VT_DEBAJA", FormatStringSql("N"));
+            Sar_Vtmclc.Add("USR_VT_OALIAS", FormatStringSql("USR_VTMCLI"));
+
+            return Sar_Vtmclc;
         }
 
         public Dictionary<string, object> CreateDictionarySAR_VTMCLC(ContactosDTO contactoCliente, int idOperacion)
@@ -116,10 +124,135 @@ namespace APINosis.Repositories
             Sar_Vtmclc.Add("USR_VTMCLC_CELULA", FormatStringSql(contactoCliente.Celular));
             Sar_Vtmclc.Add("USR_VTMCLC_RECFAC", FormatStringSql(contactoCliente.ReclamoFacturas));
 
+
+            Sar_Vtmclc.Add("USR_VT_FECALT", "GETDATE()");
+            Sar_Vtmclc.Add("USR_VT_FECMOD", "GETDATE()");
+            Sar_Vtmclc.Add("USR_VT_USERID", FormatStringSql("API"));
+            Sar_Vtmclc.Add("USR_VT_ULTOPR", FormatStringSql("A"));
+            Sar_Vtmclc.Add("USR_VT_DEBAJA", FormatStringSql("N"));
+            Sar_Vtmclc.Add("USR_VT_OALIAS", FormatStringSql("USR_VTMCLC"));
+
             return Sar_Vtmclc;
         }
 
-        private string FormatStringSql(object value)
+
+        public Dictionary<string, object> CreateDictionarySAR_FCRMVH(FacturasDTO facturas, int idOperacion)
+        {
+            Dictionary<string, object> Sar_Fcrmvh = new Dictionary<string, object>();
+
+            Sar_Fcrmvh.Add("SAR_FCRMVH_IDENTI", FormatStringSql(facturas.IdOperacion));
+
+            Sar_Fcrmvh.Add("SAR_FCRMVH_STATUS", FormatStringSql("N"));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_CIRCOM", FormatStringSql(facturas.CircuitoOrigen));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_CIRAPL", FormatStringSql(facturas.CircuitoAplicacion));
+            Sar_Fcrmvh.Add("USR_FCRMVH_CODCVT", FormatStringSql(facturas.ComprobanteVentas));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_FCHMOV", FormatStringSql(facturas.FechaContable));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_NROCTA", FormatStringSql(facturas.Cliente));
+            Sar_Fcrmvh.Add("USR_FCRMVH_NROSUB", FormatStringSql(facturas.CodigoSubcuenta));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_DIRENT", FormatStringSql(facturas.DireccionEntrega));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_PAIENT", FormatStringSql(facturas.PaisEntrega));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_CODENT", FormatStringSql(facturas.CodPosEntrega));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_VNDDOR", FormatStringSql(facturas.Vendedor));
+            Sar_Fcrmvh.Add("USR_FCRMVH_CNDPAG", FormatStringSql(facturas.CondicionPago));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_CODLIS", FormatStringSql(facturas.ListaPrecios));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_TEXTOS", FormatStringSql(facturas.Texto));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_COFLIS", FormatStringSql(facturas.CoeficienteDeuda));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_COFFAC", FormatStringSql(facturas.CoeficienteEmision));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_COFDEU", FormatStringSql(facturas.CoeficienteRegistracion));
+            Sar_Fcrmvh.Add("SAR_FCRMVH_JURISD", FormatStringSql(facturas.Jurisdiccion));
+            Sar_Fcrmvh.Add("USR_FCRMVH_TIPEXP", FormatStringSql(facturas.TipoExportacion));
+            Sar_Fcrmvh.Add("USR_FCRMVH_TIPDOP", FormatStringSql(facturas.TipoDatoOpcionalAFIP));
+            Sar_Fcrmvh.Add("USR_FCRMVH_VALDOP", FormatStringSql(facturas.ValorDatoOpcionalAFIP));
+            Sar_Fcrmvh.Add("USR_FCRMVH_MPAGO", FormatStringSql(facturas.ModalidadPago));
+            Sar_Fcrmvh.Add("USR_FCRMVH_LOCAL2", FormatStringSql(facturas.LocalidadEntrega));
+            Sar_Fcrmvh.Add("USR_FCRMVH_SUBPO2", FormatStringSql(facturas.CodigoPostalExtendidoEntrega));
+            Sar_Fcrmvh.Add("USR_FCRMVH_FCHFAC", FormatStringSql(facturas.FechaFactura));
+            Sar_Fcrmvh.Add("USR_FCRMVH_IDPAGO", FormatStringSql(facturas.IdPago));
+            Sar_Fcrmvh.Add("USR_FCRMVH_IDCOMP", FormatStringSql(facturas.IdCompra));
+
+
+            Sar_Fcrmvh.Add("SAR_FC_FECALT", "GETDATE()");
+            Sar_Fcrmvh.Add("SAR_FC_FECMOD", "GETDATE()");
+            Sar_Fcrmvh.Add("SAR_FC_USERID", FormatStringSql("API"));
+            Sar_Fcrmvh.Add("SAR_FC_ULTOPR", FormatStringSql("A"));
+            Sar_Fcrmvh.Add("SAR_FC_DEBAJA", FormatStringSql("N"));
+            Sar_Fcrmvh.Add("SAR_FC_OALIAS", FormatStringSql("SAR_FCRMVH"));
+
+            Sar_Fcrmvh.Add("SAR_FCRMVI", facturas.Items);
+            Sar_Fcrmvh.Add("SAR_FCRMVI07", facturas.Impuestos);
+
+            return Sar_Fcrmvh;
+        }
+
+        public Dictionary<string, object> CreateDictionarySAR_FCRMVI(FacturasItemsDTO items, int idOperacion, int index)
+        {
+            Dictionary<string, object> Sar_Fcrmvi = new Dictionary<string, object>();
+
+            Sar_Fcrmvi.Add("SAR_FCRMVI_IDENTI", FormatStringSql(idOperacion));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_NROITM", FormatStringSql(index));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_TIPCPT", FormatStringSql(items.TipoConcepto));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_CODCPT", FormatStringSql(items.Concepto));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_TIPPRO", FormatStringSql(items.TipoProducto));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_ARTCOD", FormatStringSql(items.Producto));
+            Sar_Fcrmvi.Add("SAR_FCRMVI_PRECIO", items.Precio);
+            Sar_Fcrmvi.Add("SAR_FCRMVI_CANTID", items.Cantidad);
+            Sar_Fcrmvi.Add("SAR_FCRMVI_PCTBF1", items.Bonificacion1);
+            Sar_Fcrmvi.Add("SAR_FCRMVI_PCTBF2", items.Bonificacion2);
+            Sar_Fcrmvi.Add("SAR_FCRMVI_PCTBF3", items.Bonificacion3);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF4", items.Bonificacion4);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF5", items.Bonificacion5);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF6", items.Bonificacion6);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF7", items.Bonificacion7);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF8", items.Bonificacion8);
+            Sar_Fcrmvi.Add("USR_FCRMVI_PCTBF9", items.Bonificacion9);
+            Sar_Fcrmvi.Add("USR_FCRMVI_TEXTOS", FormatStringSql(items.Observaciones));
+            Sar_Fcrmvi.Add("USR_FCRMVI_CNTBON", items.CantidadBonificada);
+            Sar_Fcrmvi.Add("USR_FCRMVI_MODOTR", FormatStringSql(items.ModuloOTOriginal));
+            Sar_Fcrmvi.Add("USR_FCRMVI_CODOTR", FormatStringSql(items.CodigoOTOriginal));
+            Sar_Fcrmvi.Add("USR_FCRMVI_NROOTR", items.NumeroOTOriginal);
+            Sar_Fcrmvi.Add("USR_FCRMVI_FCHOTR", FormatStringSql(items.FechaOTOriginal));
+            Sar_Fcrmvi.Add("USR_FCRMVI_NROOC", FormatStringSql(items.NumeroOrdendeCompra));
+            Sar_Fcrmvi.Add("USR_FCRMVI_NROITM", items.NumeroItemCustom);
+            Sar_Fcrmvi.Add("USR_FCRMVI_IDCUST", FormatStringSql(items.IDCustom));
+            Sar_Fcrmvi.Add("USR_FCRMVI_VNDDOR", FormatStringSql(items.Vendedor));
+            Sar_Fcrmvi.Add("USR_FCRMVI_VNDDO2", FormatStringSql(items.Vendedor2));
+
+
+
+            Sar_Fcrmvi.Add("SAR_FC_FECALT", "GETDATE()");
+            Sar_Fcrmvi.Add("SAR_FC_FECMOD", "GETDATE()");
+            Sar_Fcrmvi.Add("SAR_FC_USERID", FormatStringSql("API"));
+            Sar_Fcrmvi.Add("SAR_FC_ULTOPR", FormatStringSql("A"));
+            Sar_Fcrmvi.Add("SAR_FC_DEBAJA", FormatStringSql("N"));
+            Sar_Fcrmvi.Add("SAR_FC_OALIAS", FormatStringSql("SAR_FCRMVI"));
+
+            return Sar_Fcrmvi;
+        }
+
+        public Dictionary<string, object> CreateDictionarySAR_FCRMVI07(ImpuestosFacturasDTO impuestos, int idOperacion, int index)
+        {
+            Dictionary<string, object> Sar_Fcrmvi07 = new Dictionary<string, object>();
+
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_IDENTI", FormatStringSql(idOperacion));
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_NROITM", index);
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_TIPCPT", FormatStringSql(impuestos.TipoConceptoImpuesto));
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_CODCPT", FormatStringSql(impuestos.CodigoConceptoImpuesto));
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_IMPGRA", impuestos.ImporteGravado);
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_PORCEN", impuestos.Tasa);
+            Sar_Fcrmvi07.Add("SAR_FCRMVI07_INGRES", impuestos.ImporteImpuesto);
+
+            Sar_Fcrmvi07.Add("SAR_FC_FECALT", "GETDATE()");
+            Sar_Fcrmvi07.Add("SAR_FC_FECMOD", "GETDATE()");
+            Sar_Fcrmvi07.Add("SAR_FC_USERID", FormatStringSql("API"));
+            Sar_Fcrmvi07.Add("SAR_FC_ULTOPR", FormatStringSql("A"));
+            Sar_Fcrmvi07.Add("SAR_FC_DEBAJA", FormatStringSql("N"));
+            Sar_Fcrmvi07.Add("SAR_FC_OALIAS", FormatStringSql("SAR_FCRMVI"));
+
+
+            return Sar_Fcrmvi07;
+        }
+
+            private string FormatStringSql(object value)
         {
             if (value ==null)
             {
