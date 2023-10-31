@@ -124,6 +124,17 @@ namespace APINosis.Controllers
 
         }
 
+        [HttpGet]
+        [Route("transaccion/{id}")]
+        public async Task<ActionResult<Transaccion>> GetByIdOperacion(string id)
+        {
+
+            //List<ClienteDTO> clientesDTO = Mapper.Map<List<ClienteDTO>>(await Repository.Get(numeroCliente));
+
+            return await Repository.GetTransaccionById(id);
+
+
+        }
 
 
     }

@@ -295,6 +295,13 @@ namespace APINosis.Repositories
 
             return "";
         }
+
+        public async Task<Transaccion> GetTransaccionById(string id)
+        {
+
+            return await GetTransaccion(id, "SAR_FCRMVH");
+
+        }
     }
 }
 

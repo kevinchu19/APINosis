@@ -206,6 +206,9 @@ namespace APINosis.Repositories
                                         case "N":
                                             return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Pendiente de procesar.");
 
+                                        case "P":
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "En procesamiento.");
+
                                         default:
                                             break;
                                     }
