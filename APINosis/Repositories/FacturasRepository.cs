@@ -324,9 +324,19 @@ namespace APINosis.Repositories
 
                         using (var reader = await command.ExecuteReaderAsync())
                         {
-                            result.ModuloComprobante = (string)reader["SAR_FCRMVH_MODFVT"];
-                            result.CodigoComprobante = (string)reader["SAR_FCRMVH_CODFVT"];
-                            result.NumeroComprobante = (int)reader["SAR_FCRMVH_NROFVT"];
+                            if (reader.HasRows)
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    result.ModuloComprobante = (string)reader["SAR_FCRMVH_MODFVT"];
+                                    result.CodigoComprobante = (string)reader["SAR_FCRMVH_CODFVT"];
+                                    result.NumeroComprobante = Convert.ToInt32(reader["SAR_FCRMVH_NROFVT"]);
+                                }
+                            }
+                            else
+                            {
+                                throw new NotFoundException($"El id de operación {id} no existe.");
+                            }
                         }
                     }
                     catch (SqlException ex)

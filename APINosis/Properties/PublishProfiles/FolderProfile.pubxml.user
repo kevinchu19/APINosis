@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\ktchubinsky\source\repos\APINosis\APINosis\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
-    <History>True|2023-11-02T21:26:53.9818076Z;True|2023-10-31T10:16:28.0529406-03:00;True|2023-10-30T14:36:44.3332938-03:00;True|2023-01-31T18:32:48.1424837-03:00;True|2023-01-31T18:10:03.0554705-03:00;False|2023-01-31T18:09:17.6649748-03:00;True|2022-12-26T16:51:32.3074208-03:00;</History>
+    <History>True|2023-11-02T22:13:33.2380812Z;True|2023-11-02T18:26:53.9818076-03:00;True|2023-10-31T10:16:28.0529406-03:00;True|2023-10-30T14:36:44.3332938-03:00;True|2023-01-31T18:32:48.1424837-03:00;True|2023-01-31T18:10:03.0554705-03:00;False|2023-01-31T18:09:17.6649748-03:00;True|2022-12-26T16:51:32.3074208-03:00;</History>
   </PropertyGroup>
 </Project>
