@@ -198,16 +198,16 @@ namespace APINosis.Repositories
                                     switch ((string)reader[$"{table}_STATUS"])
                                     {
                                         case "E":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], (string)reader[$"{table}_ERRMSG"]);
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Procesado con error",(string)reader[$"{table}_ERRMSG"]);
 
                                         case "S":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], (object)reader[$"{table}_NROCTA"]);
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Procesado con exito", "");
 
                                         case "N":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Pendiente de procesar.");
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Pendiente de procesar.","");
 
                                         case "P":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "En procesamiento.");
+                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "En procesamiento.","");
 
                                         default:
                                             break;
@@ -226,7 +226,7 @@ namespace APINosis.Repositories
                         throw new BadRequestException($"Error al consultar el id de operacion");
                     }
 
-                    return new Transaccion(idOperacion.ToString(), "", "");
+                    return new Transaccion(idOperacion.ToString(), "", "","");
                 }
 
 

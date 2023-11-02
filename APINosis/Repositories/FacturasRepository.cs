@@ -299,9 +299,57 @@ namespace APINosis.Repositories
         public async Task<Transaccion> GetTransaccionById(string id)
         {
 
-            return await GetTransaccion(id, "SAR_FCRMVH");
+            Transaccion response = await GetTransaccion(id, "SAR_FCRMVH");
+            if (response.StatusProcesamiento =="S")
+            {
+                response.ComprobanteGenerado = await GetComprobanteGeneradoFromTransaccion(id);
+            }
+
+            return response;
 
         }
+
+        private async Task<ComprobanteGenerado> GetComprobanteGeneradoFromTransaccion(string id)
+        {
+            ComprobanteGenerado result = new ComprobanteGenerado();
+            string query = $"SELECT * FROM SAR_FCRMVH WHERE SAR_FCRMVH_IDENTI = '{id}'";
+            using (SqlConnection connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+
+                    try
+                    {
+                        await connection.OpenAsync();
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            result.ModuloComprobante = (string)reader["SAR_FCRMVH_MODFVT"];
+                            result.CodigoComprobante = (string)reader["SAR_FCRMVH_CODFVT"];
+                            result.NumeroComprobante = (int)reader["SAR_FCRMVH_NROFVT"];
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new BadRequestException($"Error al consultar el id de operacion");
+                    }
+
+                }
+
+
+            }
+
+            result.Impuestos.AddRange(await RecuperoImpuestosComprobante(result.ModuloComprobante,
+                                                                         result.CodigoComprobante,
+                                                                         result.NumeroComprobante));
+
+            result.ImporteTotal = await RecuperoTotalComprobante(result.ModuloComprobante,
+                                                                 result.CodigoComprobante,
+                                                                 result.NumeroComprobante);
+
+            return result;
+        }
     }
+    
 }
 
