@@ -146,6 +146,7 @@ namespace APINosis.Repositories
             Sar_Fcrmvh.Add("SAR_FCRMVH_CIRCOM", FormatStringSql(facturas.CircuitoOrigen));
             Sar_Fcrmvh.Add("SAR_FCRMVH_CIRAPL", FormatStringSql(facturas.CircuitoAplicacion));
             Sar_Fcrmvh.Add("USR_FCRMVH_CODCVT", FormatStringSql(facturas.ComprobanteVentas));
+            Sar_Fcrmvh.Add("USR_FCRMVH_CODCFC", FormatStringSql(facturas.ComprobanteFacturacion));
             Sar_Fcrmvh.Add("SAR_FCRMVH_FCHMOV", FormatStringSql(facturas.FechaContable));
             Sar_Fcrmvh.Add("SAR_FCRMVH_NROCTA", FormatStringSql(facturas.Cliente));
             Sar_Fcrmvh.Add("USR_FCRMVH_NROSUB", FormatStringSql(facturas.CodigoSubcuenta));

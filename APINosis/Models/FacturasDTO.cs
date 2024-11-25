@@ -15,6 +15,7 @@ namespace ApiNosis.Models
         public string  CodigoComprobante { get; set; }
         public int NumeroComprobante { get; set; }
         public string ComprobanteVentas { get; set; }
+        public string ComprobanteFacturacion{ get; set; }
         public string FechaContable { get; set; }
         public string Cliente { get; set; }
         public string CodigoSubcuenta { get; set; }

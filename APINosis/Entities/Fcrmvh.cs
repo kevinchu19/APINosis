@@ -55,6 +55,8 @@ namespace APINosis.Entities
         public string Virt_Cirapl { get; set; }
         [NotMapped]
         public string Virt_Codcvt{ get; set; }
+        [NotMapped]
+        public string Virt_Codcfc { get; set; }
         public ICollection<Fcrmvi> Items { get; set; }
 
         [NotMapped]

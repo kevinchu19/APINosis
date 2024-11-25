@@ -97,6 +97,7 @@ namespace APINosis.Repositories
             oFcrmvh.asignoaTMWizard("VIRT_CIRCOM", factura.Virt_Circom, Logger);
             oFcrmvh.asignoaTMWizard("VIRT_CIRAPL", factura.Virt_Cirapl, Logger);
             oFcrmvh.asignoaTMWizard("VIRT_CODCVT", factura.Virt_Codcvt, Logger);
+            oFcrmvh.asignoaTMWizard("VIRT_CODCFC", factura.Virt_Codcfc, Logger);
 
             oFcrmvh.MoveNext();
 
