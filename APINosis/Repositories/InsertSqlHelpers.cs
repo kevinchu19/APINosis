@@ -84,7 +84,6 @@ namespace APINosis.Repositories
             Sar_Vtmclh.Add("SAR_VT_ULTOPR", FormatStringSql("A"));
             Sar_Vtmclh.Add("SAR_VT_DEBAJA", FormatStringSql("N"));
             Sar_Vtmclh.Add("SAR_VT_OALIAS", FormatStringSql("SAR_VTMCLH"));
-
             Sar_Vtmclh.Add("USR_VTMCLI", cliente.Impuestos);
             Sar_Vtmclh.Add("USR_VTMCLC", cliente.Contactos);
 
