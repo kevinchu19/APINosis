@@ -30,6 +30,32 @@ namespace APINosis.Repositories
             //oCvmcth = oInstanceCvmcth;
         }
         
+        public async Task<ContratoResponse> GraboItemContrato(List<ItemsContratosDTO> items, int identi,string codcon,  string nrocon, int nroext)
+        {
+            List<string> respuesta = new List<string>();
+
+            foreach (var item in items)
+            {
+                respuesta.AddRange(await ExecuteStoredProcedure<string>("Alm_ApiCRM_InsContratoItem",
+                                                            new Dictionary<string, object>{
+                                                                { "@Identi", identi},{ "@Codcon", codcon},{ "@Nrocon", nrocon},{ "@Nroext", nroext}
+                                                               ,{ "@Tippro", item.TipoDeProducto},{ "@Artcod", item.CodigoDeProducto},{ "@Texadi", item.TextoAdicional}
+                                                               ,{ "@Cantid", item.Cantidad},{ "@Precio", item.Precio},{ "@Travig", item.TrabajaConVigencia}
+                                                               ,{ "@Vigdde", item.Desde},{ "@Vighta", item.Hasta},{ "@Previg", item.PreciosVigentesAlFacturar}
+                                                               ,{ "@Vnddor", item.Vendedor},{ "@Vnddor2", item.Vendedor2},{ "@Modot", item.ModuloOrdenDeTrabajo}
+                                                               ,{ "@Codot", item.CodigoOrdenDeTrabajo},{ "@Nroot", item.NumeroOrdenDeTrabajo},{ "@Fchmov", item.FechaDeMovimiento}
+                                                               ,{ "@ModotMod", item.ModulodeOTModificacion},{ "@CodotMod", item.CodigodeOTModificacion},{ "@NrootMod", item.NumerodeOTModificacion}
+                                                               ,{ "@FchotMod", item.FechadeOTModificacion},{ "@Fchcom", item.FechadeComision},{ "@Nrooc", item.NumeroDeOrdenDeCompra}
+                                                               ,{ "@Archiv", item.ArchivoDeExportacion},{ "@IDCust", item.IdCustom},{ "@Nroreg", item.NumeroDeRegistroExpo}
+                                                               ,{ "@Fchimp", item.FechaDeExportacion},{ "@ItmCRM", item.IdItemCRM},{ "@Cancon", item.CantidadConsultas}
+                                                            }));
+
+            }
+
+            return new ContratoResponse("OK", 0, null, "Contrato actualizado");
+        }
+
+
         public async Task<List<ContratosDTO>> Get(string? tipoContrato, string codigoContrato, int numeroExtension)
         {
 

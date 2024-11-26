@@ -86,6 +86,30 @@ namespace APINosis.Controllers
         }
 
 
+        
+        [HttpPost]
+        [Route("items")]
+        public async Task<ActionResult<ClienteResponse>> Post([FromBody] List<ItemsContratosDTO> itemsContratos, string identificador,string codigoContrato, string numeroContrato, string numeroExtension)
+        {
+            Logger.Information($"Se recibio posteo de items de contratos{codigoContrato} - {numeroContrato}");
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Error", "Error de formato");
+            }
+
+            ContratoResponse response = await Repository.GraboItemContrato(itemsContratos, Int32.Parse(identificador),codigoContrato, numeroContrato, Int32.Parse(numeroExtension));
+
+            response.IdOperacion = Int32.Parse(identificador);
+
+            if (response.Estado != 200)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+
+        }
+
 
         [HttpPost]
         public async Task<ActionResult<ClienteResponse>> Post([FromBody] ContratosDTO contrato)

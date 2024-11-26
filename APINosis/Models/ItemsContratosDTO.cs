@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace ApiNosis.Models
 {
+
     public class ItemsContratosDTO
     {
         public int NumeroDeItem { get; set; }
@@ -34,5 +35,7 @@ namespace ApiNosis.Models
         public string IdCustom { get; set; }
         public int NumeroDeRegistroExpo { get; set; }
         public string FechaDeExportacion { get; set; }
+        public int IdItemCRM { get; set; }
+        public decimal CantidadConsultas { get; set; }
     }
 }

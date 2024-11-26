@@ -103,6 +103,40 @@ namespace APINosis.Repositories
         }
 
 
+        public async Task<TResult?> ExecuteStoredProcedureSingle<TResult>(string sqlCommand, Dictionary<string, object> parameters)
+        {
+
+            TResult? result = default;
+
+            using (SqlConnection sql = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
+            {
+                using (SqlCommand cmd = new SqlCommand(sqlCommand, sql))
+                {
+
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    foreach (var item in parameters)
+                    {
+                        SqlParameter parameter = new SqlParameter(item.Key, item.Value);
+                        cmd.Parameters.Add(parameter);
+
+                    }
+
+                    await sql.OpenAsync();
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            result = MapToValue<TResult>(reader);
+                        }
+                    }
+                }
+            }
+
+            return (TResult?)result;
+
+        }
+
 
         public async Task<string> ExecuteSqlInsertToTablaSAR(string query)
         {
