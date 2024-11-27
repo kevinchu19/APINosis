@@ -29,6 +29,10 @@ namespace APINosis.Repositories
 
         public TResponse MapToValue<TResponse>(SqlDataReader reader)
         {
+
+            if (typeof(TResponse) == typeof(string)) {
+                return (TResponse)reader["ERRMSG"];
+            };
             var respuesta = (TResponse)Activator.CreateInstance(typeof(TResponse), new object[] { });
             Type typeResponse = typeof(TResponse);
             System.Reflection.PropertyInfo[] listaPropiedades = typeResponse.GetProperties();
