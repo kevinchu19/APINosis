@@ -87,7 +87,7 @@ namespace APINosis.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClienteResponse>> Post([FromBody] ContratosDTO contrato)
+        public async Task<ActionResult<ContratoResponse>> Post([FromBody] ContratosDTO contrato)
         {
             Logger.Information($"Se recibio posteo de nuevo contrato{contrato.TipoContrato} - {contrato.CodigoContrato} - " +
                                 $"Id de operacion: {contrato.IdOperacion}");
@@ -96,6 +96,7 @@ namespace APINosis.Controllers
 
             if (Env.IsProduction())
             {
+                if (int.TryParse(contrato.CodigoContrato, out _)) { contrato.CodigoContrato = string.Format("{0:00000000}", int.Parse(contrato.CodigoContrato)); };
                 if (int.TryParse(contrato.Cliente, out _)) { contrato.Cliente = string.Format("{0:00000000}", int.Parse(contrato.Cliente)); };
                 if (int.TryParse(contrato.CodigoDeSubcuenta, out _)) { contrato.CodigoDeSubcuenta = string.Format("{0:00000000}", int.Parse(contrato.CodigoDeSubcuenta)); }
             }
@@ -148,6 +149,12 @@ namespace APINosis.Controllers
         public async Task<ActionResult<ClienteResponse>> PostItems([FromBody] ContratosDTO contrato)
         {
             Logger.Information($"Se recibio posteo de items de contratos {JsonConvert.SerializeObject(contrato)}");
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(contrato.CodigoContrato, out _)) { contrato.CodigoContrato = string.Format("{0:00000000}", int.Parse(contrato.CodigoContrato)); };
+            }
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("Error", "Error de formato");
@@ -166,6 +173,36 @@ namespace APINosis.Controllers
 
         }
 
+        [HttpPut]
+        [Route("v2/header")]
+        public async Task<ActionResult<ClienteResponse>> PutHeader ([FromBody] ContratosDTO contrato)
+        {
+            Logger.Information($"Se recibio posteo de header de contratos {JsonConvert.SerializeObject(contrato)}");
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(contrato.CodigoContrato, out _)) { contrato.CodigoContrato = string.Format("{0:00000000}", int.Parse(contrato.CodigoContrato)); };
+                if (int.TryParse(contrato.Cliente, out _)) { contrato.Cliente = string.Format("{0:00000000}", int.Parse(contrato.Cliente)); };
+                if (int.TryParse(contrato.CodigoDeSubcuenta, out _)) { contrato.CodigoDeSubcuenta = string.Format("{0:00000000}", int.Parse(contrato.CodigoDeSubcuenta)); }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Error", "Error de formato");
+            }
+
+            ContratoResponse response = await Repository.GraboHeaderContratoSQL(contrato);
+
+            response.IdOperacion = contrato.IdOperacion;
+
+            if (response.Estado != 200)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+
+        }
 
     }
 }

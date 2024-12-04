@@ -32,6 +32,7 @@ namespace APINosis.Entities
         public virtual DbSet<Cjrmvi> Cjrmvi { get; set; }
         public virtual DbSet<Vtrmvc> Vtrmvc { get; set; }
 
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

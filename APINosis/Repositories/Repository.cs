@@ -233,19 +233,19 @@ namespace APINosis.Repositories
                             {
                                 while (await reader.ReadAsync())
                                 {
-                                    switch ((string)reader[$"{table}_STATUS"])
+                                    switch (reader[$"{table}_STATUS"] is not System.DBNull? (string)reader[$"{table}_STATUS"]: "N")
                                     {
                                         case "E":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Procesado con error",(string)reader[$"{table}_ERRMSG"]);
+                                            return new Transaccion(idOperacion, "E", "Procesado con error",reader[$"{table}_ERRMSG"] is not System.DBNull? (string)reader[$"{table}_ERRMSG"]:"");
 
                                         case "S":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Procesado con exito", "");
+                                            return new Transaccion(idOperacion, "S", "Procesado con exito", "");
 
                                         case "N":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "Pendiente de procesar.","");
+                                            return new Transaccion(idOperacion, "N", "Pendiente de procesar.","");
 
                                         case "P":
-                                            return new Transaccion(idOperacion, (string)reader[$"{table}_STATUS"], "En procesamiento.","");
+                                            return new Transaccion(idOperacion, "P", "En procesamiento.","");
 
                                         default:
                                             break;

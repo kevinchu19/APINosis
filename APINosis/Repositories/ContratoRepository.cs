@@ -61,6 +61,51 @@ namespace APINosis.Repositories
         }
 
 
+
+        public async Task<ContratoResponse> GraboHeaderContratoSQL(ContratosDTO contrato)
+        {
+            InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
+
+            Cvmcth contratoExistente = await Context.Cvmcth.Where(c => c.Cvmcth_Codcon == contrato.TipoContrato &&
+                                                                        c.Cvmcth_Nrocon == contrato.CodigoContrato &&
+                                                                        c.Cvmcth_Nroext == contrato.Extension).FirstOrDefaultAsync();
+            if (contratoExistente == null)
+            {
+                return new ContratoResponse("Bad Request", 0, $"El contrato {contrato.TipoContrato} - " +
+                    $"{contrato.CodigoContrato} - {contrato.Extension} no existe.");
+            }
+
+            List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_CVMCTH(contrato, contrato.IdOperacion).ToList();
+
+            string query = "BEGIN TRAN ";
+            query += ArmoQueryInsertTablaSAR(mapeoCampos.Where(k => k.Value is not IEnumerable<object>).ToList(), "SAR_CVMCTH");
+
+            foreach (KeyValuePair<string, object> tablaHija in mapeoCampos.Where(k => k.Value is IEnumerable<object>).ToList())
+            {
+                int index = 0;
+                foreach (var item in (IEnumerable<object>)tablaHija.Value)
+                {
+                    index++;
+                }
+
+            }
+
+
+            query += " COMMIT TRAN ";
+
+            string errorMessage = await ExecuteSqlInsertToTablaSAR(query);
+
+
+            return errorMessage != "" ? new ContratoResponse("Bad Request", contrato.IdOperacion, errorMessage) :
+                                        new ContratoResponse("OK", contrato.IdOperacion, null, "Petición procesada");
+
+
+        }
+
+
+
+
+
         public async Task<List<ContratosDTO>> Get(string? tipoContrato, string codigoContrato, int numeroExtension)
         {
 

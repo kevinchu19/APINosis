@@ -90,6 +90,18 @@ namespace APINosis.Repositories
                 return new FacturaResponse("Bad Request", 0, $"El cliente {factura.Fcrmvh_Nrocta} no existe.");
             }
 
+            foreach (var item in factura.Items)
+            {
+
+                string errmsg = await ExecuteStoredProcedureSingle<string>("Alm_ApiCRM_ValidoProductoSTMPDH",
+                                                               new Dictionary<string, object>{
+                                                                { "@Tippro", item.Fcrmvi_Tipori },{ "@Artcod", item.Fcrmvi_Artori}
+                                                               });
+                if (errmsg != "")
+                {
+                    return new FacturaResponse("Bad Request", 0, errmsg);
+                }
+            }
             oFcrmvh = new FC_RR_FCRMVH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]);
 
             oFcrmvh.instancioObjeto(tipoOperacion);
@@ -98,7 +110,7 @@ namespace APINosis.Repositories
             oFcrmvh.asignoaTMWizard("VIRT_CIRAPL", factura.Virt_Cirapl, Logger);
             oFcrmvh.asignoaTMWizard("VIRT_CODCVT", factura.Virt_Codcvt, Logger);
             oFcrmvh.asignoaTMWizard("VIRT_CODCFC", factura.Virt_Codcfc, Logger);
-
+            
             oFcrmvh.MoveNext();
 
             Type typeFactura = factura.GetType();
@@ -234,6 +246,10 @@ namespace APINosis.Repositories
                                     c.Vtrmvi_Codfor == codigoComprobante &&
                                     c.Vtrmvi_Nrofor == numeroComprobante &&
                                     c.Vtrmvi_Tipcpt == "T").FirstOrDefaultAsync();
+            if (total is null)
+            {
+                return null;
+            }
             return total.Vtrmvi_Impnac;
         }
 
@@ -329,9 +345,9 @@ namespace APINosis.Repositories
                             {
                                 while (await reader.ReadAsync())
                                 {
-                                    result.ModuloComprobante = (string)reader["SAR_FCRMVH_MODFVT"];
-                                    result.CodigoComprobante = (string)reader["SAR_FCRMVH_CODFVT"];
-                                    result.NumeroComprobante = Convert.ToInt32(reader["SAR_FCRMVH_NROFVT"]);
+                                    result.ModuloComprobante = reader["SAR_FCRMVH_MODFVT"] is not System.DBNull ? (string)reader["SAR_FCRMVH_MODFVT"]: (string)reader["SAR_FCRMVH_MODFOR"];
+                                    result.CodigoComprobante = reader["SAR_FCRMVH_CODFVT"] is not System.DBNull ? (string)reader["SAR_FCRMVH_MODFVT"] : (string)reader["SAR_FCRMVH_CODFOR"];
+                                    result.NumeroComprobante = reader["SAR_FCRMVH_NROFVT"] is not System.DBNull ? Convert.ToInt32(reader["SAR_FCRMVH_NROFVT"]) : Convert.ToInt32(reader["SAR_FCRMVH_NROFOR"]);
                                 }
                             }
                             else

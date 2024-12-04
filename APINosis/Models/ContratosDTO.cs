@@ -31,6 +31,6 @@ namespace ApiNosis.Models
         public string? CondicionComercial { get; set; }
         public string? ModalidadDePago { get; set; }
         public string? IdDeCompra { get; set; }
-        public List<ItemsContratosDTO> Items { get; set; } = new List<ItemsContratosDTO>();
+        public List<ItemsContratosDTO>? Items { get; set; } = new List<ItemsContratosDTO>();
     }
 }

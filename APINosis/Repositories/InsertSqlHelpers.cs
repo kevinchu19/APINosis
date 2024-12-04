@@ -252,6 +252,49 @@ namespace APINosis.Repositories
             return Sar_Fcrmvi07;
         }
 
+
+        public Dictionary<string, object> CreateDictionarySAR_CVMCTH(ContratosDTO contrato, int idOperacion)
+        {
+            Dictionary<string, object> Sar_Cvmcth = new Dictionary<string, object>();
+
+            Sar_Cvmcth.Add("SAR_CVMCTH_IDENTI", FormatStringSql(contrato.IdOperacion));
+            Sar_Cvmcth.Add("SAR_CVMCTH_STATUS", FormatStringSql("N"));
+
+            Sar_Cvmcth.Add("SAR_CVMCTH_CODCON", FormatStringSql(contrato.TipoContrato));
+            Sar_Cvmcth.Add("SAR_CVMCTH_NROCON", FormatStringSql(contrato.CodigoContrato));
+            Sar_Cvmcth.Add("SAR_CVMCTH_NROEXT", contrato.Extension);
+            Sar_Cvmcth.Add("SAR_CVMCTH_DESCRP", FormatStringSql(contrato.Descripcion));
+            Sar_Cvmcth.Add("SAR_CVMCTH_NROCTA", FormatStringSql(contrato.Cliente));
+            Sar_Cvmcth.Add("SAR_CVMCTH_NROSUB", FormatStringSql(contrato.CodigoDeSubcuenta));
+            Sar_Cvmcth.Add("USR_CVMCTH_CNDPAG", FormatStringSql(contrato.CondicionDePago));
+            Sar_Cvmcth.Add("USR_CVMCTH_VNDDOR", FormatStringSql(contrato.Vendedor));
+            Sar_Cvmcth.Add("USR_CVMCTH_CODCTR", FormatStringSql(contrato.Contratista));
+            Sar_Cvmcth.Add("USR_CVMCTH_CODCVT", FormatStringSql(contrato.ComprobanteVentas));
+            Sar_Cvmcth.Add("SAR_CVMCTH_FACDES", FormatStringSql(contrato.Del));
+            Sar_Cvmcth.Add("SAR_CVMCTH_PRIFAC", FormatStringSql(contrato.EmisionDela1raFactura));
+            Sar_Cvmcth.Add("SAR_CVMCTH_ULTFAC", FormatStringSql(contrato.UltimaFacturaAEmitir));
+            Sar_Cvmcth.Add("SAR_CVMCTH_CODLIS", FormatStringSql(contrato.ListaDePrecios));
+            Sar_Cvmcth.Add("USR_CVMCTH_COFFAC", FormatStringSql(contrato.MonedaEmision));
+            Sar_Cvmcth.Add("USR_CVMCTH_ACTLIS", FormatStringSql(contrato.PreciosVigentesAlFacturar));
+            Sar_Cvmcth.Add("USR_CVMCTH_TEXTOS", FormatStringSql(contrato.Observaciones));
+            Sar_Cvmcth.Add("SAR_CVMCTH_DESFRE", FormatStringSql(contrato.Facturacion));
+            Sar_Cvmcth.Add("USR_CVMCTH_RECNOV", FormatStringSql(contrato.RecuperaItemsEnNovedades));
+            Sar_Cvmcth.Add("USR_CVMCTH_TIPEXP", FormatStringSql(contrato.TipodeExportacion));
+            Sar_Cvmcth.Add("USR_CVMCTH_CNDCOM", FormatStringSql(contrato.CondicionComercial));
+            Sar_Cvmcth.Add("USR_CVMCTH_MPAGO", FormatStringSql(contrato.ModalidadDePago));
+            Sar_Cvmcth.Add("USR_CVMCTH_IDCOMP", FormatStringSql(contrato.IdDeCompra));
+
+
+            Sar_Cvmcth.Add("SAR_CV_FECALT", "GETDATE()");
+            Sar_Cvmcth.Add("SAR_CV_FECMOD", "GETDATE()");
+            Sar_Cvmcth.Add("SAR_CV_USERID", FormatStringSql("API"));
+            Sar_Cvmcth.Add("SAR_CV_ULTOPR", FormatStringSql("A"));
+            Sar_Cvmcth.Add("SAR_CV_DEBAJA", FormatStringSql("N"));
+            Sar_Cvmcth.Add("SAR_CV_OALIAS", FormatStringSql("SAR_CVMCTH"));
+
+            return Sar_Cvmcth;
+        }
+
             private string FormatStringSql(object value)
         {
             if (value ==null)
