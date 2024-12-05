@@ -125,6 +125,11 @@ namespace APINosis.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ContratosDTO>>> Get(string? tipoContrato, string codigoContrato, int numeroExtension)
         {
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(codigoContrato, out _)) { codigoContrato = string.Format("{0:00000000}", int.Parse(codigoContrato)); };
+            }
+
 
             List<ContratosDTO> contrato = await Repository.Get(tipoContrato, codigoContrato, numeroExtension);
 
