@@ -248,7 +248,26 @@ namespace APINosis.Repositories
                                     c.Vtrmvi_Tipcpt == "T").FirstOrDefaultAsync();
             if (total is null)
             {
-                return null;
+                List<Fcrmvi> fcrmvi= await Context.Fcrmvi
+                        .Where(c => c.Fcrmvi_Modfor == moduloComprobante &&
+                                    c.Fcrmvi_Codfor == codigoComprobante &&
+                                    c.Fcrmvi_Nrofor == numeroComprobante &&
+                                    c.Fcrmvi_Codfor == c.Fcrmvi_Codapl).ToListAsync();
+
+                if(fcrmvi is null)
+                {
+                    return null;
+                }
+
+                decimal? totalPrefactura = 0;
+
+                foreach (Fcrmvi item in fcrmvi)
+                {
+                    totalPrefactura += item.Fcrmvi_Cantid * (item.Fcrmvi_Precio + item.Fcrmvi_Precio * item.Fcrmvi_Pctbf1 +
+                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf2 +
+                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf3);
+                }
+                return totalPrefactura;
             }
             return total.Vtrmvi_Impnac;
         }
