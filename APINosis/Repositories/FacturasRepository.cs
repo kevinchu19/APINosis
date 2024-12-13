@@ -200,7 +200,6 @@ namespace APINosis.Repositories
 
                 facturas.AddRange( await ExecuteStoredProcedure<FacturasDTO>("ALM_FcrmvhGetForAPI",
                                                                             new Dictionary<string, object>{
-                                                                                { "@Modfor", "VT"},
                                                                                 { "@Codfor", codigoComprobante},
                                                                                 { "@Nrofor", numeroComprobante},
                                                                                 { "@IdCrm", idOperacion!=null?idOperacion:0}
@@ -212,7 +211,6 @@ namespace APINosis.Repositories
 
                     item.Items.AddRange(await ExecuteStoredProcedure<FacturasItemsDTO>("ALM_FcrmviGetForAPI",
                                                                             new Dictionary<string, object>{
-                                                                                    { "@Modfor", "VT"},
                                                                                     { "@Codfor", item.CodigoComprobante},
                                                                                     { "@Nrofor", item.NumeroComprobante}
                                                                             }));
@@ -263,9 +261,9 @@ namespace APINosis.Repositories
 
                 foreach (Fcrmvi item in fcrmvi)
                 {
-                    totalPrefactura += item.Fcrmvi_Cantid * (item.Fcrmvi_Precio + item.Fcrmvi_Precio * item.Fcrmvi_Pctbf1 +
-                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf2 +
-                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf3);
+                    totalPrefactura += item.Fcrmvi_Cantid * (item.Fcrmvi_Precio + item.Fcrmvi_Precio * item.Fcrmvi_Pctbf1/100 +
+                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf2 / 100 +
+                    item.Fcrmvi_Precio * item.Fcrmvi_Pctbf3 / 100);
                 }
                 return totalPrefactura;
             }
