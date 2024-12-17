@@ -184,7 +184,7 @@ namespace APINosis.Repositories
             return Sar_Fcrmvh;
         }
 
-        public Dictionary<string, object> CreateDictionarySAR_FCRMVI(FacturasItemsDTO items, int idOperacion, int index)
+        public Dictionary<string, object> CreateDictionarySAR_FCRMVI(ContratoItemsDTO items, int idOperacion, int index)
         {
             Dictionary<string, object> Sar_Fcrmvi = new Dictionary<string, object>();
 
@@ -292,10 +292,50 @@ namespace APINosis.Repositories
             Sar_Cvmcth.Add("SAR_CV_DEBAJA", FormatStringSql("N"));
             Sar_Cvmcth.Add("SAR_CV_OALIAS", FormatStringSql("SAR_CVMCTH"));
 
+            Sar_Cvmcth.Add("SAR_CVMCTI", contrato.Items);
+
             return Sar_Cvmcth;
         }
 
-            private string FormatStringSql(object value)
+        public Dictionary<string, object> CreateDictionarySAR_CVMCTI(ItemsContratosDTO contrato, int idOperacion, int index)
+        {
+            Dictionary<string, object> Sar_Cvmcti = new Dictionary<string, object>();
+
+            Sar_Cvmcti.Add("SAR_CVMCTI_IDENTI", FormatStringSql(idOperacion));
+            Sar_Cvmcti.Add("SAR_CVMCTI_NROITM", index);
+            Sar_Cvmcti.Add("SAR_CVMCTI_TIPPRO", FormatStringSql(contrato.TipoDeProducto));
+            Sar_Cvmcti.Add("SAR_CVMCTI_ARTCOD", FormatStringSql(contrato.CodigoDeProducto));
+            Sar_Cvmcti.Add("SAR_CVMCTI_TEXADI", FormatStringSql(contrato.TextoAdicional));
+            Sar_Cvmcti.Add("SAR_CVMCTI_PRECIO", contrato.Precio);
+            Sar_Cvmcti.Add("SAR_CVMCTI_CANTID", contrato.Cantidad);
+            Sar_Cvmcti.Add("USR_CVMCTI_IMPORT", contrato.Importe);
+            Sar_Cvmcti.Add("USR_CVMCTI_TRAVIG", FormatStringSql(contrato.TrabajaConVigencia.ToString()));
+            Sar_Cvmcti.Add("USR_CVMCTI_VIGDDE", FormatStringSql(contrato.Desde));
+            Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(contrato.Hasta));
+            Sar_Cvmcti.Add("USR_CVMCTI_ACTLIS", FormatStringSql(contrato.PreciosVigentesAlFacturar));
+            Sar_Cvmcti.Add("USR_CVMCTI_VNDDOR", FormatStringSql(contrato.Vendedor));
+            Sar_Cvmcti.Add("USR_CVMCTI_VNDDO2", FormatStringSql(contrato.Vendedor2));
+            Sar_Cvmcti.Add("USR_CVMCTI_MODOTR", FormatStringSql(contrato.ModuloOrdenDeTrabajo));
+            Sar_Cvmcti.Add("USR_CVMCTI_CODOTR", FormatStringSql(contrato.CodigoOrdenDeTrabajo));
+            Sar_Cvmcti.Add("USR_CVMCTI_NROOTR", contrato.NumeroOrdenDeTrabajo);
+            Sar_Cvmcti.Add("USR_CVMCTI_FCHMOV", FormatStringSql(contrato.FechaDeMovimiento));
+            Sar_Cvmcti.Add("USR_CVMCTI_MODMOD", FormatStringSql(contrato.ModulodeOTModificacion));
+            Sar_Cvmcti.Add("USR_CVMCTI_CODMOD", FormatStringSql(contrato.CodigodeOTModificacion));
+            Sar_Cvmcti.Add("USR_CVMCTI_NROMOD", contrato.NumerodeOTModificacion);
+            Sar_Cvmcti.Add("USR_CVMCTI_FCHMOD", FormatStringSql(contrato.FechadeOTModificacion));
+            Sar_Cvmcti.Add("USR_CVMCTI_FCHCOM", FormatStringSql(contrato.FechadeComision));
+            Sar_Cvmcti.Add("USR_CVMCTI_NROOC", FormatStringSql(contrato.NumeroDeOrdenDeCompra));
+            Sar_Cvmcti.Add("USR_CVMCTI_ARCHIV", FormatStringSql(contrato.ArchivoDeExportacion));
+            Sar_Cvmcti.Add("USR_CVMCTI_IDCUST", FormatStringSql(contrato.IdCustom));
+            Sar_Cvmcti.Add("USR_CVMCTI_NROREG", FormatStringSql(contrato.NumeroDeRegistroExpo));
+            Sar_Cvmcti.Add("USR_CVMCTI_FCHIMP", FormatStringSql(contrato.FechaDeExportacion));
+            Sar_Cvmcti.Add("USR_CVMCTI_ITMCRM", FormatStringSql(contrato.IdItemCRM));
+            Sar_Cvmcti.Add("USR_CVMCTI_CANCON", contrato.CantidadConsultas);
+
+            return Sar_Cvmcti;
+        }
+
+        private string FormatStringSql(object value)
         {
             if (value ==null)
             {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ApiNosis.Models
 {
-    public class FacturasItemsDTO
+    public class ContratoItemsDTO
     {
         public string TipoConcepto { get; set; }
         public string Concepto { get; set; }

@@ -34,10 +34,10 @@ namespace APINosis.Repositories
         {
             InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
 
-            Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == factura.Cliente).FirstOrDefaultAsync();
+            Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == factura.Cliente && c.VtmclhDebaja != "S").FirstOrDefaultAsync();
             if (cliente == null)
             {
-                return new FacturaResponse("Bad Request", 0, $"El cliente {factura.Cliente} no existe.");
+                return new FacturaResponse("Bad Request", 0, $"El cliente {factura.Cliente} no existe o se encuentra deshabilitado.");
             }
 
             List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVH(factura, factura.IdOperacion).ToList();
@@ -54,7 +54,7 @@ namespace APINosis.Repositories
                     switch (tablaHija.Key)
                     {
                         case "SAR_FCRMVI":
-                            mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVI((FacturasItemsDTO)item, factura.IdOperacion, index).ToList();
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_FCRMVI((ContratoItemsDTO)item, factura.IdOperacion, index).ToList();
                             query = ArmoQueryInsertTablaSAR(mapeoCampos, tablaHija.Key, query);
                             break;
                         case "SAR_FCRMVI07":
@@ -209,7 +209,7 @@ namespace APINosis.Repositories
                 {
 
 
-                    item.Items.AddRange(await ExecuteStoredProcedure<FacturasItemsDTO>("ALM_FcrmviGetForAPI",
+                    item.Items.AddRange(await ExecuteStoredProcedure<ContratoItemsDTO>("ALM_FcrmviGetForAPI",
                                                                             new Dictionary<string, object>{
                                                                                     { "@Codfor", item.CodigoComprobante},
                                                                                     { "@Nrofor", item.NumeroComprobante}

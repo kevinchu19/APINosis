@@ -280,7 +280,7 @@ namespace APINosis
                 .ForMember(dest => dest.Usr_Fcrmvh_Idcomp, opt => opt.MapFrom(src => src.IdCompra))
                 .ReverseMap();
 
-                configuration.CreateMap<FacturasItemsDTO, Fcrmvi>()
+                configuration.CreateMap<ContratoItemsDTO, Fcrmvi>()
                 .ForMember(dest => dest.Fcrmvi_Tipcpt, opt => opt.MapFrom(src => src.TipoConcepto))
                 .ForMember(dest => dest.Fcrmvi_Codcpt, opt => opt.MapFrom(src => src.Concepto))
                 .ForMember(dest => dest.Fcrmvi_Tipori, opt => opt.MapFrom(src => src.TipoProducto))

@@ -86,6 +86,40 @@ namespace APINosis.Controllers
 
         }
 
+
+        [HttpPost]
+        [Route("v2")]
+        public async Task<ActionResult<ContratoResponse>> PostSql([FromBody] ContratosDTO contrato)
+        {
+            Logger.Information($"Se recibio posteo de nuevo contrato {contrato.TipoContrato} - {contrato. CodigoContrato} - {contrato.Extension.ToString()} - " +
+                              $"Id de operacion: {contrato.IdOperacion}");
+            int idOperacion = contrato.IdOperacion;
+
+            if (Env.IsProduction())
+            {
+                if (int.TryParse(contrato.CodigoContrato, out _)) { contrato.CodigoContrato = string.Format("{0:00000000}", int.Parse(contrato.CodigoContrato)); };
+                if (int.TryParse(contrato.Cliente, out _)) { contrato.Cliente = string.Format("{0:00000000}", int.Parse(contrato.Cliente)); };
+                if (int.TryParse(contrato.CodigoDeSubcuenta, out _)) { contrato.CodigoDeSubcuenta = string.Format("{0:00000000}", int.Parse(contrato.CodigoDeSubcuenta)); }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("Error", "Error de formato");
+            }
+
+            ContratoResponse response = await Repository.GraboContratoSQL(contrato);
+
+            response.IdOperacion = idOperacion;
+
+            if (response.Estado != 200)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+
+        }
+
         [HttpPost]
         public async Task<ActionResult<ContratoResponse>> Post([FromBody] ContratosDTO contrato)
         {

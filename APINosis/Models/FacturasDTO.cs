@@ -42,7 +42,7 @@ namespace ApiNosis.Models
 
         public string IdPago { get; set; }
         public string IdCompra { get; set; }
-        public List<FacturasItemsDTO> Items { get; set; } = new List<FacturasItemsDTO>();
+        public List<ContratoItemsDTO> Items { get; set; } = new List<ContratoItemsDTO>();
         public List<ImpuestosComprobanteGenerado> ImpuestosFactura { get; set; } = new List<ImpuestosComprobanteGenerado>();
         public List<ImpuestosFacturasDTO> Impuestos { get; set; } = new List<ImpuestosFacturasDTO>();
         public decimal? ImporteTotal { get; set; }

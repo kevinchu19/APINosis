@@ -62,6 +62,57 @@ namespace APINosis.Repositories
 
 
 
+        public async Task<ContratoResponse> GraboContratoSQL(ContratosDTO contrato)
+        {
+            InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
+
+        
+            Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == contrato.Cliente && c.VtmclhDebaja != "S").FirstOrDefaultAsync();
+            if (cliente == null)
+            {
+                return new ContratoResponse("Bad Request", 0, $"El cliente {contrato.Cliente} no existe o se encuentra deshabilitado.");
+            }
+
+
+            List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_CVMCTH(contrato, contrato.IdOperacion).ToList();
+
+            string query = "BEGIN TRAN ";
+            query += ArmoQueryInsertTablaSAR(mapeoCampos.Where(k => k.Value is not IEnumerable<object>).ToList(), "SAR_CVMCTH");
+
+            foreach (KeyValuePair<string, object> tablaHija in mapeoCampos.Where(k => k.Value is IEnumerable<object>).ToList())
+            {
+                int index = 0;
+                foreach (var item in (IEnumerable<object>)tablaHija.Value)
+                {
+                    index++;
+                    switch (tablaHija.Key)
+                    {
+                        case "SAR_CVMCTI":
+                            mapeoCampos = sqlHelp.CreateDictionarySAR_CVMCTI((ItemsContratosDTO) item, contrato.IdOperacion, index).ToList();
+                            query = ArmoQueryInsertTablaSAR(mapeoCampos, tablaHija.Key, query);
+                            break;
+                        
+                        default:
+                            break;
+                    }
+                }
+
+            }
+
+
+            query += " COMMIT TRAN ";
+
+            string errorMessage = await ExecuteSqlInsertToTablaSAR(query);
+
+
+            return errorMessage != "" ? new ContratoResponse("Bad Request", contrato.IdOperacion, errorMessage) :
+                                        new ContratoResponse("OK", contrato.IdOperacion, null, "Petición procesada");
+
+
+        }
+
+
+
         public async Task<ContratoResponse> GraboHeaderContratoSQL(ContratosDTO contrato)
         {
             InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
@@ -79,17 +130,6 @@ namespace APINosis.Repositories
 
             string query = "BEGIN TRAN ";
             query += ArmoQueryInsertTablaSAR(mapeoCampos.Where(k => k.Value is not IEnumerable<object>).ToList(), "SAR_CVMCTH");
-
-            foreach (KeyValuePair<string, object> tablaHija in mapeoCampos.Where(k => k.Value is IEnumerable<object>).ToList())
-            {
-                int index = 0;
-                foreach (var item in (IEnumerable<object>)tablaHija.Value)
-                {
-                    index++;
-                }
-
-            }
-
 
             query += " COMMIT TRAN ";
 
@@ -144,6 +184,13 @@ namespace APINosis.Repositories
 
         public async Task<ContratoResponse> GraboContrato(Cvmcth contrato, string tipoOperacion)
         {
+
+            Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == contrato.Cvmcth_Nrocta && c.VtmclhDebaja != "S").FirstOrDefaultAsync();
+
+            if (cliente == null)
+            {
+                return new ContratoResponse("Bad Request", 0, $"El cliente {contrato.Cvmcth_Nrocta} no existe o se encuentra deshabilitado.");
+            }
 
             CV_RR_CVMCTH oCvmcth = new CV_RR_CVMCTH("admin", Configuration["PasswordAdmin"], Configuration["CompanyName"], Configuration["PathLanguage"]);
 
