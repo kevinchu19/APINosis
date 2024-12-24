@@ -265,6 +265,7 @@ namespace APINosis.Repositories
             Sar_Cvmcth.Add("SAR_CVMCTH_NROEXT", contrato.Extension);
             Sar_Cvmcth.Add("SAR_CVMCTH_DESCRP", FormatStringSql(contrato.Descripcion));
             Sar_Cvmcth.Add("SAR_CVMCTH_NROCTA", FormatStringSql(contrato.Cliente));
+            
             Sar_Cvmcth.Add("SAR_CVMCTH_NROSUB", FormatStringSql(contrato.CodigoDeSubcuenta));
             Sar_Cvmcth.Add("USR_CVMCTH_CNDPAG", FormatStringSql(contrato.CondicionDePago));
             Sar_Cvmcth.Add("USR_CVMCTH_VNDDOR", FormatStringSql(contrato.Vendedor));
@@ -308,7 +309,6 @@ namespace APINosis.Repositories
             Sar_Cvmcti.Add("SAR_CVMCTI_TEXADI", FormatStringSql(contrato.TextoAdicional));
             Sar_Cvmcti.Add("SAR_CVMCTI_PRECIO", contrato.Precio);
             Sar_Cvmcti.Add("SAR_CVMCTI_CANTID", contrato.Cantidad);
-            Sar_Cvmcti.Add("USR_CVMCTI_IMPORT", contrato.Importe);
             Sar_Cvmcti.Add("USR_CVMCTI_TRAVIG", FormatStringSql(contrato.TrabajaConVigencia.ToString()));
             Sar_Cvmcti.Add("USR_CVMCTI_VIGDDE", FormatStringSql(contrato.Desde));
             Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(contrato.Hasta));
