@@ -34,6 +34,17 @@ namespace APINosis.Repositories
         {
             string errmsg = "";
 
+            errmsg = await ExecuteStoredProcedureSingle<string>("Alm_ApiCRM_InsContratoItem_ValidoIdOperacion",
+                                                           new Dictionary<string, object>{
+                                                                { "@Identi", identi},{ "@Codcon", codcon},{ "@Nrocon", nrocon},{ "@Nroext", nroext} });
+
+            if (errmsg != "")
+            {
+                return new ContratoResponse("Error", identi, errmsg);
+            }
+
+
+
             foreach (var item in items)
             {
                 errmsg = await ExecuteStoredProcedureSingle<string>("Alm_ApiCRM_InsContratoItem",
