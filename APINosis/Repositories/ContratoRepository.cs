@@ -85,6 +85,15 @@ namespace APINosis.Repositories
             }
 
 
+            Cvmcth contratoExistente = await Context.Cvmcth.Where(c => c.Cvmcth_Codcon == contrato.TipoContrato && 
+                                                                       c.Cvmcth_Nrocon == contrato.CodigoContrato &&
+                                                                       c.Cvmcth_Nroext == contrato.Extension).FirstOrDefaultAsync();
+            if (contratoExistente != null)
+            {
+                return new ContratoResponse("Bad Request", 0, $"El contrato {contrato.TipoContrato} - {contrato.CodigoContrato} - {contrato.Extension.ToString()} ya existe. No puede volver a darlo de alta.");
+            }
+
+
             List<KeyValuePair<string, object>> mapeoCampos = sqlHelp.CreateDictionarySAR_CVMCTH(contrato, contrato.IdOperacion).ToList();
 
             string query = "BEGIN TRAN ";
