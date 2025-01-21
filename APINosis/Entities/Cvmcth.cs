@@ -27,6 +27,8 @@ namespace APINosis.Entities
         public string Cvmcth_Actcof { get; set; }
         public DateTime Cvmcth_Facdes { get; set; }
         public DateTime Cvmcth_Prifac { get; set; }
+        [NotMapped]
+        public virtual string Cvmcth_Desfre { get; set; }
         public DateTime Cvmcth_Ultfac { get; set; }
         public short Cvmcth_Freact { get; set; }
         public short Cvmcth_Frefac { get; set; }
@@ -88,7 +90,6 @@ namespace APINosis.Entities
         public string Usr_Cvmcth_Idcomp { get; set; }
         public ICollection<Cvmcti> Items { get; set; }
 
-        [NotMapped]
-        public virtual string Cvmcth_Desfre { get; set; }
+        
     }
 }
