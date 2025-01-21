@@ -205,6 +205,16 @@ namespace APINosis.Repositories
         public async Task<ContratoResponse> GraboContrato(Cvmcth contrato, string tipoOperacion)
         {
 
+
+            Cvmcth contratoExistente = await Context.Cvmcth.Where(c => c.Cvmcth_Codcon == contrato.Cvmcth_Codcon &&
+                                                                       c.Cvmcth_Nrocon == contrato.Cvmcth_Nrocon&&
+                                                                       c.Cvmcth_Nroext == contrato.Cvmcth_Nroext).FirstOrDefaultAsync();
+            if (contratoExistente != null)
+            {
+                return new ContratoResponse("Bad Request", 0, $"El contrato {contrato.Cvmcth_Codcon} - {contrato.Cvmcth_Nrocon} - {contrato.Cvmcth_Nroext.ToString()} ya existe. No puede volver a darlo de alta.");
+            }
+
+
             Vtmclh cliente = await Context.Vtmclh.Where(c => c.VtmclhNrocta == contrato.Cvmcth_Nrocta && c.VtmclhDebaja != "S").FirstOrDefaultAsync();
 
             if (cliente == null)
