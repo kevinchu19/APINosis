@@ -30,7 +30,6 @@ namespace APINosis.Entities
         public short Cvmcth_Frefac { get; set; }
         public DateTime Cvmcth_Ultfac { get; set; }
         public short Cvmcth_Freact { get; set; }
-        
         public string Cvmcth_Codlis { get; set; }
         public string Cvmcth_Grubon { get; set; }
         public DateTime? Cvmcth_Feclis { get; set; }
@@ -85,12 +84,10 @@ namespace APINosis.Entities
         public string Cvmcth_Ultopr { get; set; }
         public string Cvmcth_Debaja { get; set; }
         public string Cvmcth_Oalias { get; set; }
-        [NotMapped]
-        public virtual string Cvmcth_Desfre { get; set; }
-
-
         public string Usr_Cvmcth_Idcomp { get; set; }
         public ICollection<Cvmcti> Items { get; set; }
+        [NotMapped]
+        public virtual string Cvmcth_Desfre { get; set; }
 
         
     }
