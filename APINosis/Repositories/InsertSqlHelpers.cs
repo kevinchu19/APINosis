@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -284,6 +285,7 @@ namespace APINosis.Repositories
             Sar_Cvmcth.Add("USR_CVMCTH_CNDCOM", FormatStringSql(contrato.CondicionComercial));
             Sar_Cvmcth.Add("USR_CVMCTH_MPAGO", FormatStringSql(contrato.ModalidadDePago));
             Sar_Cvmcth.Add("USR_CVMCTH_IDCOMP", FormatStringSql(contrato.IdDeCompra));
+            
 
 
             Sar_Cvmcth.Add("SAR_CV_FECALT", "GETDATE()");
@@ -311,7 +313,8 @@ namespace APINosis.Repositories
             Sar_Cvmcti.Add("SAR_CVMCTI_CANTID", contrato.Cantidad);
             Sar_Cvmcti.Add("USR_CVMCTI_TRAVIG", FormatStringSql(contrato.TrabajaConVigencia.ToString()));
             Sar_Cvmcti.Add("USR_CVMCTI_VIGDDE", FormatStringSql(contrato.Desde));
-            Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(contrato.Hasta));
+            //KT 27/1/2025: Siempre ponemos ultimo dia del mes para que softland no de error, luego se actualiza en la interfaz de entrada con el dato recibido en USR_CVMCTI_APIVHA
+            Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(ObtenerUltimoDiaDelMes(contrato.Hasta)));
             Sar_Cvmcti.Add("USR_CVMCTI_ACTLIS", FormatStringSql(contrato.PreciosVigentesAlFacturar));
             Sar_Cvmcti.Add("USR_CVMCTI_VNDDOR", FormatStringSql(contrato.Vendedor));
             Sar_Cvmcti.Add("USR_CVMCTI_VNDDO2", FormatStringSql(contrato.Vendedor2));
@@ -331,10 +334,30 @@ namespace APINosis.Repositories
             Sar_Cvmcti.Add("USR_CVMCTI_FCHIMP", FormatStringSql(contrato.FechaDeExportacion));
             Sar_Cvmcti.Add("USR_CVMCTI_ITMCRM", FormatStringSql(contrato.IdItemCRM));
             Sar_Cvmcti.Add("USR_CVMCTI_CANCON", contrato.CantidadConsultas);
+            //KT 27/1/2025 Se recibe en estos campos los datos de vigencia del crm para luego forzar los campos estandar de vigencias 
+            Sar_Cvmcti.Add("USR_CVMCTI_APIVDE", FormatStringSql(contrato.Desde));
+            Sar_Cvmcti.Add("USR_CVMCTI_APIVHA", FormatStringSql(contrato.Hasta));
 
             return Sar_Cvmcti;
         }
 
+
+        static string ObtenerUltimoDiaDelMes(string fechaFormatoAAAAMMDD)
+        {
+            // Convertir el string en una fecha (DateTime)
+            if (DateTime.TryParseExact(fechaFormatoAAAAMMDD, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fecha))
+            {
+                // Calcular el último día del mes
+                DateTime ultimoDia = new DateTime(fecha.Year, fecha.Month, DateTime.DaysInMonth(fecha.Year, fecha.Month));
+
+                // Convertir de vuelta al formato AAAAMMDD
+                return ultimoDia.ToString("yyyyMMdd");
+            }
+            else
+            {
+                throw new ArgumentException("El formato de la fecha no es válido.");
+            }
+        }
         private string FormatStringSql(object value)
         {
             if (value ==null)
