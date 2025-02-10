@@ -67,7 +67,9 @@ namespace APINosis.Repositories
             {
                 return new ContratoResponse("Error", identi, errmsg);
             }
+            await InsertaCwJmSchedules(Configuration["Job"]);
 
+            
             return new ContratoResponse("OK", 0, null, "Item Recibido");
         }
 

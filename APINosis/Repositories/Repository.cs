@@ -173,7 +173,7 @@ namespace APINosis.Repositories
             }
         }
 
-        private async Task InsertaCwJmSchedules(string codjob)
+        public async Task InsertaCwJmSchedules(string codjob)
         {
             using (SqlConnection sql = new SqlConnection(Configuration.GetConnectionString("DefaultConnectionString")))
             {
