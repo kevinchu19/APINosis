@@ -150,7 +150,28 @@ namespace APINosis.Repositories
 
         public async Task<ClienteResponse> GraboClienteSql(ClienteDTO cliente)
         {
-            InsertSqlHelpers sqlHelp= new InsertSqlHelpers(Configuration);
+
+
+            string errorDuplicados = string.Empty;
+
+            var nombresDuplicados = cliente.Contactos
+                .Where(c => !string.IsNullOrWhiteSpace(c.Nombre))
+                .GroupBy(c => c.Nombre.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (nombresDuplicados.Any())
+            {
+                errorDuplicados = "Contactos duplicados encontrados: " + string.Join(", ", nombresDuplicados);
+            }
+
+            if (errorDuplicados != string.Empty)
+            {
+                return new ClienteResponse("Bad Request", 0, errorDuplicados);
+            }
+
+            InsertSqlHelpers sqlHelp = new InsertSqlHelpers(Configuration);
             
             string errorAltaCodigoPostal = "";
 

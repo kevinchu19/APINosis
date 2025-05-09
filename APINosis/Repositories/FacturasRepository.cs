@@ -200,6 +200,7 @@ namespace APINosis.Repositories
 
                 facturas.AddRange( await ExecuteStoredProcedure<FacturasDTO>("ALM_FcrmvhGetForAPI",
                                                                             new Dictionary<string, object>{
+                                                                                { "@Modfor", "VT"},
                                                                                 { "@Codfor", codigoComprobante},
                                                                                 { "@Nrofor", numeroComprobante},
                                                                                 { "@IdCrm", idOperacion!=null?idOperacion:0}
@@ -211,6 +212,7 @@ namespace APINosis.Repositories
 
                     item.Items.AddRange(await ExecuteStoredProcedure<ContratoItemsDTO>("ALM_FcrmviGetForAPI",
                                                                             new Dictionary<string, object>{
+                                                                                    { "@Modfor", "VT"},
                                                                                     { "@Codfor", item.CodigoComprobante},
                                                                                     { "@Nrofor", item.NumeroComprobante}
                                                                             }));
@@ -363,7 +365,7 @@ namespace APINosis.Repositories
                                 while (await reader.ReadAsync())
                                 {
                                     result.ModuloComprobante = reader["SAR_FCRMVH_MODFVT"] is not System.DBNull ? (string)reader["SAR_FCRMVH_MODFVT"]: (string)reader["SAR_FCRMVH_MODFOR"];
-                                    result.CodigoComprobante = reader["SAR_FCRMVH_CODFVT"] is not System.DBNull ? (string)reader["SAR_FCRMVH_MODFVT"] : (string)reader["SAR_FCRMVH_CODFOR"];
+                                    result.CodigoComprobante = reader["SAR_FCRMVH_CODFVT"] is not System.DBNull ? (string)reader["SAR_FCRMVH_CODFVT"] : (string)reader["SAR_FCRMVH_CODFOR"];
                                     result.NumeroComprobante = reader["SAR_FCRMVH_NROFVT"] is not System.DBNull ? Convert.ToInt32(reader["SAR_FCRMVH_NROFVT"]) : Convert.ToInt32(reader["SAR_FCRMVH_NROFOR"]);
                                 }
                             }
