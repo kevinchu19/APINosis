@@ -311,10 +311,11 @@ namespace APINosis.Repositories
             Sar_Cvmcti.Add("SAR_CVMCTI_TEXADI", FormatStringSql(contrato.TextoAdicional));
             Sar_Cvmcti.Add("SAR_CVMCTI_PRECIO", contrato.Precio);
             Sar_Cvmcti.Add("SAR_CVMCTI_CANTID", contrato.Cantidad);
-            Sar_Cvmcti.Add("USR_CVMCTI_TRAVIG", FormatStringSql(contrato.TrabajaConVigencia.ToString()));
-            Sar_Cvmcti.Add("USR_CVMCTI_VIGDDE", FormatStringSql(contrato.Desde));
+            Sar_Cvmcti.Add("USR_CVMCTI_TRAVIG", "N");
+            Sar_Cvmcti.Add("USR_CVMCTI_VIGDDE", "NULL");
             //KT 27/1/2025: Siempre ponemos ultimo dia del mes para que softland no de error, luego se actualiza en la interfaz de entrada con el dato recibido en USR_CVMCTI_APIVHA
-            Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(ObtenerUltimoDiaDelMes(contrato.Hasta)));
+            //Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", FormatStringSql(ObtenerUltimoDiaDelMes(contrato.Hasta)));
+            Sar_Cvmcti.Add("USR_CVMCTI_VIGHTA", "NULL");
             Sar_Cvmcti.Add("USR_CVMCTI_ACTLIS", FormatStringSql(contrato.PreciosVigentesAlFacturar));
             Sar_Cvmcti.Add("USR_CVMCTI_VNDDOR", FormatStringSql(contrato.Vendedor));
             Sar_Cvmcti.Add("USR_CVMCTI_VNDDO2", FormatStringSql(contrato.Vendedor2));

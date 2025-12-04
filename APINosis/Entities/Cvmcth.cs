@@ -27,9 +27,9 @@ namespace APINosis.Entities
         public string Cvmcth_Actcof { get; set; }
         public DateTime Cvmcth_Facdes { get; set; }
         public DateTime Cvmcth_Prifac { get; set; }
-        public short Cvmcth_Frefac { get; set; }
+        public short? Cvmcth_Frefac { get; set; }
         public DateTime Cvmcth_Ultfac { get; set; }
-        public short Cvmcth_Freact { get; set; }
+        public short? Cvmcth_Freact { get; set; }
         public string Cvmcth_Codlis { get; set; }
         public string Cvmcth_Grubon { get; set; }
         public DateTime? Cvmcth_Feclis { get; set; }

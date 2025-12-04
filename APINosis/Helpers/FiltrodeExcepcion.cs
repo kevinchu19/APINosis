@@ -3,6 +3,7 @@ using APINosis.Models.Response;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,10 +18,12 @@ namespace APINosis.Helpers
     public class FiltrodeExcepcion : ExceptionFilterAttribute, IExceptionFilter
     {
        public Serilog.ILogger logger { get; }
+        public IConfiguration Configuration { get; }
 
-        public FiltrodeExcepcion(Serilog.ILogger logger)
+        public FiltrodeExcepcion(Serilog.ILogger logger, IConfiguration configuration)
         {
             this.logger = logger;
+            Configuration = configuration;
         }
 
         public async override void  OnException(ExceptionContext context)
@@ -39,7 +42,12 @@ namespace APINosis.Helpers
             }
             else
             {
-                errorMessage = $"{context.Exception.Message}"; //- {context.Exception.StackTrace}";
+                errorMessage = $"{context.Exception.Message}";
+
+                if (Configuration["LogueaStackTrace"] == "S")
+                {
+                    errorMessage += $"- {context.Exception.StackTrace}";
+                }
             }
 
             logger.Fatal(errorMessage);
