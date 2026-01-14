@@ -542,15 +542,6 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("VTMCLH_DEPTRA");
 
-                entity.Property(e => e.VtmclhDifdes)
-                    .HasColumnType("datetime")
-                    .HasColumnName("VTMCLH_DIFDES");
-
-                entity.Property(e => e.VtmclhDifdia).HasColumnName("VTMCLH_DIFDIA");
-
-                entity.Property(e => e.VtmclhDifhas)
-                    .HasColumnType("datetime")
-                    .HasColumnName("VTMCLH_DIFHAS");
 
                 entity.Property(e => e.VtmclhDirecc)
                     .HasMaxLength(255)
@@ -660,10 +651,6 @@ namespace APINosis.Entities
                     .IsUnicode(false)
                     .HasColumnName("VTMCLH_HORREC");
 
-                entity.Property(e => e.VtmclhImpdif)
-                    .HasColumnType("numeric(18, 2)")
-                    .HasColumnName("VTMCLH_IMPDIF");
-
                 entity.Property(e => e.VtmclhInhibe)
                     .HasMaxLength(1)
                     .IsUnicode(false)
@@ -706,8 +693,6 @@ namespace APINosis.Entities
                     .HasMaxLength(6)
                     .IsUnicode(false)
                     .HasColumnName("VTMCLH_LOTTRA");
-
-                entity.Property(e => e.VtmclhMaxitm).HasColumnName("VTMCLH_MAXITM");
 
                 entity.Property(e => e.VtmclhMedpag)
                     .HasMaxLength(6)
@@ -824,10 +809,6 @@ namespace APINosis.Entities
                     .HasMaxLength(3)
                     .IsUnicode(false)
                     .HasColumnName("VTMCLH_PAIENT");
-
-                entity.Property(e => e.VtmclhPerina)
-                    .HasColumnType("numeric(6, 0)")
-                    .HasColumnName("VTMCLH_PERINA");
 
                 entity.Property(e => e.VtmclhPrmipr)
                     .HasColumnType("numeric(15, 7)")

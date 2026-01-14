@@ -79,12 +79,6 @@ namespace APINosis.Entities
         public string VtmclhContad { get; set; }
         public string VtmclhEdisub { get; set; }
         public string VtmclhCuenta { get; set; }
-        public short? VtmclhMaxitm { get; set; }
-        public short? VtmclhDifdia { get; set; }
-        public DateTime? VtmclhDifdes { get; set; }
-        public DateTime? VtmclhDifhas { get; set; }
-        public decimal? VtmclhPerina { get; set; }
-        public decimal? VtmclhImpdif { get; set; }
         public string VtmclhEmail { get; set; }
         public string VtmclhCndint { get; set; }
         public string VtmclhDistri { get; set; }
