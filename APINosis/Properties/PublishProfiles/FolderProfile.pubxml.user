@@ -4,7 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Users\Administrator\source\repos\APINosis-master\APINosis\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
-    <History>True|2022-12-26T19:51:32.3074208Z;</History>
+    <_PublishTargetUrl>C:\Users\ktchubinsky\source\repos\APINosis\APINosis\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2026-01-14T17:40:43.8637955Z;True|2022-12-26T16:51:32.3074208-03:00;</History>
   </PropertyGroup>
 </Project>
