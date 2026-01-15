@@ -251,6 +251,7 @@ namespace APINosis
                 .ForMember(dest => dest.Virt_Circom, opt => opt.MapFrom(src => src.CircuitoOrigen))
                 .ForMember(dest => dest.Virt_Cirapl, opt => opt.MapFrom(src => src.CircuitoAplicacion))
                 .ForMember(dest => dest.Virt_Codcvt, opt => opt.MapFrom(src => src.ComprobanteVentas))
+                .ForMember(dest => dest.Virt_Codcfc, opt => opt.MapFrom(src => src.ComprobanteFacturacion))
                 .ForMember(dest => dest.Fcrmvh_Codfor, opt => opt.MapFrom(src => src.CodigoComprobante))
                 .ForMember(dest => dest.Fcrmvh_Nrofor, opt => opt.MapFrom(src => src.NumeroComprobante))
                 .ForMember(dest => dest.Fcrmvh_Fchmov, opt => opt.MapFrom(src => src.FechaContable))
