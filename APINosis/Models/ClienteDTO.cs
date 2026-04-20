@@ -49,6 +49,7 @@ namespace APINosis.Models
         public string EnviaMail { get; set; }
         public string FechaCambioRazonSocial { get; set; }
         public string IdiomaReferencia { get; set; }
+        public string ResponsableEntrega { get; set; }
         public List<ContactosDTO> Contactos { get; set; } = new List<ContactosDTO>();
 
         public List<ImpuestosDTO> Impuestos{ get; set; } = new List<ImpuestosDTO>();

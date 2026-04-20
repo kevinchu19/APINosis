@@ -111,6 +111,7 @@ namespace APINosis
                 .ForMember(dest => dest.USR_VTMCLH_LOCAL1, opt => opt.MapFrom(src => src.Localidad))
                 .ForMember(dest => dest.USR_VTMCLH_LOCAL2, opt => opt.MapFrom(src => src.LocalidadEntrega))
                 .ForMember(dest => dest.VTMCLH_LANEXP, opt => opt.MapFrom(src => src.IdiomaReferencia))
+                .ForMember(dest => dest.USR_VTMCLH_ATENTR, opt => opt.MapFrom(src => src.ResponsableEntrega))
                 .ReverseMap();
 
                 configuration.CreateMap<Vtmclh, ClienteDTO>()
@@ -155,6 +156,7 @@ namespace APINosis
                     .ForMember(dest => dest.Localidad, opt => opt.MapFrom(src => src.UsrVtmclhLocal1))
                     .ForMember(dest => dest.LocalidadEntrega, opt => opt.MapFrom(src => src.UsrVtmclhLocal2))
                     .ForMember(dest => dest.IdiomaReferencia, opt => opt.MapFrom(src => src.VtmclhLanexp))
+                    .ForMember(dest => dest.ResponsableEntrega, opt => opt.MapFrom(src => src.UsrVtmclhAtentr))
                 .ReverseMap();
 
                 configuration.CreateMap<Vtmclc, ContactosDTO>()
