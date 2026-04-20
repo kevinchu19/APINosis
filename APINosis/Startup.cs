@@ -110,6 +110,7 @@ namespace APINosis
                 .ForMember(dest => dest.USR_VTMCLH_FECANT, opt => opt.MapFrom(src => src.FechaCambioRazonSocial))
                 .ForMember(dest => dest.USR_VTMCLH_LOCAL1, opt => opt.MapFrom(src => src.Localidad))
                 .ForMember(dest => dest.USR_VTMCLH_LOCAL2, opt => opt.MapFrom(src => src.LocalidadEntrega))
+                .ForMember(dest => dest.USR_VTMCLH_ATENTR, opt => opt.MapFrom(src => src.ResponsableEntrega))
                 .ForMember(dest => dest.VTMCLH_LANEXP, opt => opt.MapFrom(src => src.IdiomaReferencia))
                 .ReverseMap();
 

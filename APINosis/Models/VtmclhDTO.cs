@@ -48,6 +48,7 @@ namespace APINosis.Models
         public DateTime USR_VTMCLH_FECANT { get; set; }
         public string USR_VTMCLH_LOCAL1 { get; set; }
         public string USR_VTMCLH_LOCAL2 { get; set; }
+        public string USR_VTMCLH_ATENTR { get; set; }
         public string VTMCLH_LANEXP { get; set; }
         public List<VtmclcDTO> Contactos { get; set; }
         public List<VtmcliDTO> Impuestos { get; set; }

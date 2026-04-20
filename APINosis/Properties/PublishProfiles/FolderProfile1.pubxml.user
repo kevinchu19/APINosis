@@ -4,6 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <History>False|2026-01-15T21:02:11.9801062Z;False|2026-01-15T17:51:38.3946310-03:00;</History>
+    <History>True|2026-03-22T01:37:06.3710883Z;False|2026-03-21T22:35:51.5002195-03:00;True|2026-01-20T16:26:36.8251248-03:00;False|2026-01-20T16:17:59.9511238-03:00;False|2026-01-20T16:17:25.0156876-03:00;False|2026-01-20T16:16:15.7494991-03:00;False|2026-01-20T16:15:38.8902452-03:00;False|2026-01-20T16:15:16.2257945-03:00;False|2026-01-15T18:02:11.9801062-03:00;False|2026-01-15T17:51:38.3946310-03:00;</History>
+    <_PublishTargetUrl>C:\Users\ktchubinsky\source\repos\APINosis\APINosis\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
   </PropertyGroup>
 </Project>

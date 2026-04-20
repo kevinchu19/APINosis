@@ -13,7 +13,19 @@ namespace APINosis
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (OperationCanceledException)
+            {
+                // Shutdown normal por IIS recycle, no es un error real
+            }
+            catch (Exception ex)
+            {
+                // Loguear errores reales
+                throw;
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

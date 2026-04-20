@@ -78,6 +78,7 @@ namespace APINosis.Repositories
             Sar_Vtmclh.Add("USR_VTMCLH_LOCAL1", FormatStringSql(cliente.Localidad));
             Sar_Vtmclh.Add("USR_VTMCLH_LOCAL2", FormatStringSql(cliente.LocalidadEntrega));
             Sar_Vtmclh.Add("USR_VTMCLH_LANEXP", FormatStringSql(cliente.IdiomaReferencia));
+            Sar_Vtmclh.Add("USR_VTMCLH_ATENTR", FormatStringSql(cliente.ResponsableEntrega));
             Sar_Vtmclh.Add("SAR_VT_FECALT", "GETDATE()");
             Sar_Vtmclh.Add("SAR_VT_FECMOD", "GETDATE()");
             Sar_Vtmclh.Add("SAR_VT_USERID", FormatStringSql("API"));
