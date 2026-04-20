@@ -156,6 +156,7 @@ namespace APINosis
                     .ForMember(dest => dest.Localidad, opt => opt.MapFrom(src => src.UsrVtmclhLocal1))
                     .ForMember(dest => dest.LocalidadEntrega, opt => opt.MapFrom(src => src.UsrVtmclhLocal2))
                     .ForMember(dest => dest.IdiomaReferencia, opt => opt.MapFrom(src => src.VtmclhLanexp))
+                    .ForMember(dest => dest.ResponsableEntrega, opt => opt.MapFrom(src => src.UsrVtmclhAtentr))
                 .ReverseMap();
 
                 configuration.CreateMap<Vtmclc, ContactosDTO>()
