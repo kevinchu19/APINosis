@@ -115,7 +115,7 @@ namespace APINosis.Repositories
                     {
                         await command.ExecuteNonQueryAsync();
 
-                        await InsertaCwJmSchedules("API");
+                        await InsertaCwJmSchedules(Configuration["Job"]);
                     }
                     catch (SqlException ex)
                     {
